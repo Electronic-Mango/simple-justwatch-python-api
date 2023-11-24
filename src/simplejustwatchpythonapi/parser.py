@@ -1,5 +1,6 @@
 from typing import NamedTuple
 
+_DETAILS_URL = "https://justwatch.com"
 _IMAGES_URL = "https://images.justwatch.com"
 
 
@@ -50,13 +51,13 @@ def _parse_entry(json: any) -> MediaEntry:
     object_type = json.get("objectType")
     content = json["content"]
     title = content.get("title")
-    url = _IMAGES_URL + content.get("fullPath")
+    url = _DETAILS_URL + content.get("fullPath")
     year = content.get("originalReleaseYear")
     date = content.get("originalReleaseDate")
     genres = [node.get("shortName") for node in content.get("genres", []) if node]
     external_ids = content.get("externalIds")
     imdb_id = external_ids.get("imdbId") if external_ids else None
-    poster = content.get("posterUrl")
+    poster = _IMAGES_URL + content.get("posterUrl")
     backdrops = [_IMAGES_URL + bd.get("backdropUrl") for bd in content.get("backdrops", []) if bd]
     offers = [_parse_offer(offer) for offer in json.get("offers", []) if offer]
     return MediaEntry(

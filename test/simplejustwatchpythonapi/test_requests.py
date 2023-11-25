@@ -83,9 +83,11 @@ fragment SearchTitleGraphql on PopularTitlesEdge {
     argvalues=[
         ("TITLE 1", "US", "language 1", 5, True),
         ("TITLE 2", "gb", "language 2", 10, False),
-    ]
+    ],
 )
-def test_prepare_search_request(title: str, country: str, language: str, count: int, best_only: bool) -> None:
+def test_prepare_search_request(
+    title: str, country: str, language: str, count: int, best_only: bool
+) -> None:
     expected_request = {
         "operationName": "GetSearchTitles",
         "variables": {
@@ -110,7 +112,7 @@ def test_prepare_search_request(title: str, country: str, language: str, count: 
         ("United Stated of America",),  # too long
         ("usa",),  # too long
         ("u",),  # too short
-    ]
+    ],
 )
 def test_prepare_search_request_asserts_on_invalid_country_code(invalid_code: str) -> None:
     expected_error_message = f"Invalid country code: {invalid_code}, code must be 2 characters long"

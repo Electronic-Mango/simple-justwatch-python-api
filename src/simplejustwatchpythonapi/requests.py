@@ -1,4 +1,4 @@
-GRAPHQL_SEARCH_QUERY = """
+_GRAPHQL_SEARCH_QUERY = """
 query GetSearchTitles(
   $searchTitlesFilter: TitleFilter!,
   $country: Country!,
@@ -74,30 +74,35 @@ fragment SearchTitleGraphql on PopularTitlesEdge {
 """
 
 
-def prepare_search_request(title: str, county: str, lang: str, count: int, best_only: bool) -> dict:
+def prepare_search_request(
+    title: str, country: str, language: str, count: int, best_only: bool
+) -> dict:
     """Prepare search request for JustWatch GraphQL API.
+    Country code should be two uppercase characters,
+    however lowercase code will be converted to uppercase.
 
     Args:
         title: title to search
-        county: country to search for offers
-        lang: language of responses
+        country: country to search for offers
+        language: language of responses
         count: how many responses should be returned
         best_only: return only best offers if True, return all offers if False
 
     Returns:
         JSON/dict with GraphQL POST body
     """
+    assert len(country) == 2, f"Invalid country code: {country}, code must be 2 characters long"
     return {
         "operationName": "GetSearchTitles",
         "variables": {
             "first": count,
             "searchTitlesFilter": {"searchQuery": title},
-            "language": lang,
-            "country": county,
+            "language": language,
+            "country": country.upper(),
             "format": "JPG",
             "profile": "S718",
             "backdropProfile": "S1920",
             "filter": {"bestOnly": best_only},
         },
-        "query": GRAPHQL_SEARCH_QUERY,
+        "query": _GRAPHQL_SEARCH_QUERY,
     }

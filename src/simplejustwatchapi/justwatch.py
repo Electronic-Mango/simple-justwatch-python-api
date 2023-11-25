@@ -4,7 +4,7 @@ Currently only search requests are supported.
 
 from httpx import post
 
-from simplejustwatchapi.query import prepare_search_request, parse_search_response, MediaEntry
+from simplejustwatchapi.query import MediaEntry, parse_search_response, prepare_search_request
 
 _GRAPHQL_API_URL = "https://apis.justwatch.com/graphql"
 

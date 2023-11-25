@@ -1,4 +1,5 @@
-"""Module responsible for creating GraphQL queries and parsing responses from JustWatch GraphQL API into NamedTuples.
+"""Module responsible for creating GraphQL queries and parsing responses from JustWatch GraphQL API.
+Parsed responses are returned as Python NamedTuples for easier access.
 Currently only responses from "GetSearchTitles" query are supported.
 """
 
@@ -88,6 +89,7 @@ class Offer(NamedTuple):
     """Parsed single offer from JustWatch GraphQL API for single entry.
     Doesn't match fully received response, some fields are simplified.
     """
+
     monetization_type: str
     presentation_type: str
     url: str
@@ -103,6 +105,7 @@ class MediaEntry(NamedTuple):
     """Parsed response from JustWatch GraphQL API for "GetSearchTitles" query for single entry.
     Doesn't match fully received response, some fields are simplified.
     """
+
     entry_id: str
     object_id: int
     object_type: str

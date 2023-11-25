@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    name: Running unit tests
+    name: Checking code coverage
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3

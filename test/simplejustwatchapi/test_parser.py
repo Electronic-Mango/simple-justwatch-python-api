@@ -1,4 +1,4 @@
-from simplejustwatchpythonapi.parser import MediaEntry, Offer, parse_search_response
+from simplejustwatchapi.parser import MediaEntry, Offer, parse_search_response
 
 DETAILS_URL = "https://justwatch.com"
 IMAGES_URL = "https://images.justwatch.com"

@@ -6,8 +6,8 @@ long_description = (this_directory / "README.md").read_text()
 
 setup(
     name="simple-justwatch-python-api",
-    packages=["simplejustwatchpythonapi"],
-    package_dir={"simplejustwatchpythonapi": "src/simplejustwatchpythonapi"},
+    packages=["simplejustwatchapi"],
+    package_dir={"simplejustwatchapi": "src/simplejustwatchapi"},
     version="0.4",
     license="GPLv3",
     description="A simple JustWatch Python API",

@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock, patch
 
-from simplejustwatchpythonapi.justwatch import search
+from simplejustwatchapi.justwatch import search
 
 JUSTWATCH_GRAPHQL_URL = "https://apis.justwatch.com/graphql"
 SEARCH_INPUT = ("TITLE", "COUNTRY", "LANGUAGE", 5, True)
@@ -9,9 +9,9 @@ DUMMY_RESPONSE = {"dummy": "response"}
 DUMMY_ENTRIES = [MagicMock(), MagicMock(), None]
 
 
-@patch("simplejustwatchpythonapi.justwatch.post")
-@patch("simplejustwatchpythonapi.justwatch.parse_search_response", return_value=DUMMY_ENTRIES)
-@patch("simplejustwatchpythonapi.justwatch.prepare_search_request", return_value=DUMMY_REQUEST)
+@patch("simplejustwatchapi.justwatch.post")
+@patch("simplejustwatchapi.justwatch.parse_search_response", return_value=DUMMY_ENTRIES)
+@patch("simplejustwatchapi.justwatch.prepare_search_request", return_value=DUMMY_REQUEST)
 def test_search(requests_mock, parser_mock, httpx_mock) -> None:
     httpx_mock().json.return_value = DUMMY_RESPONSE
 

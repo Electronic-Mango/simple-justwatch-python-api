@@ -25,7 +25,7 @@ pip install simple-justwatch-python-api
 
 Currently, there's only one function available - search JustWatch:
 ```python
-from simplejustwatchpythonapi.justwatch import search
+from simplejustwatchapi.justwatch import search
 
 results = search("title", "US", "en", 5, True)
 ```

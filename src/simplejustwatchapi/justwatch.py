@@ -1,7 +1,7 @@
 from httpx import post
 
-from simplejustwatchpythonapi.parser import MediaEntry, parse_search_response
-from simplejustwatchpythonapi.requests import prepare_search_request
+from simplejustwatchapi.parser import MediaEntry, parse_search_response
+from simplejustwatchapi.requests import prepare_search_request
 
 _GRAPHQL_API_URL = "https://apis.justwatch.com/graphql"
 

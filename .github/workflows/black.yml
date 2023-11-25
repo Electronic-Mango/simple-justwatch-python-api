@@ -26,4 +26,4 @@ jobs:
         python -m pip install black
     - name: Check code formatting with black
       run: |
-        black -v -l 100 --check **/*.py
+        black -v -l 100 --check .

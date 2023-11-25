@@ -1,0 +1,29 @@
+# Workflow verifying that project is correctly formatted, using Black.
+# (and setting line length to 100)
+
+name: Black
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    name: Formatting verification
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.11"
+    - name: Install black
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install black
+    - name: Check code formatting with black
+      run: |
+        black -v -l 100 --check **/*.py

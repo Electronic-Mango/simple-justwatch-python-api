@@ -1,0 +1,29 @@
+# Workflow verifying that project's imports are correctly organized, using isort.
+# (with line length of 100 and using a Black profile)
+
+name: isort
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    name: Imports organization verification
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.11"
+    - name: Install isort
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install isort
+    - name: Check imports organization with isort
+      run: |
+        isort -v --profile black -l 100 --check .

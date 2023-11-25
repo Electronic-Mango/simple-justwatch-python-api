@@ -8,7 +8,7 @@ setup(
     name="simple-justwatch-python-api",
     packages=["simplejustwatchpythonapi"],
     package_dir={"simplejustwatchpythonapi": "src/simplejustwatchpythonapi"},
-    version="0.3",
+    version="0.4",
     license="GPLv3",
     description="A simple JustWatch Python API",
     long_description=long_description,

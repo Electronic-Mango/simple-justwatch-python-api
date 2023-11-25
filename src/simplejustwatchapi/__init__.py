@@ -1,2 +1,2 @@
 from simplejustwatchapi.justwatch import search
-from simplejustwatchapi.parser import MediaEntry, Offer
+from simplejustwatchapi.query import MediaEntry, Offer

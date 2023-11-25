@@ -1,6 +1,6 @@
 from pytest import mark, raises
 
-from simplejustwatchapi.requests import prepare_search_request
+from simplejustwatchapi.query import prepare_search_request
 
 GRAPHQL_SEARCH_QUERY = """
 query GetSearchTitles(

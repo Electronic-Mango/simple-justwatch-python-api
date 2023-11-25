@@ -1,7 +1,10 @@
+"""Main module orchestrating requests to JustWatch GraphQL API.
+Currently only search requests are supported.
+"""
+
 from httpx import post
 
-from simplejustwatchapi.parser import MediaEntry, parse_search_response
-from simplejustwatchapi.requests import prepare_search_request
+from simplejustwatchapi.query import prepare_search_request, parse_search_response, MediaEntry
 
 _GRAPHQL_API_URL = "https://apis.justwatch.com/graphql"
 

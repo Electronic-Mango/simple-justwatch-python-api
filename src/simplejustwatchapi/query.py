@@ -16,7 +16,7 @@ query GetSearchTitles(
   $language: Language!,
   $first: Int!,
   $formatPoster: ImageFormat,
-  $formatIcon: ImageFormat,
+  $formatOfferIcon: ImageFormat,
   $profile: PosterProfile,
   $backdropProfile: BackdropProfile,
   $filter: OfferFilter!,
@@ -73,7 +73,7 @@ fragment SearchTitleGraphql on PopularTitlesEdge {
         packageId
         clearName
         technicalName
-        icon(profile: S100, format: $formatIcon)
+        icon(profile: S100, format: $formatOfferIcon)
         __typename
       }
       id
@@ -147,7 +147,7 @@ def prepare_search_request(
             "language": language,
             "country": country.upper(),
             "formatPoster": "JPG",
-            "formatIcon": "PNG",
+            "formatOfferIcon": "PNG",
             "profile": "S718",
             "backdropProfile": "S1920",
             "filter": {"bestOnly": best_only},

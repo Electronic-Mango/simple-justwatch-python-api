@@ -116,7 +116,7 @@ class MediaEntry(NamedTuple):
     release_date: str
     genres: list[str]
     imdb_id: str | None
-    poster: str
+    poster: str | None
     backdrops: list[str]
     offers: list[Offer]
 

@@ -15,7 +15,8 @@ query GetSearchTitles(
   $country: Country!,
   $language: Language!,
   $first: Int!,
-  $format: ImageFormat,
+  $formatPoster: ImageFormat,
+  $formatIcon: ImageFormat,
   $profile: PosterProfile,
   $backdropProfile: BackdropProfile,
   $filter: OfferFilter!,
@@ -53,8 +54,8 @@ fragment SearchTitleGraphql on PopularTitlesEdge {
         imdbId
         __typename
       }
-      posterUrl(profile: $profile, format: $format)
-      backdrops(profile: $backdropProfile, format: $format) {
+      posterUrl(profile: $profile, format: $formatPoster)
+      backdrops(profile: $backdropProfile, format: $formatPoster) {
         backdropUrl
         __typename
       }
@@ -72,7 +73,7 @@ fragment SearchTitleGraphql on PopularTitlesEdge {
         packageId
         clearName
         technicalName
-        icon(profile: S100)
+        icon(profile: S100, format: $formatIcon)
         __typename
       }
       id
@@ -145,7 +146,8 @@ def prepare_search_request(
             "searchTitlesFilter": {"searchQuery": title},
             "language": language,
             "country": country.upper(),
-            "format": "JPG",
+            "formatPoster": "JPG",
+            "formatIcon": "PNG",
             "profile": "S718",
             "backdropProfile": "S1920",
             "filter": {"bestOnly": best_only},

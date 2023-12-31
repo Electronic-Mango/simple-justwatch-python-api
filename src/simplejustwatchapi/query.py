@@ -181,7 +181,8 @@ def _parse_entry(json: any) -> MediaEntry:
     genres = [node.get("shortName") for node in content.get("genres", []) if node]
     external_ids = content.get("externalIds")
     imdb_id = external_ids.get("imdbId") if external_ids else None
-    poster = _IMAGES_URL + content.get("posterUrl")
+    poster_url_field = content.get("posterUrl")
+    poster = _IMAGES_URL + poster_url_field if poster_url_field else None
     backdrops = [_IMAGES_URL + bd.get("backdropUrl") for bd in content.get("backdrops", []) if bd]
     offers = [_parse_offer(offer) for offer in json.get("offers", []) if offer]
     return MediaEntry(

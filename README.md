@@ -52,6 +52,7 @@ class MediaEntry(NamedTuple):
     release_year: int
     release_date: str
     runtime_minutes: int
+    short_description: str
     genres: list[str]
     imdb_id: str | None
     poster: str | None
@@ -82,6 +83,7 @@ Example response:
         release_year=1999,
         release_date="1999-03-30",
         runtime_minutes=136,
+        short_description="Set in the 22nd century, The Matrix tells the story of a computer hacker...",
         genres=["act", "scf"],
         imdb_id="tt0133093",
         poster="https://images.justwatch.com/poster/79353084/s718/the-matrix.jpg",
@@ -225,6 +227,7 @@ Example response:
         release_year=2021,
         release_date="2021-12-16",
         runtime_minutes=148,
+        short_description="Plagued by strange memories, Neo's life takes an unexpected turn...",
         genres=["scf", "act"],
         imdb_id="tt10838180",
         poster="https://images.justwatch.com/poster/257943908/s718/the-matrix-resurrections.jpg",
@@ -412,6 +415,7 @@ Example response:
         release_year=2003,
         release_date="2003-05-15",
         runtime_minutes=129,
+        short_description="Six months after the events depicted in The Matrix, Neo has proved to be a good omen...",
         genres=["scf", "act"],
         imdb_id="tt0234215",
         poster="https://images.justwatch.com/poster/251725999/s718/the-matrix-2-reloaded.jpg",
@@ -555,6 +559,7 @@ Example response:
         release_year=2003,
         release_date="2003-11-05",
         runtime_minutes=128,
+        short_description="The human city of Zion defends itself against the massive invasion of the machines...",
         genres=["act", "trl", "scf"],
         imdb_id="tt0242653",
         poster="https://images.justwatch.com/poster/179166803/s718/the-matrix-revolutions.jpg",

@@ -47,6 +47,7 @@ fragment SearchTitleGraphql on PopularTitlesEdge {
       originalReleaseYear
       originalReleaseDate
       runtime
+      shortDescription
       genres {
         shortName
         __typename
@@ -116,6 +117,7 @@ class MediaEntry(NamedTuple):
     release_year: int
     release_date: str
     runtime_minutes: int
+    short_description: str
     genres: list[str]
     imdb_id: str | None
     poster: str | None
@@ -183,6 +185,7 @@ def _parse_entry(json: any) -> MediaEntry:
     year = content.get("originalReleaseYear")
     date = content.get("originalReleaseDate")
     runtime_minutes = content.get("runtime")
+    short_description = content.get("shortDescription")
     genres = [node.get("shortName") for node in content.get("genres", []) if node]
     external_ids = content.get("externalIds")
     imdb_id = external_ids.get("imdbId") if external_ids else None
@@ -199,6 +202,7 @@ def _parse_entry(json: any) -> MediaEntry:
         year,
         date,
         runtime_minutes,
+        short_description,
         genres,
         imdb_id,
         poster,

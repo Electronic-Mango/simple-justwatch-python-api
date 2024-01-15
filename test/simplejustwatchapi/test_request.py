@@ -40,6 +40,7 @@ fragment SearchTitleGraphql on PopularTitlesEdge {
       originalReleaseYear
       originalReleaseDate
       runtime
+      shortDescription
       genres {
         shortName
         __typename

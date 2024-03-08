@@ -71,7 +71,67 @@ class Offer(NamedTuple):
     icon: str
 ```
 
-Example response:
+## Python Example
+```python
+from simplejustwatchapi.justwatch import search
+from simplejustwatchapi.query import MediaEntry, Offer
+import pandas as pd
+# import polars as pl #install / comment out polars code if you'd like to use polars
+
+movies = {'The Matrix':'https://www.justwatch.com/us/movie/the-matrix'}
+
+movie_url = ""
+
+movies_list = []
+
+for movie in movies.keys():
+
+  movie_url = movies[movie]
+
+  #need to remove "www."" because url in media entry will not contain it
+  temp_url = movie_url.replace("www.","")
+
+  MediaEntries = search(movie, "US", "en", 15, False)
+
+  media_entry = None
+
+  for me in MediaEntries:
+
+    #check if media entry matches URL and exit loop once you have a match
+    if me.url == temp_url:
+      media_entry = me
+      break
+  
+  #process media entry if you found a match in the previous step
+  if media_entry != None:
+    movie = media_entry.title
+
+    offers = media_entry.offers
+
+    #filter for offers that have a price value, are available to buy, and are either HD or 4k
+    filtered_offers = [o for o in offers if o.price_value != None and o.monetization_type == 'BUY' and o.presentation_type in ["HD", "_4K"]]
+
+    #add movie name, vendor name, video quality, justwatch url, and price from the filtered offers to a dictionary
+    df_list = [{"movie":movie, "vendor":fo.name,"presentation_type": fo.presentation_type,"url":movie_url, "price_value": fo.price_value} for fo in filtered_offers]
+
+    movies_list += df_list
+
+#Process if at least one movie was processed in previous step
+if len(movies_list) > 0:
+  #code for pandas to create a dataframe and write to CSV
+
+  df = pd.DataFrame.from_dict(movies_list)
+  df.to_csv('just_watch.csv', index=False)
+
+  #code for polars to create a dataframe and write to CSV
+#   df = pl.DataFrame(movies_list)
+#   df.write_csv('just_watch.csv', separator=",")
+
+  print("Finished!")
+```
+
+## Example Response
+
 ```python
 [
     MediaEntry(

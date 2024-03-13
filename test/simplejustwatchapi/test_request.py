@@ -2,6 +2,26 @@ from pytest import mark, raises
 
 from simplejustwatchapi.query import prepare_search_request
 
+GRAPHQL_DETAILS_QUERY = """
+query GetTitleNode(
+  $nodeId: ID!,
+  $language: Language!,
+  $country: Country!,
+  $formatPoster: ImageFormat,
+  $formatOfferIcon: ImageFormat,
+  $profile: PosterProfile,
+  $backdropProfile: BackdropProfile,
+  $filter: OfferFilter!,
+) {
+  node(id: $nodeId) {
+    ...TitleDetails
+    __typename
+  }
+  __typename
+}
+"""
+
+
 GRAPHQL_SEARCH_QUERY = """
 query GetSearchTitles(
   $searchTitlesFilter: TitleFilter!,
@@ -22,60 +42,78 @@ query GetSearchTitles(
     sortRandomSeed: 0
   ) {
     edges {
-      ...SearchTitleGraphql
+      node {
+        ...TitleDetails
+        __typename
+      }
       __typename
     }
     __typename
   }
 }
+"""
 
-fragment SearchTitleGraphql on PopularTitlesEdge {
-  node {
-    id
-    objectId
-    objectType
-    content(country: $country, language: $language) {
-      title
-      fullPath
-      originalReleaseYear
-      originalReleaseDate
-      runtime
-      shortDescription
-      genres {
-        shortName
-        __typename
-      }
-      externalIds {
-        imdbId
-        __typename
-      }
-      posterUrl(profile: $profile, format: $formatPoster)
-      backdrops(profile: $backdropProfile, format: $formatPoster) {
-        backdropUrl
-        __typename
-      }
+GRAPHQL_DETAILS_FRAGMENT = """
+fragment TitleDetails on MovieOrShow {
+  id
+  objectId
+  objectType
+  content(country: $country, language: $language) {
+    title
+    fullPath
+    originalReleaseYear
+    originalReleaseDate
+    runtime
+    shortDescription
+    genres {
+      shortName
       __typename
     }
-    offers(country: $country, platform: WEB, filter: $filter) {
-      monetizationType
-      presentationType
-      standardWebURL
-      retailPrice(language: $language)
-      retailPriceValue
-      currency
-      package {
-        id
-        packageId
-        clearName
-        technicalName
-        icon(profile: S100, format: $formatOfferIcon)
-        __typename
-      }
-      id
+    externalIds {
+      imdbId
+      __typename
+    }
+    posterUrl(profile: $profile, format: $formatPoster)
+    backdrops(profile: $backdropProfile, format: $formatPoster) {
+      backdropUrl
       __typename
     }
     __typename
   }
+  offers(country: $country, platform: WEB, filter: $filter) {
+    ...TitleOffer
+  }
+  __typename
+}
+"""
+
+
+GRAPHQL_OFFER_FRAGMENT = """
+fragment TitleOffer on Offer {
+  id
+  monetizationType
+  presentationType
+  retailPrice(language: $language)
+  retailPriceValue
+  currency
+  lastChangeRetailPriceValue
+  type
+  package {
+    id
+    packageId
+    clearName
+    technicalName
+    icon(profile: S100, format: $formatOfferIcon)
+    __typename
+  }
+  standardWebURL
+  elementCount
+  availableTo
+  deeplinkRoku: deeplinkURL(platform: ROKU_OS)
+  subtitleLanguages
+  videoTechnology
+  audioTechnology
+  audioLanguages
   __typename
 }
 """
@@ -104,7 +142,7 @@ def test_prepare_search_request(
             "backdropProfile": "S1920",
             "filter": {"bestOnly": best_only},
         },
-        "query": GRAPHQL_SEARCH_QUERY,
+        "query": GRAPHQL_SEARCH_QUERY + GRAPHQL_DETAILS_FRAGMENT + GRAPHQL_OFFER_FRAGMENT,
     }
     request = prepare_search_request(title, country, language, count, best_only)
     assert expected_request == request

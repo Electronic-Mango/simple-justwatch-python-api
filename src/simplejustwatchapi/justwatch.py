@@ -4,7 +4,13 @@ Currently only search requests are supported.
 
 from httpx import post
 
-from simplejustwatchapi.query import MediaEntry, parse_search_response, prepare_search_request
+from simplejustwatchapi.query import (
+    MediaEntry,
+    parse_details_response,
+    parse_search_response,
+    prepare_details_request,
+    prepare_search_request,
+)
 
 _GRAPHQL_API_URL = "https://apis.justwatch.com/graphql"
 
@@ -29,3 +35,23 @@ def search(
     response = post(_GRAPHQL_API_URL, json=request)
     response.raise_for_status()
     return parse_search_response(response.json())
+
+
+def details(
+    node_id: str, country: str = "US", language: str = "en", best_only: bool = True
+) -> MediaEntry:
+    """Get details of entry for a given ID.
+
+    Args:
+        node_id: ID of entry to look up
+        country: country to search for offers, "US" by default
+        language: language of responses, "en" by default
+        best_only: return only best offers if True, return all offers if False
+
+    Returns:
+        MediaEntry NamedTuple with data about requested entry.
+    """
+    request = prepare_details_request(node_id, country, language, best_only)
+    response = post(_GRAPHQL_API_URL, json=request)
+    response.raise_for_status()
+    return parse_details_response(response.json())

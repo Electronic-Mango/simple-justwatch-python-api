@@ -1,3 +1,31 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "simple-justwatch-python-api"
+authors = [{name = "Electronic Mango", email = "78230210+Electronic-Mango@users.noreply.github.com"}]
+version = "0.14"
+description="A simple JustWatch Python API"
+readme = "README.md"
+license = {file = "LICENSE"}
+dependencies = ["httpx"]
+requires-python = ">= 3.11"
+keywords = ["justwatch", "api", "graphql"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+]
+
+[project.urls]
+Homepage = "https://github.com/Electronic-Mango/simple-justwatch-python-api"
+Documentation = "https://electronic-mango.github.io/simple-justwatch-python-api"
+Repository = "https://github.com/Electronic-Mango/simple-justwatch-python-api"
+
 [tool.pytest.ini_options]
 pythonpath = [
   "src", "test"

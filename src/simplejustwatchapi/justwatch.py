@@ -1,9 +1,11 @@
 """Main module orchestrating requests to JustWatch GraphQL API.
 Currently supported requests are:
+
  - ``search`` - search for entries via title
  - ``details`` - get details for given node ID
  - ``offers_for_countries`` - get all offers for entry with given node ID,
    can look for offers for multiple countries
+
 """
 
 from httpx import post
@@ -82,18 +84,20 @@ def offers_for_countries(
 
     Country codes passed as argument are case-insensitive, however keys in returned dict will match
     them exactly. E.g. for countries specified as:
+
     .. code-block:: python
 
         {"uK", "Us", "AU", "ca"}
 
     returned dict will have the following structure:
+
     .. code-block:: python
 
         {
-            "uK": [... offers ...],
-            "Us": [... offers ...],
-            "AU": [... offers ...],
-            "ca": [... offers ...],
+            "uK": [ ... offers ... ],
+            "Us": [ ... offers ... ],
+            "AU": [ ... offers ... ],
+            "ca": [ ... offers ... ],
         }
 
     ``best_only`` allows filtering out redundant offers, e.g. when if provide offers service

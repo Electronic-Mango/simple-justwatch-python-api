@@ -1,6 +1,11 @@
 """Module responsible for creating GraphQL queries and parsing responses from JustWatch GraphQL API.
 Parsed responses are returned as Python NamedTuples for easier access.
-Currently only responses from "GetSearchTitles" query are supported.
+Currently supported queries are:
+
+ - ``GetTitleNode``
+ - ``GetSearchTitles``
+ - ``GetTitleOffers``
+
 """
 
 from typing import NamedTuple
@@ -149,7 +154,8 @@ _GRAPHQL_COUNTRY_OFFERS_ENTRY = """
 
 
 class OfferPackage(NamedTuple):
-    """Parsed single offer package from JustWatch GraphQL API for single entry."""
+    """Parsed single offer package from JustWatch GraphQL API for single entry.
+    Contains information about platform on which given offer is available."""
 
     id: str
     package_id: int
@@ -159,7 +165,8 @@ class OfferPackage(NamedTuple):
 
 
 class Offer(NamedTuple):
-    """Parsed single offer from JustWatch GraphQL API for single entry."""
+    """Parsed single offer from JustWatch GraphQL API for single entry.
+    One platform can have multiple offers for one entry available, e.g. renting, buying, etc."""
 
     id: str
     monetization_type: str

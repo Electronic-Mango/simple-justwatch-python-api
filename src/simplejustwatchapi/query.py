@@ -178,7 +178,7 @@ def prepare_search_request(
     title: str, country: str, language: str, count: int, best_only: bool
 ) -> dict:
     """Prepare search request for JustWatch GraphQL API.
-    Creates a "GetSearchTitles" GraphQL query.
+    Creates a ``GetSearchTitles`` GraphQL query.
     Country code should be two uppercase letters, however it will be auto-converted to uppercase.
 
     Args:
@@ -186,7 +186,7 @@ def prepare_search_request(
         country: country to search for offers
         language: language of responses
         count: how many responses should be returned
-        best_only: return only best offers if True, return all offers if False
+        best_only: return only best offers if ``True``, return all offers if ``False``
 
     Returns:
         JSON/dict with GraphQL POST body
@@ -211,14 +211,14 @@ def prepare_search_request(
 
 def parse_search_response(json: dict) -> list[MediaEntry]:
     """Parse response from search query from JustWatch GraphQL API.
-    Parses response for "GetSearchTitles" query.
+    Parses response for ``GetSearchTitles`` query.
     If API didn't return any data, then an empty list is returned.
 
     Args:
         json: JSON returned by JustWatch GraphQL API
 
     Returns:
-        Parsed received JSON as a list of MediaEntry NamedTuples
+        Parsed received JSON as a list of ``MediaEntry`` NamedTuples
     """
     nodes = json["data"]["popularTitles"]["edges"]
     entries = [_parse_entry(node["node"]) for node in nodes]
@@ -227,14 +227,14 @@ def parse_search_response(json: dict) -> list[MediaEntry]:
 
 def prepare_details_request(node_id: str, country: str, language: str, best_only: bool) -> dict:
     """Prepare a details request for specified node ID to JustWatch GraphQL API.
-    Creates a "GetTitleNode" GraphQL query.
+    Creates a ``GetTitleNode`` GraphQL query.
     Country code should be two uppercase letters, however it will be auto-converted to uppercase.
 
     Args:
         node_id: node ID of entry to get details for
         country: country to search for offers
         language: language of responses
-        best_only: return only best offers if True, return all offers if False
+        best_only: return only best offers if ``True``, return all offers if ``False``
 
     Returns:
         JSON/dict with GraphQL POST body
@@ -258,16 +258,16 @@ def prepare_details_request(node_id: str, country: str, language: str, best_only
 
 def parse_details_response(json: any) -> MediaEntry | None:
     """Parse response from details query from JustWatch GraphQL API.
-    Parses response for "GetTitleNode" query.
+    Parses response for ``GetTitleNode`` query.
     If API responded with an internal error (mostly due to not found node ID),
-    then "None" will be returned instead.
+    then ``None`` will be returned instead.
 
     Args:
         json: JSON returned by JustWatch GraphQL API
 
     Returns:
-        Parsed received JSON as a MediaEntry NamedTuple,
-        or None in case data for a given node ID was not found
+        Parsed received JSON as a ``MediaEntry`` NamedTuple,
+        or ``None`` in case data for a given node ID was not found
     """
     return _parse_entry(json["data"]["node"]) if "errors" not in json else None
 

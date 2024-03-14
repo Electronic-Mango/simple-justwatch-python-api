@@ -191,7 +191,7 @@ def prepare_search_request(
     Returns:
         JSON/dict with GraphQL POST body
     """
-    assert len(country) == 2, f"Invalid country code: {country}, code must be 2 characters long"
+    _assert_country_code_is_valid(country)
     return {
         "operationName": "GetSearchTitles",
         "variables": {
@@ -239,7 +239,7 @@ def prepare_details_request(node_id: str, country: str, language: str, best_only
     Returns:
         JSON/dict with GraphQL POST body
     """
-    assert len(country) == 2, f"Invalid country code: {country}, code must be 2 characters long"
+    _assert_country_code_is_valid(country)
     return {
         "operationName": "GetTitleNode",
         "variables": {
@@ -270,6 +270,10 @@ def parse_details_response(json: any) -> MediaEntry | None:
         or ``None`` in case data for a given node ID was not found
     """
     return _parse_entry(json["data"]["node"]) if "errors" not in json else None
+
+
+def _assert_country_code_is_valid(code: str) -> None:
+    assert len(code) == 2, f"Invalid country code: {code}, code must be 2 characters long"
 
 
 def _parse_entry(json: any) -> MediaEntry:

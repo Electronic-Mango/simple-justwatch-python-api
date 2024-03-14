@@ -220,9 +220,7 @@ def parse_search_response(json: dict) -> list[MediaEntry]:
     Returns:
         Parsed received JSON as a list of ``MediaEntry`` NamedTuples
     """
-    nodes = json["data"]["popularTitles"]["edges"]
-    entries = [_parse_entry(node["node"]) for node in nodes]
-    return entries
+    return [_parse_entry(edge["node"]) for edge in json["data"]["popularTitles"]["edges"]]
 
 
 def prepare_details_request(node_id: str, country: str, language: str, best_only: bool) -> dict:

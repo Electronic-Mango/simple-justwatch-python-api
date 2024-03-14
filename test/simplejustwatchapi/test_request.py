@@ -1,6 +1,10 @@
 from pytest import mark, raises
 
-from simplejustwatchapi.query import prepare_search_request, prepare_details_request
+from simplejustwatchapi.query import (
+    prepare_details_request,
+    prepare_offers_for_countries_request,
+    prepare_search_request,
+)
 
 GRAPHQL_DETAILS_QUERY = """
 query GetTitleNode(
@@ -20,7 +24,6 @@ query GetTitleNode(
   __typename
 }
 """
-
 
 GRAPHQL_SEARCH_QUERY = """
 query GetSearchTitles(
@@ -51,6 +54,24 @@ query GetSearchTitles(
     __typename
   }
 }
+"""
+
+GRAPHQL_OFFERS_BY_COUNTRY_QUERY = """
+query GetTitleOffers(
+  $nodeId: ID!,
+  $language: Language!,
+  $formatOfferIcon: ImageFormat,
+  $filter: OfferFilter!,
+) {{
+  node(id: $nodeId) {{
+    ... on MovieOrShow {{
+      {country_entries}
+      __typename
+    }}
+    __typename
+  }}
+  __typename
+}}
 """
 
 GRAPHQL_DETAILS_FRAGMENT = """
@@ -87,7 +108,6 @@ fragment TitleDetails on MovieOrShow {
 }
 """
 
-
 GRAPHQL_OFFER_FRAGMENT = """
 fragment TitleOffer on Offer {
   id
@@ -116,6 +136,13 @@ fragment TitleOffer on Offer {
   audioLanguages
   __typename
 }
+"""
+
+GRAPHQL_COUNTRY_OFFERS_ENTRY = """
+      {country_code}: offers(country: {country_code}, platform: WEB, filter: $filter) {{
+        ...TitleOffer
+        __typename
+      }}
 """
 
 
@@ -203,4 +230,66 @@ def test_prepare_details_request_asserts_on_invalid_country_code(invalid_code: s
     expected_error_message = f"Invalid country code: {invalid_code}, code must be 2 characters long"
     with raises(AssertionError) as error:
         prepare_details_request("", invalid_code, "", True)
+        assert str(error.value) == expected_error_message
+
+
+@mark.parametrize(
+    argnames=["node_id", "countries", "language", "best_only"],
+    argvalues=[
+        ("NODE ID 1", {"US"}, "language 1", True),
+        ("NODE ID 2", {"au"}, "language 2", False),
+        ("NODE ID 3", {"gb", "US", "Ca"}, "language 3", True),
+    ],
+)
+def test_prepare_offers_for_countries_request(
+    node_id: str, countries: set[str], language: str, best_only: bool
+) -> None:
+    offer_requests = [
+        GRAPHQL_COUNTRY_OFFERS_ENTRY.format(country_code=country_code.upper())
+        for country_code in countries
+    ]
+    main_body = GRAPHQL_OFFERS_BY_COUNTRY_QUERY.format(country_entries="\n".join(offer_requests))
+    full_query = main_body + GRAPHQL_OFFER_FRAGMENT
+    expected_request = {
+        "operationName": "GetTitleOffers",
+        "variables": {
+            "nodeId": node_id,
+            "language": language,
+            "formatPoster": "JPG",
+            "formatOfferIcon": "PNG",
+            "profile": "S718",
+            "backdropProfile": "S1920",
+            "filter": {"bestOnly": best_only},
+        },
+        "query": full_query,
+    }
+
+    request = prepare_offers_for_countries_request(node_id, countries, language, best_only)
+
+    assert expected_request == request
+
+
+@mark.parametrize(
+    argnames=["codes", "invalid_code"],
+    argvalues=[
+        ({"United Stated of America", "UK"}, "United Stated of America"),  # too long
+        ({"uk", "usa"}, "usa"),  # too long
+        ({"canada", "uk", "usa"}, "usa"),  # too long
+        ({"u", "uK", "a"}, "u"),  # too short
+        ({"A"}, "A"),  # too short
+    ],
+)
+def test_prepare_offers_for_countries_request_asserts_on_invalid_country_codes(
+    codes: set[str], invalid_code: str
+) -> None:
+    expected_error_message = f"Invalid country code: {invalid_code}, code must be 2 characters long"
+    with raises(AssertionError) as error:
+        prepare_offers_for_countries_request("", codes, "", True)
+        assert str(error.value) == expected_error_message
+
+
+def test_prepare_offers_for_countries_request_asserts_on_empty_countries_set():
+    expected_error_message = "Cannot prepare offers request without specified countries!"
+    with raises(AssertionError) as error:
+        prepare_offers_for_countries_request("", set(), "", True)
         assert str(error.value) == expected_error_message

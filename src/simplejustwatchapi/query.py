@@ -58,6 +58,24 @@ query GetSearchTitles(
 }
 """
 
+_GRAPHQL_OFFERS_BY_COUNTRY_QUERY = """
+query GetTitleOffers(
+  $nodeId: ID!,
+  $language: Language!,
+  $formatOfferIcon: ImageFormat,
+  $filter: OfferFilter!,
+) {{
+  node(id: $nodeId) {{
+    ... on MovieOrShow {{
+      {country_entries}
+      __typename
+    }}
+    __typename
+  }}
+  __typename
+}}
+"""
+
 _GRAPHQL_DETAILS_FRAGMENT = """
 fragment TitleDetails on MovieOrShow {
   id
@@ -120,6 +138,13 @@ fragment TitleOffer on Offer {
   audioLanguages
   __typename
 }
+"""
+
+_GRAPHQL_COUNTRY_OFFERS_ENTRY = """
+      {country_code}: offers(country: {country_code}, platform: WEB, filter: $filter) {{
+        ...TitleOffer
+        __typename
+      }}
 """
 
 
@@ -270,8 +295,76 @@ def parse_details_response(json: any) -> MediaEntry | None:
     return _parse_entry(json["data"]["node"]) if "errors" not in json else None
 
 
+def prepare_offers_for_countries_request(
+    node_id: str, countries: set[str], language: str, best_only: bool
+) -> dict:
+    """Prepare an offers request for specified node ID and for all specified countries
+    to JustWatch GraphQL API.
+    Creates a ``GetTitleOffers`` GraphQL query.
+    Country codes should be two uppercase letters, however they will be auto-converted to uppercase.
+    ``countries`` argument mustn't be empty.
+
+    Args:
+        node_id: node ID of entry to get details for
+        countries: list of country codes to search for offers
+        language: language of responses
+        best_only: return only best offers if ``True``, return all offers if ``False``
+
+    Returns:
+        JSON/dict with GraphQL POST body
+    """
+    assert countries, "Cannot prepare offers request without specified countries"
+    for country in countries:
+        _assert_country_code_is_valid(country)
+    return {
+        "operationName": "GetTitleOffers",
+        "variables": {
+            "nodeId": node_id,
+            "language": language,
+            "formatPoster": "JPG",
+            "formatOfferIcon": "PNG",
+            "profile": "S718",
+            "backdropProfile": "S1920",
+            "filter": {"bestOnly": best_only},
+        },
+        "query": _prepare_offers_for_countries_entry(countries),
+    }
+
+
+def parse_offers_for_countries_response(json: any, countries: set[str]) -> dict[str, list[Offer]]:
+    """Parse response from offers query from JustWatch GraphQL API.
+    Parses response for ``GetTitleOffers`` query.
+    Response if searched for country codes passed as ``countries`` argument.
+    Countries in JSON response which are not present in ``countries`` set will be ignored.
+    If response doesn't have offers for a country, then that country still will be present
+    in returned dict, just with an empty list as value.
+
+    Args:
+        json: JSON returned by JustWatch GraphQL API
+        countries: set of countries to look for in API response
+
+    Returns:
+        A dict, where keys are matching ``countries`` argument and values are offers for a given
+        country parsed from JSON response.
+    """
+    offers_node = json["data"]["node"]
+    return {
+        country: list(map(_parse_offer, offers_node.get(country.upper(), [])))
+        for country in countries
+    }
+
+
 def _assert_country_code_is_valid(code: str) -> None:
     assert len(code) == 2, f"Invalid country code: {code}, code must be 2 characters long"
+
+
+def _prepare_offers_for_countries_entry(countries: set[str]) -> str:
+    offer_requests = [
+        _GRAPHQL_COUNTRY_OFFERS_ENTRY.format(country_code=country_code.upper())
+        for country_code in countries
+    ]
+    main_body = _GRAPHQL_OFFERS_BY_COUNTRY_QUERY.format(country_entries="\n".join(offer_requests))
+    return main_body + _GRAPHQL_OFFER_FRAGMENT
 
 
 def _parse_entry(json: any) -> MediaEntry:

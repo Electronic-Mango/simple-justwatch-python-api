@@ -1,7 +1,8 @@
 from unittest.mock import MagicMock, patch
+
 from pytest import fixture
 
-from simplejustwatchapi.justwatch import search, details
+from simplejustwatchapi.justwatch import details, search
 
 JUSTWATCH_GRAPHQL_URL = "https://apis.justwatch.com/graphql"
 SEARCH_INPUT = ("TITLE", "COUNTRY", "LANGUAGE", 5, True)
@@ -22,7 +23,7 @@ def httpx_post_mock(mocker):
 
 @patch("simplejustwatchapi.justwatch.parse_search_response", return_value=DUMMY_ENTRIES)
 @patch("simplejustwatchapi.justwatch.prepare_search_request", return_value=DUMMY_REQUEST)
-def test_search(requests_mock, parser_mock, httpx_post_mock) -> None:
+def test_search(requests_mock, parser_mock, httpx_post_mock):
     results = search(*SEARCH_INPUT)
     requests_mock.assert_called_with(*SEARCH_INPUT)
     parser_mock.assert_called_with(DUMMY_RESPONSE)
@@ -31,7 +32,7 @@ def test_search(requests_mock, parser_mock, httpx_post_mock) -> None:
 
 @patch("simplejustwatchapi.justwatch.parse_details_response", return_value=DUMMY_ENTRIES)
 @patch("simplejustwatchapi.justwatch.prepare_details_request", return_value=DUMMY_REQUEST)
-def test_details(requests_mock, parser_mock, httpx_post_mock) -> None:
+def test_details(requests_mock, parser_mock, httpx_post_mock):
     results = details(*DETAILS_INPUT)
     requests_mock.assert_called_with(*DETAILS_INPUT)
     parser_mock.assert_called_with(DUMMY_RESPONSE)

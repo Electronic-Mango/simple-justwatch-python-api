@@ -1,6 +1,13 @@
 from pytest import mark
 
-from simplejustwatchapi.query import MediaEntry, Offer, parse_search_response, OfferPackage, parse_details_response
+from simplejustwatchapi.query import (
+    MediaEntry,
+    Offer,
+    OfferPackage,
+    parse_details_response,
+    parse_offers_for_countries_response,
+    parse_search_response,
+)
 
 DETAILS_URL = "https://justwatch.com"
 IMAGES_URL = "https://images.justwatch.com"
@@ -282,10 +289,10 @@ API_SEARCH_RESPONSE_NO_DATA = {"data": {"popularTitles": {"edges": []}}}
     argnames=["response_json", "expected_output"],
     argvalues=[
         (API_SEARCH_RESPONSE_JSON, [PARSED_NODE_1, PARSED_NODE_2, PARSED_NODE_3]),
-        (API_SEARCH_RESPONSE_NO_DATA, [])
-    ]
+        (API_SEARCH_RESPONSE_NO_DATA, []),
+    ],
 )
-def test_parse_search_response(response_json, expected_output) -> None:
+def test_parse_search_response(response_json: dict, expected_output: list[MediaEntry]) -> None:
     parsed_entries = parse_search_response(response_json)
     assert parsed_entries == expected_output
 
@@ -296,9 +303,47 @@ def test_parse_search_response(response_json, expected_output) -> None:
         ({"data": {"node": RESPONSE_NODE_1}}, PARSED_NODE_1),
         ({"data": {"node": RESPONSE_NODE_2}}, PARSED_NODE_2),
         ({"data": {"node": RESPONSE_NODE_3}}, PARSED_NODE_3),
-        ({"errors": [], "data": {"node": None}}, None)
-    ]
+        ({"errors": [], "data": {"node": None}}, None),
+    ],
 )
-def test_parse_details_response(response_json, expected_output) -> None:
+def test_parse_details_response(response_json: dict, expected_output: MediaEntry) -> None:
     parsed_entries = parse_details_response(response_json)
+    assert parsed_entries == expected_output
+
+
+@mark.parametrize(
+    argnames=["response_json", "countries", "expected_output"],
+    argvalues=[
+        (
+            {"data": {"node": {"US": RESPONSE_NODE_1["offers"]}}},
+            {"US"},
+            {"US": PARSED_NODE_1.offers},
+        ),
+        (
+            {"data": {"node": {"US": RESPONSE_NODE_1["offers"], "GB": RESPONSE_NODE_2["offers"]}}},
+            {"US", "GB"},
+            {"US": PARSED_NODE_1.offers, "GB": PARSED_NODE_2.offers},
+        ),
+        (
+            {"data": {"node": {"US": RESPONSE_NODE_1["offers"], "GB": RESPONSE_NODE_2["offers"]}}},
+            {"US"},
+            {"US": PARSED_NODE_1.offers},
+        ),
+        (
+            {"data": {"node": {"US": RESPONSE_NODE_1["offers"], "GB": RESPONSE_NODE_2["offers"]}}},
+            {"GB"},
+            {"GB": PARSED_NODE_2.offers},
+        ),
+        (
+            {"data": {"node": {"US": RESPONSE_NODE_1["offers"], "GB": []}}},
+            {"US", "GB"},
+            {"US": PARSED_NODE_1.offers, "GB": []},
+        ),
+        ({"data": {"node": {"US": []}}}, {"US"}, {"US": []}),
+    ],
+)
+def test_parse_offers_for_countries_response(
+    response_json: dict, countries: set[str], expected_output: dict[str, list[Offer]]
+) -> None:
+    parsed_entries = parse_offers_for_countries_response(response_json, countries)
     assert parsed_entries == expected_output

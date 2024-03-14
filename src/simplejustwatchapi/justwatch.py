@@ -1,12 +1,4 @@
-"""Main module orchestrating requests to JustWatch GraphQL API.
-Currently supported requests are:
-
- - ``search`` - search for entries via title
- - ``details`` - get details for given node ID
- - ``offers_for_countries`` - get all offers for entry with given node ID,
-   can look for offers for multiple countries
-
-"""
+"""Main module orchestrating requests to JustWatch GraphQL API."""
 
 from httpx import post
 
@@ -28,7 +20,9 @@ def search(
     title: str, country: str = "US", language: str = "en", count: int = 4, best_only: bool = True
 ) -> list[MediaEntry]:
     """Search JustWatch for given title.
+
     Returns a list of entries up to ``count``.
+
     ``best_only`` allows filtering out redundant offers, e.g. when if provide offers service
     in 4K, HD and SD, using ``best_only = True`` returns only 4K option, ``best_only = False``
     returns all three.
@@ -53,6 +47,7 @@ def details(
     node_id: str, country: str = "US", language: str = "en", best_only: bool = True
 ) -> MediaEntry:
     """Get details of entry for a given ID.
+
     ``best_only`` allows filtering out redundant offers, e.g. when if provide offers service
     in 4K, HD and SD, using ``best_only = True`` returns only 4K option, ``best_only = False``
     returns all three.
@@ -79,7 +74,7 @@ def offers_for_countries(
     Language argument only specifies format of price string, e.g. whether ".", or "," is used
     in decimal fractions.
 
-    Returned dict has keys matching "countries" argument and values are list of found offers.
+    Returned dict has keys matching ``countries`` argument and values are list of found offers.
     If no countries are passed (an empty set given as argument) empty dict is returned.
 
     Country codes passed as argument are case-insensitive, however keys in returned dict will match

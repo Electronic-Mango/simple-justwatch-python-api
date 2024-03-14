@@ -1,12 +1,5 @@
 """Module responsible for creating GraphQL queries and parsing responses from JustWatch GraphQL API.
-Parsed responses are returned as Python NamedTuples for easier access.
-Currently supported queries are:
-
- - ``GetTitleNode``
- - ``GetSearchTitles``
- - ``GetTitleOffers``
-
-"""
+Parsed responses are returned as Python NamedTuples for easier access."""
 
 from typing import NamedTuple
 
@@ -158,10 +151,19 @@ class OfferPackage(NamedTuple):
     Contains information about platform on which given offer is available."""
 
     id: str
+    """ID, defines whole platform on which this offer is available, not a single offer."""
+
     package_id: int
+    """Package ID, defines whole platform on which this offer is available, not a single offer."""
+
     name: str
+    """Name of the platform in format suited to display for users."""
+
     technical_name: str
+    """Technical name of the platform, usually all lowercase with no whitespaces."""
+
     icon: str
+    """Platform icon URL."""
 
 
 class Offer(NamedTuple):
@@ -169,41 +171,102 @@ class Offer(NamedTuple):
     One platform can have multiple offers for one entry available, e.g. renting, buying, etc."""
 
     id: str
+    """Offer ID."""
+
     monetization_type: str
+    """Type of monetization of this offer, e.g. ``FLATRATE`` (streaming), ``RENT``, ``BUY``."""
+
     presentation_type: str
+    """Quality of media in this offer, e.g. ``HD``, ``SD``, ``4K``."""
+
     price_string: str | None
+    """Current price as a string with currency, suitable for displaying to users.
+    Format can change based on used ``language`` argument."""
+
     price_value: float | None
+    """Current price as a numeric value."""
+
     price_currency: str
+    """Represents only currency, without price, or value."""
+
     last_change_retail_price_value: float | None
+    """Previous available price if change in price was recorded."""
+
     type: str
+    """Type of offer."""
+
     package: OfferPackage
+    """Information about platform on which this offer is available."""
+
     url: str
+    """URL to this offer."""
+
     element_count: int
+    """Element count, usually 0."""
+
     available_to: str | None
+    """Date until which this offer will be available."""
+
     deeplink_roku: str | None
+    """Deeplink to this offer in Roku."""
+
     subtitle_languages: list[str]
+    """List of 2-letter language codes of available subtitles, e.g. ``["en", "pt", "de"]``."""
+
     video_technology: list[str]
+    """List of known video technologies available in this offer, e.g. ``DOLBY_VISION``."""
+
     audio_technology: list[str]
+    """List of known audio technologies available in this offer, e.g. ``DOLBY_ATMOS``."""
+
     audio_languages: list[str]
+    """List of 2-letter language codes of available audio tracks, e.g. ``["en", "pt", "de"]``."""
 
 
 class MediaEntry(NamedTuple):
     """Parsed response from JustWatch GraphQL API for "GetSearchTitles" query for single entry."""
 
     entry_id: str
+    """Entry ID, contains type code and numeric ID."""
+
     object_id: int
+    """Object ID, the numeric part of full entry ID."""
+
     object_type: str
+    """Type of entry, e.g. ``MOVIE``, ``SHOW``."""
+
     title: str
+    """Full title."""
+
     url: str
+    """URL to JustWatch with details for this entry."""
+
     release_year: int
+    """Release year as a number."""
+
     release_date: str
+    """Full release date as a string, e.g. ``2013-12-16``."""
+
     runtime_minutes: int
+    """Runtime in minutes."""
+
     short_description: str
+    """Short description of this entry."""
+
     genres: list[str]
+    """List of genre codes for this entry, e.g. ``["rly"]``, ``["cmy", "drm", "rma"]``."""
+
     imdb_id: str | None
+    """ID of this entry in IMDB."""
+
     poster: str | None
+    """URL to poster for this ID."""
+
     backdrops: list[str]
+    """List of URLs for backdrops (full screen images to use as background)."""
+
     offers: list[Offer]
+    """List of available offers for this entry, empty if there are no available offers."""
 
 
 def prepare_search_request(
@@ -211,7 +274,10 @@ def prepare_search_request(
 ) -> dict:
     """Prepare search request for JustWatch GraphQL API.
     Creates a ``GetSearchTitles`` GraphQL query.
+
     Country code should be two uppercase letters, however it will be auto-converted to uppercase.
+
+    Meant to be used together with :func:`parse_search_response`.
 
     Args:
         title: title to search
@@ -244,7 +310,10 @@ def prepare_search_request(
 def parse_search_response(json: dict) -> list[MediaEntry]:
     """Parse response from search query from JustWatch GraphQL API.
     Parses response for ``GetSearchTitles`` query.
+
     If API didn't return any data, then an empty list is returned.
+
+    Meant to be used together with :func:`prepare_search_request`.
 
     Args:
         json: JSON returned by JustWatch GraphQL API
@@ -258,7 +327,10 @@ def parse_search_response(json: dict) -> list[MediaEntry]:
 def prepare_details_request(node_id: str, country: str, language: str, best_only: bool) -> dict:
     """Prepare a details request for specified node ID to JustWatch GraphQL API.
     Creates a ``GetTitleNode`` GraphQL query.
+
     Country code should be two uppercase letters, however it will be auto-converted to uppercase.
+
+    Meant to be used together with :func:`parse_details_response`.
 
     Args:
         node_id: node ID of entry to get details for
@@ -289,8 +361,11 @@ def prepare_details_request(node_id: str, country: str, language: str, best_only
 def parse_details_response(json: any) -> MediaEntry | None:
     """Parse response from details query from JustWatch GraphQL API.
     Parses response for ``GetTitleNode`` query.
+
     If API responded with an internal error (mostly due to not found node ID),
     then ``None`` will be returned instead.
+
+    Meant to be used together with :func:`prepare_details_request`.
 
     Args:
         json: JSON returned by JustWatch GraphQL API
@@ -308,8 +383,11 @@ def prepare_offers_for_countries_request(
     """Prepare an offers request for specified node ID and for all specified countries
     to JustWatch GraphQL API.
     Creates a ``GetTitleOffers`` GraphQL query.
+
     Country codes should be two uppercase letters, however they will be auto-converted to uppercase.
     ``countries`` argument mustn't be empty.
+
+    Meant to be used together with :func:`parse_offers_for_countries_response`.
 
     Args:
         node_id: node ID of entry to get details for
@@ -341,10 +419,13 @@ def prepare_offers_for_countries_request(
 def parse_offers_for_countries_response(json: any, countries: set[str]) -> dict[str, list[Offer]]:
     """Parse response from offers query from JustWatch GraphQL API.
     Parses response for ``GetTitleOffers`` query.
+
     Response if searched for country codes passed as ``countries`` argument.
     Countries in JSON response which are not present in ``countries`` set will be ignored.
     If response doesn't have offers for a country, then that country still will be present
     in returned dict, just with an empty list as value.
+
+    Meant to be used together with :func:`prepare_offers_for_countries_request`.
 
     Args:
         json: JSON returned by JustWatch GraphQL API

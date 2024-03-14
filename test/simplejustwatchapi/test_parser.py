@@ -1,4 +1,6 @@
-from simplejustwatchapi.query import MediaEntry, Offer, parse_search_response, OfferPackage
+from pytest import mark
+
+from simplejustwatchapi.query import MediaEntry, Offer, parse_search_response, OfferPackage, parse_details_response
 
 DETAILS_URL = "https://justwatch.com"
 IMAGES_URL = "https://images.justwatch.com"
@@ -261,7 +263,7 @@ PARSED_NODE_3 = MediaEntry(
     [],
 )
 
-API_RESPONSE_JSON = {
+API_SEARCH_RESPONSE_JSON = {
     "data": {
         "popularTitles": {
             "edges": [
@@ -273,7 +275,30 @@ API_RESPONSE_JSON = {
     }
 }
 
+API_SEARCH_RESPONSE_NO_DATA = {"data": {"popularTitles": {"edges": []}}}
 
-def test_parse() -> None:
-    parsed_entries = parse_search_response(API_RESPONSE_JSON)
-    assert [PARSED_NODE_1, PARSED_NODE_2, PARSED_NODE_3] == parsed_entries
+
+@mark.parametrize(
+    argnames=["response_json", "expected_output"],
+    argvalues=[
+        (API_SEARCH_RESPONSE_JSON, [PARSED_NODE_1, PARSED_NODE_2, PARSED_NODE_3]),
+        (API_SEARCH_RESPONSE_NO_DATA, [])
+    ]
+)
+def test_parse_search_response(response_json, expected_output) -> None:
+    parsed_entries = parse_search_response(response_json)
+    assert parsed_entries == expected_output
+
+
+@mark.parametrize(
+    argnames=["response_json", "expected_output"],
+    argvalues=[
+        ({"data": {"node": RESPONSE_NODE_1}}, PARSED_NODE_1),
+        ({"data": {"node": RESPONSE_NODE_2}}, PARSED_NODE_2),
+        ({"data": {"node": RESPONSE_NODE_3}}, PARSED_NODE_3),
+        ({"errors": [], "data": {"node": None}}, None)
+    ]
+)
+def test_parse_details_response(response_json, expected_output) -> None:
+    parsed_entries = parse_details_response(response_json)
+    assert parsed_entries == expected_output

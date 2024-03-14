@@ -1,6 +1,6 @@
 from pytest import mark, raises
 
-from simplejustwatchapi.query import prepare_search_request
+from simplejustwatchapi.query import prepare_search_request, prepare_details_request
 
 GRAPHQL_DETAILS_QUERY = """
 query GetTitleNode(
@@ -160,4 +160,47 @@ def test_prepare_search_request_asserts_on_invalid_country_code(invalid_code: st
     expected_error_message = f"Invalid country code: {invalid_code}, code must be 2 characters long"
     with raises(AssertionError) as error:
         prepare_search_request("", invalid_code, "", 1, True)
+        assert str(error.value) == expected_error_message
+
+
+@mark.parametrize(
+    argnames=["node_id", "country", "language", "best_only"],
+    argvalues=[
+        ("NODE ID 1", "US", "language 1", True),
+        ("NODE ID 1", "gb", "language 2", False),
+    ],
+)
+def test_prepare_details_request(
+    node_id: str, country: str, language: str, best_only: bool
+) -> None:
+    expected_request = {
+        "operationName": "GetTitleNode",
+        "variables": {
+            "nodeId": node_id,
+            "language": language,
+            "country": country.upper(),
+            "formatPoster": "JPG",
+            "formatOfferIcon": "PNG",
+            "profile": "S718",
+            "backdropProfile": "S1920",
+            "filter": {"bestOnly": best_only},
+        },
+        "query": GRAPHQL_DETAILS_QUERY + GRAPHQL_DETAILS_FRAGMENT + GRAPHQL_OFFER_FRAGMENT,
+    }
+    request = prepare_details_request(node_id, country, language, best_only)
+    assert expected_request == request
+
+
+@mark.parametrize(
+    argnames=["invalid_code"],
+    argvalues=[
+        ("United Stated of America",),  # too long
+        ("usa",),  # too long
+        ("u",),  # too short
+    ],
+)
+def test_prepare_details_request_asserts_on_invalid_country_code(invalid_code: str) -> None:
+    expected_error_message = f"Invalid country code: {invalid_code}, code must be 2 characters long"
+    with raises(AssertionError) as error:
+        prepare_details_request("", invalid_code, "", True)
         assert str(error.value) == expected_error_message

@@ -26,4 +26,4 @@ jobs:
         python -m pip install isort
     - name: Check imports organization with isort
       run: |
-        isort -v --profile black -l 100 --check .
+        isort -v --profile black -l 100 --check src/ test/

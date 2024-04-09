@@ -97,11 +97,11 @@ results = details("nodeID", "US", "en", False)
 
 Only the first argument is required - the node ID of element to look up details for.
 
-|   | Argument    | Type   | Required | Default value | Description                                           |
-|---|-------------|--------|----------|---------------|-------------------------------------------------------|
-| 1 | `node_id`   | `str`  | **YES**  | -             | Node ID to look up                                    |
-| 2 | `country`   | `str`  | NO       | `"US"`        | Country to search for offers                          |
-| 3 | `language`  | `str`  | NO       | `"en"`        | Language of responses                                 |
+|   | Argument    | Type   | Required | Default value | Description                                            |
+|---|-------------|--------|----------|---------------|--------------------------------------------------------|
+| 1 | `node_id`   | `str`  | **YES**  | -             | Node ID to look up                                     |
+| 2 | `country`   | `str`  | NO       | `"US"`        | Country to search for offers                           |
+| 3 | `language`  | `str`  | NO       | `"en"`        | Language of responses                                  |
 | 5 | `best_only` | `bool` | NO       | `True`        | Determines whether only best offers should be returned |
 
 General usage of these arguments matches the [`search`](#search) command.
@@ -126,11 +126,11 @@ results = offers_for_countries("nodeID", {"US", "UK", "CA"}, "en", True)
 First two arguments are required - node ID, and set of countries.
 
 |   | Argument    | Type       | Required | Default value | Description                                            |
-|---|-------------|------------|:---------|--------------|--------------------------------------------------------|
-| 1 | `node_id`   | `str`      | **YES**  | -            | Node ID to look up                                     |
-| 2 | `countries` | `set[str]` | **YES**  | -            | Set of countries to look up offers for                 |
-| 3 | `language`  | `str`      | NO       | `"en"`       | Language of responses                                  |
-| 5 | `best_only` | `bool`     | NO       | `True`       | Determines whether only best offers should be returned |
+|---|-------------|------------|:---------|---------------|--------------------------------------------------------|
+| 1 | `node_id`   | `str`      | **YES**  | -             | Node ID to look up                                     |
+| 2 | `countries` | `set[str]` | **YES**  | -             | Set of countries to look up offers for                 |
+| 3 | `language`  | `str`      | NO       | `"en"`        | Language of responses                                  |
+| 5 | `best_only` | `bool`     | NO       | `True`        | Determines whether only best offers should be returned |
 
 Usage `language` and `best_only` arguments matches the [`search`](#search) command.
 

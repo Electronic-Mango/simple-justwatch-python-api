@@ -20,6 +20,7 @@ A simple unofficial JustWatch Python API which uses [`GraphQL`](https://graphql.
   * [Details](#details)
   * [Offers for countries](#offers-for-countries)
 * [Return data structures](#return-data-structures)
+* [Locale, language, country](#locale-language-country)
 * [Disclaimer](#disclaimer)
 
 
@@ -65,10 +66,10 @@ Only the first argument is required, it specifies a title to search.
 | 4 | `count`     | `int`  | NO       | `4`           | Up to how many entries should be returned              |
 | 5 | `best_only` | `bool` | NO       | `True`        | Determines whether only best offers should be returned |
 
-`country` must be 2-letter code, e.g. `US`, `GB`, `FR`.
+`country` must be **ISO 3166-1 alpha-2** 2-letter code , e.g. `US`, `GB`, `FR`.
 It should be uppercase, however lowercase codes are automatically converted to uppercase.
 
-`language` is also 2-letter code, lowercase, e.g. `en`, `fr`.
+`language` is a **ISO 639-1** (usually) 2-letter code, lowercase, e.g. `en`, `fr`.
 
 `count` determines **up to** how many entries should be returned.
 If JustWatch GraphQL API returns fewer entries, then this function will also return fewer values.
@@ -132,7 +133,7 @@ First two arguments are required - node ID, and set of countries.
 | 3 | `language`  | `str`      | NO       | `"en"`        | Language of responses                                  |
 | 5 | `best_only` | `bool`     | NO       | `True`        | Determines whether only best offers should be returned |
 
-Usage `language` and `best_only` arguments matches the [`search`](#search) command.
+Usage of `language` and `best_only` arguments matches the [`search`](#search) command.
 
 Returned value `dict[str, list[Offer]]`, where key is country given as argument and value is a list of [`Offer`](#return-data-structures) tuples.
 
@@ -143,6 +144,22 @@ Example command and its output is in [`examples/offers_for_countries_output.py`]
 ## Return data structures
 
 Detailed descriptions of all used data structures are available in the [documentation](https://electronic-mango.github.io/simple-justwatch-python-api/simplejustwatchapi.html#module-simplejustwatchapi.query).
+
+
+
+## Locale, language, country
+
+Languages and countries are configured via ISO standard.
+Countries are following **ISO 3166-1 alpha-2** standard (2-letter codes, uppercase).
+Languages are following **ISO 639-1** standard (usually 2-letter codes, lowercase).
+
+Language codes can also be country-specific, e.g. `es-MX` for Mexican Spanish, etc.
+The country part **must** be uppercase.
+
+There is a list of supported locales in [JustWatch **REST API** documentation](https://apis.justwatch.com/docs/api/#tips).
+Any combination of those languages and countries should work with this API as well.
+
+If you provide unsupported language JustWatch API should default to english.
 
 
 

@@ -201,7 +201,7 @@ class Offer(NamedTuple):
     url: str
     """URL to this offer."""
 
-    element_count: int
+    element_count: int | None
     """Element count, usually 0."""
 
     available_to: str | None
@@ -502,7 +502,7 @@ def _parse_offer(json: any) -> Offer:
     type = json.get("type")
     package = _parse_package(json["package"])
     url = json.get("standardWebURL")
-    element_count = json.get("elementCount", 0)
+    element_count = json.get("elementCount")
     available_to = json.get("availableTo")
     deeplink_roku = json.get("deeplinkRoku")
     subtitle_languages = json.get("subtitleLanguages")

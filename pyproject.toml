@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "simple-justwatch-python-api"
 authors = [{name = "Electronic Mango", email = "78230210+Electronic-Mango@users.noreply.github.com"}]
-version = "0.14"
+version = "0.15"
 description="A simple JustWatch Python API"
 readme = "README.md"
 license = {file = "LICENSE"}

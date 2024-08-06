@@ -92,6 +92,7 @@ fragment TitleDetails on MovieOrShow {
     }
     externalIds {
       imdbId
+      tmdbId
       __typename
     }
     posterUrl(profile: $profile, format: $formatPoster)
@@ -258,6 +259,9 @@ class MediaEntry(NamedTuple):
 
     imdb_id: str | None
     """ID of this entry in IMDB."""
+
+    tmdb_id: str | None
+    """ID of this entry in TMDB."""
 
     poster: str | None
     """URL to poster for this ID."""
@@ -469,6 +473,7 @@ def _parse_entry(json: any) -> MediaEntry:
     genres = [node.get("shortName") for node in content.get("genres", []) if node]
     external_ids = content.get("externalIds")
     imdb_id = external_ids.get("imdbId") if external_ids else None
+    tmdb_id = external_ids.get("tmdbId") if external_ids else None
     poster_url_field = content.get("posterUrl")
     poster = _IMAGES_URL + poster_url_field if poster_url_field else None
     backdrops = [_IMAGES_URL + bd.get("backdropUrl") for bd in content.get("backdrops", []) if bd]
@@ -485,6 +490,7 @@ def _parse_entry(json: any) -> MediaEntry:
         short_description,
         genres,
         imdb_id,
+        tmdb_id,
         poster,
         backdrops,
         offers,

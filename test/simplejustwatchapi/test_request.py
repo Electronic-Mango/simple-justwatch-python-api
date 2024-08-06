@@ -92,6 +92,7 @@ fragment TitleDetails on MovieOrShow {
     }
     externalIds {
       imdbId
+      tmdbId
       __typename
     }
     posterUrl(profile: $profile, format: $formatPoster)

@@ -24,7 +24,7 @@ RESPONSE_NODE_1 = {
         "runtime": 123,
         "shortDescription": "Movie 1 description",
         "genres": [{"shortName": "gen1"}, {"shortName": "gen2"}],
-        "externalIds": {"imdbId": "imdbId1"},
+        "externalIds": {"imdbId": "imdbId1", "tmdbId": "tmdbId1"},
         "posterUrl": "/poster/url/1.jpg",
         "backdrops": [
             {"backdropUrl": "/back/drop/url/1.jpg"},
@@ -96,6 +96,7 @@ PARSED_NODE_1 = MediaEntry(
     "Movie 1 description",
     ["gen1", "gen2"],
     "imdbId1",
+    "tmdbId1",
     IMAGES_URL + "/poster/url/1.jpg",
     [IMAGES_URL + "/back/drop/url/1.jpg", IMAGES_URL + "/back/drop/url/2.jpg"],
     [
@@ -164,7 +165,7 @@ RESPONSE_NODE_2 = {
         "runtime": 456,
         "shortDescription": "TV show 2 description",
         "genres": [{"shortName": "gen2"}, {"shortName": "gen3"}],
-        "externalIds": {"imdbId": "imdbId2"},
+        "externalIds": {"imdbId": "imdbId1", "tmdbId": "tmdbId1"},
         "posterUrl": "/poster/url/2.jpg",
         "backdrops": [
             {"backdropUrl": "/back/drop/url/3.jpg"},
@@ -210,6 +211,7 @@ PARSED_NODE_2 = MediaEntry(
     "TV show 2 description",
     ["gen2", "gen3"],
     "imdbId2",
+    "tmdbId2",
     IMAGES_URL + "/poster/url/2.jpg",
     [IMAGES_URL + "/back/drop/url/3.jpg"],
     [
@@ -264,6 +266,7 @@ PARSED_NODE_3 = MediaEntry(
     123,
     None,
     [],
+    None,
     None,
     IMAGES_URL + "/poster/url/3.jpg",
     [],

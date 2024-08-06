@@ -13,6 +13,7 @@ MediaEntry(
     short_description="Set in the 22nd century, The Matrix tells the story of a computer hacker who joins a group of underground insurgents fighting the vast and powerful computers who now rule the earth.",
     genres=["scf", "act"],
     imdb_id="tt0133093",
+    tmdb_id='603',
     poster="https://images.justwatch.com/poster/140351543/s718/the-matrix.jpg",
     backdrops=[
         "https://images.justwatch.com/backdrop/175642791/s1920/the-matrix.jpg",

@@ -165,7 +165,7 @@ RESPONSE_NODE_2 = {
         "runtime": 456,
         "shortDescription": "TV show 2 description",
         "genres": [{"shortName": "gen2"}, {"shortName": "gen3"}],
-        "externalIds": {"imdbId": "imdbId1", "tmdbId": "tmdbId1"},
+        "externalIds": {"imdbId": "imdbId2", "tmdbId": "tmdbId2"},
         "posterUrl": "/poster/url/2.jpg",
         "backdrops": [
             {"backdropUrl": "/back/drop/url/3.jpg"},

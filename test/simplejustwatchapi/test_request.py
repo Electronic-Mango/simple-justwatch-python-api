@@ -100,6 +100,40 @@ fragment TitleDetails on MovieOrShow {
       backdropUrl
       __typename
     }
+    ageCertification
+    scoring {
+      imdbScore
+      imdbVotes
+      tmdbPopularity
+      tmdbScore
+      tomatoMeter
+      certifiedFresh
+      jwRating
+      __typename
+    }
+    interactions {
+      likelistAdditions
+      dislikelistAdditions
+      __typename
+    }
+    __typename
+  }
+  streamingCharts(country: $country) {
+    edges {
+      streamingChartInfo {
+        rank
+        trend
+        trendDifference
+        daysInTop3
+        daysInTop10
+        daysInTop100
+        daysInTop1000
+        topRank
+        updatedAt
+        __typename
+      }
+      __typename
+    }
     __typename
   }
   offers(country: $country, platform: WEB, filter: $filter) {

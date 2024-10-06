@@ -100,6 +100,40 @@ fragment TitleDetails on MovieOrShow {
       backdropUrl
       __typename
     }
+    ageCertification
+    scoring {
+      imdbScore
+      imdbVotes
+      tmdbPopularity
+      tmdbScore
+      tomatoMeter
+      certifiedFresh
+      jwRating
+      __typename
+    }
+    interactions {
+      likelistAdditions
+      dislikelistAdditions
+      __typename
+    }
+    __typename
+  }
+  streamingCharts(country: $country) {
+    edges {
+      streamingChartInfo {
+        rank
+        trend
+        trendDifference
+        daysInTop3
+        daysInTop10
+        daysInTop100
+        daysInTop1000
+        topRank
+        updatedAt
+        __typename
+      }
+      __typename
+    }
     __typename
   }
   offers(country: $country, platform: WEB, filter: $filter) {
@@ -224,6 +258,72 @@ class Offer(NamedTuple):
     """List of 2-letter language codes of available audio tracks, e.g. ``["en", "pt", "de"]``."""
 
 
+class Scoring(NamedTuple):
+    """Parsed data related to user scoring for a single entry."""
+
+    imdb_score: float | None
+    """IMDB score."""
+
+    imdb_votes: int | None
+    """Number of votes on IMDB."""
+
+    tmdb_popularity: float | None
+    """TMDB popularity score."""
+
+    tmdb_score: float | None
+    """TMDB score."""
+
+    tomatometer: int | None
+    """Tomatometer score on Rotten Tomatoes."""
+
+    certified_fresh: bool | None
+    """Flag whether entry has "Certified Fresh" seal on Rotten Tomatoes."""
+
+    jw_rating: float | None
+    """JustWatch rating."""
+
+
+class Interactions(NamedTuple):
+    """Parsed data regarding number of likes and dislikes on JustWatch for a single entry."""
+
+    likes: int | None
+    """Number of likes on JustWatch."""
+
+    dislikes: int | None
+    """Number of dislikes on JustWatch."""
+
+
+class StreamingCharts(NamedTuple):
+    """Parsed data related to JustWatch rank for a single entry."""
+
+    rank: int
+    """Rank on JustWatch."""
+
+    trend: str
+    """Trend in ranking on JustWatch, "UP", "DOWN", "STABLE"."""
+
+    trend_difference: int
+    """Difference in rank; related to trend."""
+
+    top_rank: int
+    """Top rank ever reached."""
+
+    days_in_top_3: int
+    """Number of days in top 3 ranks."""
+
+    days_in_top_10: int
+    """Number of days in top 10 ranks."""
+
+    days_in_top_100: int
+    """Number of days in top 100 ranks."""
+
+    days_in_top_1000: int
+    """Number of days in top 1000 ranks."""
+
+    updated: str
+    """Date when rank data was last updated as a string, e.g.: "2024-10-06T09:20:36.397Z"."""
+
+
 class MediaEntry(NamedTuple):
     """Parsed response from JustWatch GraphQL API for "GetSearchTitles" query for single entry."""
 
@@ -268,6 +368,18 @@ class MediaEntry(NamedTuple):
 
     backdrops: list[str]
     """List of URLs for backdrops (full screen images to use as background)."""
+
+    age_certification: str | None
+    """Age rating as a string, e.g.: "R", "TV-14"."""
+
+    scoring: Scoring | None
+    """Scoring data."""
+
+    interactions: Interactions | None
+    """Interactions (likes/dislikes) data."""
+
+    streaming_charts: StreamingCharts | None
+    """JustWatch charts/ranks data."""
 
     offers: list[Offer]
     """List of available offers for this entry, empty if there are no available offers."""
@@ -477,6 +589,10 @@ def _parse_entry(json: any) -> MediaEntry:
     poster_url_field = content.get("posterUrl")
     poster = _IMAGES_URL + poster_url_field if poster_url_field else None
     backdrops = [_IMAGES_URL + bd.get("backdropUrl") for bd in content.get("backdrops", []) if bd]
+    age_certification = content.get("ageCertification")
+    scoring = _parse_scores(content.get("scoring"))
+    interactions = _parse_interactions(content.get("interactions"))
+    streaming_charts = _parse_streaming_charts(json)
     offers = [_parse_offer(offer) for offer in json.get("offers", []) if offer]
     return MediaEntry(
         entry_id,
@@ -493,7 +609,71 @@ def _parse_entry(json: any) -> MediaEntry:
         tmdb_id,
         poster,
         backdrops,
+        age_certification,
+        scoring,
+        interactions,
+        streaming_charts,
         offers,
+    )
+
+
+def _parse_scores(json: any) -> Scoring | None:
+    if not json:
+        return None
+    imdb_score = json.get("imdbScore")
+    imdb_votes = json.get("imdbVotes")
+    tmdb_popularity = json.get("tmdbPopularity")
+    tmdb_score = json.get("tmdbScore")
+    tomatometer = json.get("tomatoMeter")
+    certified_fresh = json.get("certifiedFresh")
+    jw_rating = json.get("jwRating")
+    return Scoring(
+        imdb_score,
+        int(imdb_votes) if imdb_votes is not None else None,
+        tmdb_popularity,
+        tmdb_score,
+        int(tomatometer) if tomatometer is not None else None,
+        certified_fresh,
+        jw_rating,
+    )
+
+
+def _parse_interactions(json: any) -> Interactions | None:
+    if not json:
+        return None
+    likes = json.get("likelistAdditions")
+    dislikes = json.get("dislikelistAdditions")
+    return Interactions(likes, dislikes)
+
+
+def _parse_streaming_charts(json: any) -> StreamingCharts | None:
+    if (
+        not (streaming_chart_info := json.get("streamingCharts", {}).get("edges"))
+        or not (streaming_chart_info := streaming_chart_info[0].get("streamingChartInfo"))
+        # Getting final info is awkward, I think this in general can return a list when searching
+        # for ranks for multiple entries. In this case, to unify searching and displaying details,
+        # it's always getting single element in a list.
+    ):
+        return None
+    rank = streaming_chart_info.get("rank")
+    trend = streaming_chart_info.get("trend")
+    trend_difference = streaming_chart_info.get("trendDifference")
+    top_rank = streaming_chart_info.get("topRank")
+    days_in_top_3 = streaming_chart_info.get("daysInTop3")
+    days_in_top_10 = streaming_chart_info.get("daysInTop10")
+    days_in_top_100 = streaming_chart_info.get("daysInTop100")
+    days_in_top_1000 = streaming_chart_info.get("daysInTop1000")
+    updated = streaming_chart_info.get("updatedAt")
+    return StreamingCharts(
+        rank,
+        trend,
+        trend_difference,
+        top_rank,
+        days_in_top_3,
+        days_in_top_10,
+        days_in_top_100,
+        days_in_top_1000,
+        updated,
     )
 
 

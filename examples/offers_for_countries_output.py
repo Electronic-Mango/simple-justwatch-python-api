@@ -1,7 +1,9 @@
 # Output from command:
 # offers_for_countries("tm10", {"US", "GB", "FR"}, "en", True)
 
-{
+from simplejustwatchapi.query import Offer, OfferPackage
+
+result = {
     "GB": [
         Offer(
             id="b2Z8dG0xMDpHQjoyOTpmbGF0cmF0ZTpoZA==",

@@ -1,9 +1,12 @@
 from pytest import mark
 
 from simplejustwatchapi.query import (
+    Interactions,
     MediaEntry,
     Offer,
     OfferPackage,
+    Scoring,
+    StreamingCharts,
     parse_details_response,
     parse_offers_for_countries_response,
     parse_search_response,
@@ -30,6 +33,42 @@ RESPONSE_NODE_1 = {
             {"backdropUrl": "/back/drop/url/1.jpg"},
             {"backdropUrl": "/back/drop/url/2.jpg"},
         ],
+        "ageCertification": "PG-18",
+        "scoring": {
+            "imdbScore": 4,
+            "imdbVotes": 697,
+            "tmdbPopularity": 4.366,
+            "tmdbScore": 4.1,
+            "tomatoMeter": 75,
+            "certifiedFresh": True,
+            "jwRating": 0.975424159594,
+            "__typename": "Scoring",
+        },
+        "interactions": {
+            "likelistAdditions": 456,
+            "dislikelistAdditions": 123,
+            "__typename": "InteractionAttributes",
+        },
+    },
+    "streamingCharts": {
+        "edges": [
+            {
+                "streamingChartInfo": {
+                    "rank": 79,
+                    "trend": "UP",
+                    "trendDifference": 40,
+                    "topRank": 5,
+                    "daysInTop3": 0,
+                    "daysInTop10": 5,
+                    "daysInTop100": 1632,
+                    "daysInTop1000": 3202,
+                    "updatedAt": "2024-10-06T05:16:37.603Z",
+                    "__typename": "StreamingChartInfo",
+                },
+                "__typename": "StreamingChartsTitlesEdge",
+            }
+        ],
+        "__typename": "StreamingChartsConnection",
     },
     "offers": [
         {
@@ -99,6 +138,28 @@ PARSED_NODE_1 = MediaEntry(
     "tmdbId1",
     IMAGES_URL + "/poster/url/1.jpg",
     [IMAGES_URL + "/back/drop/url/1.jpg", IMAGES_URL + "/back/drop/url/2.jpg"],
+    "PG-18",
+    Scoring(
+        4,
+        697,
+        4.366,
+        4.1,
+        75,
+        True,
+        0.975424159594,
+    ),
+    Interactions(456, 123),
+    StreamingCharts(
+        79,
+        "UP",
+        40,
+        5,
+        0,
+        5,
+        1632,
+        3202,
+        "2024-10-06T05:16:37.603Z",
+    ),
     [
         Offer(
             "OFFER ID 1",
@@ -170,6 +231,24 @@ RESPONSE_NODE_2 = {
         "backdrops": [
             {"backdropUrl": "/back/drop/url/3.jpg"},
         ],
+        "scoring": {
+            "imdbScore": 4,
+            "imdbVotes": 697,
+            "tmdbPopularity": 4.366,
+            "tmdbScore": 4.1,
+            "tomatoMeter": None,
+            "certifiedFresh": None,
+            "jwRating": None,
+            "__typename": "Scoring",
+        },
+        "interactions": {
+            "likelistAdditions": 1,
+            "__typename": "InteractionAttributes",
+        },
+    },
+    "streamingCharts": {
+        "edges": None,
+        "__typename": "StreamingChartsConnection",
     },
     "offers": [
         {
@@ -214,6 +293,18 @@ PARSED_NODE_2 = MediaEntry(
     "tmdbId2",
     IMAGES_URL + "/poster/url/2.jpg",
     [IMAGES_URL + "/back/drop/url/3.jpg"],
+    None,
+    Scoring(
+        4,
+        697,
+        4.366,
+        4.1,
+        None,
+        None,
+        None,
+    ),
+    Interactions(1, None),
+    None,
     [
         Offer(
             "offer_id_3",
@@ -270,6 +361,10 @@ PARSED_NODE_3 = MediaEntry(
     None,
     IMAGES_URL + "/poster/url/3.jpg",
     [],
+    None,
+    None,
+    None,
+    None,
     [],
 )
 

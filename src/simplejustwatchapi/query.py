@@ -300,7 +300,7 @@ class StreamingCharts(NamedTuple):
     """Rank on JustWatch."""
 
     trend: str
-    """Trend in ranking on JustWatch, "UP", "DOWN", "STABLE"."""
+    """Trend in ranking on JustWatch, ``UP``, ``DOWN``, ``STABLE``."""
 
     trend_difference: int
     """Difference in rank; related to trend."""
@@ -321,7 +321,7 @@ class StreamingCharts(NamedTuple):
     """Number of days in top 1000 ranks."""
 
     updated: str
-    """Date when rank data was last updated as a string, e.g.: "2024-10-06T09:20:36.397Z"."""
+    """Date when rank data was last updated as a string, e.g.: ``2024-10-06T09:20:36.397Z``."""
 
 
 class MediaEntry(NamedTuple):

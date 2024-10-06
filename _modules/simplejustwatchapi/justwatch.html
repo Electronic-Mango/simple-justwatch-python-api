@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>simplejustwatchapi.justwatch &mdash; Simple JustWatch Python API  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Simple JustWatch Python API
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">simplejustwatchapi</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Simple JustWatch Python API</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">simplejustwatchapi.justwatch</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for simplejustwatchapi.justwatch</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Main module orchestrating requests to JustWatch GraphQL API.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">httpx</span> <span class="kn">import</span> <span class="n">post</span>
+
+<span class="kn">from</span> <span class="nn">simplejustwatchapi.query</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">MediaEntry</span><span class="p">,</span>
+    <span class="n">Offer</span><span class="p">,</span>
+    <span class="n">parse_details_response</span><span class="p">,</span>
+    <span class="n">parse_offers_for_countries_response</span><span class="p">,</span>
+    <span class="n">parse_search_response</span><span class="p">,</span>
+    <span class="n">prepare_details_request</span><span class="p">,</span>
+    <span class="n">prepare_offers_for_countries_request</span><span class="p">,</span>
+    <span class="n">prepare_search_request</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">_GRAPHQL_API_URL</span> <span class="o">=</span> <span class="s2">&quot;https://apis.justwatch.com/graphql&quot;</span>
+
+
+<div class="viewcode-block" id="search">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.justwatch.search">[docs]</a>
+<span class="k">def</span> <span class="nf">search</span><span class="p">(</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">country</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;US&quot;</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="n">best_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">MediaEntry</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Search JustWatch for given title.</span>
+
+<span class="sd">    Returns a list of entries up to ``count``.</span>
+
+<span class="sd">    ``best_only`` allows filtering out redundant offers, e.g. when if provide offers service</span>
+<span class="sd">    in 4K, HD and SD, using ``best_only = True`` returns only 4K option, ``best_only = False``</span>
+<span class="sd">    returns all three.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        title: title to search</span>
+<span class="sd">        country: country to search for offers, ``US`` by default</span>
+<span class="sd">        language: language of responses, ``en`` by default</span>
+<span class="sd">        count: how many responses should be returned</span>
+<span class="sd">        best_only: return only best offers if ``True``, return all offers if ``False``</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of ``MediaEntry`` NamedTuples parsed from JustWatch response</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">request</span> <span class="o">=</span> <span class="n">prepare_search_request</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">country</span><span class="p">,</span> <span class="n">language</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">best_only</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">post</span><span class="p">(</span><span class="n">_GRAPHQL_API_URL</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">request</span><span class="p">)</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">parse_search_response</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span></div>
+
+
+
+<div class="viewcode-block" id="details">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.justwatch.details">[docs]</a>
+<span class="k">def</span> <span class="nf">details</span><span class="p">(</span>
+    <span class="n">node_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">country</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;US&quot;</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span> <span class="n">best_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MediaEntry</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get details of entry for a given ID.</span>
+
+<span class="sd">    ``best_only`` allows filtering out redundant offers, e.g. when if provide offers service</span>
+<span class="sd">    in 4K, HD and SD, using ``best_only = True`` returns only 4K option, ``best_only = False``</span>
+<span class="sd">    returns all three.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        node_id: ID of entry to look up</span>
+<span class="sd">        country: country to search for offers, ``US`` by default</span>
+<span class="sd">        language: language of responses, ``en`` by default</span>
+<span class="sd">        best_only: return only best offers if ``True``, return all offers if ``False``</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ``MediaEntry`` NamedTuple with data about requested entry.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">request</span> <span class="o">=</span> <span class="n">prepare_details_request</span><span class="p">(</span><span class="n">node_id</span><span class="p">,</span> <span class="n">country</span><span class="p">,</span> <span class="n">language</span><span class="p">,</span> <span class="n">best_only</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">post</span><span class="p">(</span><span class="n">_GRAPHQL_API_URL</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">request</span><span class="p">)</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">parse_details_response</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span></div>
+
+
+
+<div class="viewcode-block" id="offers_for_countries">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.justwatch.offers_for_countries">[docs]</a>
+<span class="k">def</span> <span class="nf">offers_for_countries</span><span class="p">(</span>
+    <span class="n">node_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">countries</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span> <span class="n">best_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Offer</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get offers for entry of given node ID for all countries passed as argument.</span>
+<span class="sd">    Language argument only specifies format of price string, e.g. whether &quot;.&quot;, or &quot;,&quot; is used</span>
+<span class="sd">    in decimal fractions.</span>
+
+<span class="sd">    Returned dict has keys matching ``countries`` argument and values are list of found offers.</span>
+<span class="sd">    If no countries are passed (an empty set given as argument) empty dict is returned.</span>
+
+<span class="sd">    Country codes passed as argument are case-insensitive, however keys in returned dict will match</span>
+<span class="sd">    them exactly. E.g. for countries specified as:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        {&quot;uK&quot;, &quot;Us&quot;, &quot;AU&quot;, &quot;ca&quot;}</span>
+
+<span class="sd">    returned dict will have the following structure:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        {</span>
+<span class="sd">            &quot;uK&quot;: [ ... offers ... ],</span>
+<span class="sd">            &quot;Us&quot;: [ ... offers ... ],</span>
+<span class="sd">            &quot;AU&quot;: [ ... offers ... ],</span>
+<span class="sd">            &quot;ca&quot;: [ ... offers ... ],</span>
+<span class="sd">        }</span>
+
+<span class="sd">    ``best_only`` allows filtering out redundant offers, e.g. when if provide offers service</span>
+<span class="sd">    in 4K, HD and SD, using ``best_only = True`` returns only 4K option, ``best_only = False``</span>
+<span class="sd">    returns all three.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        node_id: ID of entry to look up offers for</span>
+<span class="sd">        countries: set of country codes to search for offers</span>
+<span class="sd">        language: language of responses, ``en`` by default</span>
+<span class="sd">        best_only: return only best offers if ``True``, return all offers if ``False``</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ``dict`` where keys match values in ``countries`` and keys are all found offers for their</span>
+<span class="sd">        respective countries</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">countries</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{}</span>
+    <span class="n">request</span> <span class="o">=</span> <span class="n">prepare_offers_for_countries_request</span><span class="p">(</span><span class="n">node_id</span><span class="p">,</span> <span class="n">countries</span><span class="p">,</span> <span class="n">language</span><span class="p">,</span> <span class="n">best_only</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">post</span><span class="p">(</span><span class="n">_GRAPHQL_API_URL</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">request</span><span class="p">)</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">parse_offers_for_countries_response</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">(),</span> <span class="n">countries</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Electronic-Mango.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

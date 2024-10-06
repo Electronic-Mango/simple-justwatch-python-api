@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>simplejustwatchapi package &mdash; Simple JustWatch Python API  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="simplejustwatchapi" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Simple JustWatch Python API
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">simplejustwatchapi</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">simplejustwatchapi package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-simplejustwatchapi.justwatch">simplejustwatchapi.justwatch module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#simplejustwatchapi.justwatch.details"><code class="docutils literal notranslate"><span class="pre">details()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#simplejustwatchapi.justwatch.offers_for_countries"><code class="docutils literal notranslate"><span class="pre">offers_for_countries()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#simplejustwatchapi.justwatch.search"><code class="docutils literal notranslate"><span class="pre">search()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-simplejustwatchapi.query">simplejustwatchapi.query module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#simplejustwatchapi.query.Interactions"><code class="docutils literal notranslate"><span class="pre">Interactions</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#simplejustwatchapi.query.MediaEntry"><code class="docutils literal notranslate"><span class="pre">MediaEntry</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#simplejustwatchapi.query.Offer"><code class="docutils literal notranslate"><span class="pre">Offer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#simplejustwatchapi.query.OfferPackage"><code class="docutils literal notranslate"><span class="pre">OfferPackage</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#simplejustwatchapi.query.Scoring"><code class="docutils literal notranslate"><span class="pre">Scoring</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#simplejustwatchapi.query.StreamingCharts"><code class="docutils literal notranslate"><span class="pre">StreamingCharts</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#simplejustwatchapi.query.parse_details_response"><code class="docutils literal notranslate"><span class="pre">parse_details_response()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#simplejustwatchapi.query.parse_offers_for_countries_response"><code class="docutils literal notranslate"><span class="pre">parse_offers_for_countries_response()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#simplejustwatchapi.query.parse_search_response"><code class="docutils literal notranslate"><span class="pre">parse_search_response()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#simplejustwatchapi.query.prepare_details_request"><code class="docutils literal notranslate"><span class="pre">prepare_details_request()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#simplejustwatchapi.query.prepare_offers_for_countries_request"><code class="docutils literal notranslate"><span class="pre">prepare_offers_for_countries_request()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#simplejustwatchapi.query.prepare_search_request"><code class="docutils literal notranslate"><span class="pre">prepare_search_request()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-simplejustwatchapi">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Simple JustWatch Python API</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">simplejustwatchapi</a></li>
+      <li class="breadcrumb-item active">simplejustwatchapi package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/simplejustwatchapi.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="simplejustwatchapi-package">
+<h1>simplejustwatchapi package<a class="headerlink" href="#simplejustwatchapi-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-simplejustwatchapi.justwatch">
+<span id="simplejustwatchapi-justwatch-module"></span><h2>simplejustwatchapi.justwatch module<a class="headerlink" href="#module-simplejustwatchapi.justwatch" title="Link to this heading"></a></h2>
+<p>Main module orchestrating requests to JustWatch GraphQL API.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="simplejustwatchapi.justwatch.details">
+<span class="sig-prename descclassname"><span class="pre">simplejustwatchapi.justwatch.</span></span><span class="sig-name descname"><span class="pre">details</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">country</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'US'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'en'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">best_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#simplejustwatchapi.query.MediaEntry" title="simplejustwatchapi.query.MediaEntry"><span class="pre">MediaEntry</span></a></span></span><a class="reference internal" href="_modules/simplejustwatchapi/justwatch.html#details"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simplejustwatchapi.justwatch.details" title="Link to this definition"></a></dt>
+<dd><p>Get details of entry for a given ID.</p>
+<p><code class="docutils literal notranslate"><span class="pre">best_only</span></code> allows filtering out redundant offers, e.g. when if provide offers service
+in 4K, HD and SD, using <code class="docutils literal notranslate"><span class="pre">best_only</span> <span class="pre">=</span> <span class="pre">True</span></code> returns only 4K option, <code class="docutils literal notranslate"><span class="pre">best_only</span> <span class="pre">=</span> <span class="pre">False</span></code>
+returns all three.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node_id</strong> – ID of entry to look up</p></li>
+<li><p><strong>country</strong> – country to search for offers, <code class="docutils literal notranslate"><span class="pre">US</span></code> by default</p></li>
+<li><p><strong>language</strong> – language of responses, <code class="docutils literal notranslate"><span class="pre">en</span></code> by default</p></li>
+<li><p><strong>best_only</strong> – return only best offers if <code class="docutils literal notranslate"><span class="pre">True</span></code>, return all offers if <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">MediaEntry</span></code> NamedTuple with data about requested entry.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simplejustwatchapi.justwatch.offers_for_countries">
+<span class="sig-prename descclassname"><span class="pre">simplejustwatchapi.justwatch.</span></span><span class="sig-name descname"><span class="pre">offers_for_countries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">countries</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'en'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">best_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#simplejustwatchapi.query.Offer" title="simplejustwatchapi.query.Offer"><span class="pre">Offer</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/simplejustwatchapi/justwatch.html#offers_for_countries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simplejustwatchapi.justwatch.offers_for_countries" title="Link to this definition"></a></dt>
+<dd><p>Get offers for entry of given node ID for all countries passed as argument.
+Language argument only specifies format of price string, e.g. whether “.”, or “,” is used
+in decimal fractions.</p>
+<p>Returned dict has keys matching <code class="docutils literal notranslate"><span class="pre">countries</span></code> argument and values are list of found offers.
+If no countries are passed (an empty set given as argument) empty dict is returned.</p>
+<p>Country codes passed as argument are case-insensitive, however keys in returned dict will match
+them exactly. E.g. for countries specified as:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;uK&quot;</span><span class="p">,</span> <span class="s2">&quot;Us&quot;</span><span class="p">,</span> <span class="s2">&quot;AU&quot;</span><span class="p">,</span> <span class="s2">&quot;ca&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>returned dict will have the following structure:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;uK&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="o">...</span> <span class="n">offers</span> <span class="o">...</span> <span class="p">],</span>
+    <span class="s2">&quot;Us&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="o">...</span> <span class="n">offers</span> <span class="o">...</span> <span class="p">],</span>
+    <span class="s2">&quot;AU&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="o">...</span> <span class="n">offers</span> <span class="o">...</span> <span class="p">],</span>
+    <span class="s2">&quot;ca&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="o">...</span> <span class="n">offers</span> <span class="o">...</span> <span class="p">],</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">best_only</span></code> allows filtering out redundant offers, e.g. when if provide offers service
+in 4K, HD and SD, using <code class="docutils literal notranslate"><span class="pre">best_only</span> <span class="pre">=</span> <span class="pre">True</span></code> returns only 4K option, <code class="docutils literal notranslate"><span class="pre">best_only</span> <span class="pre">=</span> <span class="pre">False</span></code>
+returns all three.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node_id</strong> – ID of entry to look up offers for</p></li>
+<li><p><strong>countries</strong> – set of country codes to search for offers</p></li>
+<li><p><strong>language</strong> – language of responses, <code class="docutils literal notranslate"><span class="pre">en</span></code> by default</p></li>
+<li><p><strong>best_only</strong> – return only best offers if <code class="docutils literal notranslate"><span class="pre">True</span></code>, return all offers if <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">dict</span></code> where keys match values in <code class="docutils literal notranslate"><span class="pre">countries</span></code> and keys are all found offers for their
+respective countries</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simplejustwatchapi.justwatch.search">
+<span class="sig-prename descclassname"><span class="pre">simplejustwatchapi.justwatch.</span></span><span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">country</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'US'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'en'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">best_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#simplejustwatchapi.query.MediaEntry" title="simplejustwatchapi.query.MediaEntry"><span class="pre">MediaEntry</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/simplejustwatchapi/justwatch.html#search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simplejustwatchapi.justwatch.search" title="Link to this definition"></a></dt>
+<dd><p>Search JustWatch for given title.</p>
+<p>Returns a list of entries up to <code class="docutils literal notranslate"><span class="pre">count</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">best_only</span></code> allows filtering out redundant offers, e.g. when if provide offers service
+in 4K, HD and SD, using <code class="docutils literal notranslate"><span class="pre">best_only</span> <span class="pre">=</span> <span class="pre">True</span></code> returns only 4K option, <code class="docutils literal notranslate"><span class="pre">best_only</span> <span class="pre">=</span> <span class="pre">False</span></code>
+returns all three.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title</strong> – title to search</p></li>
+<li><p><strong>country</strong> – country to search for offers, <code class="docutils literal notranslate"><span class="pre">US</span></code> by default</p></li>
+<li><p><strong>language</strong> – language of responses, <code class="docutils literal notranslate"><span class="pre">en</span></code> by default</p></li>
+<li><p><strong>count</strong> – how many responses should be returned</p></li>
+<li><p><strong>best_only</strong> – return only best offers if <code class="docutils literal notranslate"><span class="pre">True</span></code>, return all offers if <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of <code class="docutils literal notranslate"><span class="pre">MediaEntry</span></code> NamedTuples parsed from JustWatch response</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-simplejustwatchapi.query">
+<span id="simplejustwatchapi-query-module"></span><h2>simplejustwatchapi.query module<a class="headerlink" href="#module-simplejustwatchapi.query" title="Link to this heading"></a></h2>
+<p>Module responsible for creating GraphQL queries and parsing responses from JustWatch GraphQL API.
+Parsed responses are returned as Python NamedTuples for easier access.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Interactions">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simplejustwatchapi.query.</span></span><span class="sig-name descname"><span class="pre">Interactions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">likes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dislikes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simplejustwatchapi/query.html#Interactions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simplejustwatchapi.query.Interactions" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code></p>
+<p>Parsed data regarding number of likes and dislikes on JustWatch for a single entry.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Interactions.dislikes">
+<span class="sig-name descname"><span class="pre">dislikes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#simplejustwatchapi.query.Interactions.dislikes" title="Link to this definition"></a></dt>
+<dd><p>Number of dislikes on JustWatch.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Interactions.likes">
+<span class="sig-name descname"><span class="pre">likes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#simplejustwatchapi.query.Interactions.likes" title="Link to this definition"></a></dt>
+<dd><p>Number of likes on JustWatch.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.MediaEntry">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simplejustwatchapi.query.</span></span><span class="sig-name descname"><span class="pre">MediaEntry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">release_year</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">release_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runtime_minutes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">short_description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">genres</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imdb_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmdb_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poster</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backdrops</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">age_certification</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#simplejustwatchapi.query.Scoring" title="simplejustwatchapi.query.Scoring"><span class="pre">Scoring</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interactions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#simplejustwatchapi.query.Interactions" title="simplejustwatchapi.query.Interactions"><span class="pre">Interactions</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">streaming_charts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#simplejustwatchapi.query.StreamingCharts" title="simplejustwatchapi.query.StreamingCharts"><span class="pre">StreamingCharts</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#simplejustwatchapi.query.Offer" title="simplejustwatchapi.query.Offer"><span class="pre">Offer</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simplejustwatchapi/query.html#MediaEntry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simplejustwatchapi.query.MediaEntry" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code></p>
+<p>Parsed response from JustWatch GraphQL API for “GetSearchTitles” query for single entry.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.MediaEntry.age_certification">
+<span class="sig-name descname"><span class="pre">age_certification</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#simplejustwatchapi.query.MediaEntry.age_certification" title="Link to this definition"></a></dt>
+<dd><p>“R”, “TV-14”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Age rating as a string, e.g.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.MediaEntry.backdrops">
+<span class="sig-name descname"><span class="pre">backdrops</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#simplejustwatchapi.query.MediaEntry.backdrops" title="Link to this definition"></a></dt>
+<dd><p>List of URLs for backdrops (full screen images to use as background).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.MediaEntry.entry_id">
+<span class="sig-name descname"><span class="pre">entry_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#simplejustwatchapi.query.MediaEntry.entry_id" title="Link to this definition"></a></dt>
+<dd><p>Entry ID, contains type code and numeric ID.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.MediaEntry.genres">
+<span class="sig-name descname"><span class="pre">genres</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#simplejustwatchapi.query.MediaEntry.genres" title="Link to this definition"></a></dt>
+<dd><p>List of genre codes for this entry, e.g. <code class="docutils literal notranslate"><span class="pre">[&quot;rly&quot;]</span></code>, <code class="docutils literal notranslate"><span class="pre">[&quot;cmy&quot;,</span> <span class="pre">&quot;drm&quot;,</span> <span class="pre">&quot;rma&quot;]</span></code>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.MediaEntry.imdb_id">
+<span class="sig-name descname"><span class="pre">imdb_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#simplejustwatchapi.query.MediaEntry.imdb_id" title="Link to this definition"></a></dt>
+<dd><p>ID of this entry in IMDB.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.MediaEntry.interactions">
+<span class="sig-name descname"><span class="pre">interactions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#simplejustwatchapi.query.Interactions" title="simplejustwatchapi.query.Interactions"><span class="pre">Interactions</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#simplejustwatchapi.query.MediaEntry.interactions" title="Link to this definition"></a></dt>
+<dd><p>Interactions (likes/dislikes) data.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.MediaEntry.object_id">
+<span class="sig-name descname"><span class="pre">object_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#simplejustwatchapi.query.MediaEntry.object_id" title="Link to this definition"></a></dt>
+<dd><p>Object ID, the numeric part of full entry ID.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.MediaEntry.object_type">
+<span class="sig-name descname"><span class="pre">object_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#simplejustwatchapi.query.MediaEntry.object_type" title="Link to this definition"></a></dt>
+<dd><p>Type of entry, e.g. <code class="docutils literal notranslate"><span class="pre">MOVIE</span></code>, <code class="docutils literal notranslate"><span class="pre">SHOW</span></code>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.MediaEntry.offers">
+<span class="sig-name descname"><span class="pre">offers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#simplejustwatchapi.query.Offer" title="simplejustwatchapi.query.Offer"><span class="pre">Offer</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#simplejustwatchapi.query.MediaEntry.offers" title="Link to this definition"></a></dt>
+<dd><p>List of available offers for this entry, empty if there are no available offers.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.MediaEntry.poster">
+<span class="sig-name descname"><span class="pre">poster</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#simplejustwatchapi.query.MediaEntry.poster" title="Link to this definition"></a></dt>
+<dd><p>URL to poster for this ID.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.MediaEntry.release_date">
+<span class="sig-name descname"><span class="pre">release_date</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#simplejustwatchapi.query.MediaEntry.release_date" title="Link to this definition"></a></dt>
+<dd><p>Full release date as a string, e.g. <code class="docutils literal notranslate"><span class="pre">2013-12-16</span></code>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.MediaEntry.release_year">
+<span class="sig-name descname"><span class="pre">release_year</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#simplejustwatchapi.query.MediaEntry.release_year" title="Link to this definition"></a></dt>
+<dd><p>Release year as a number.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.MediaEntry.runtime_minutes">
+<span class="sig-name descname"><span class="pre">runtime_minutes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#simplejustwatchapi.query.MediaEntry.runtime_minutes" title="Link to this definition"></a></dt>
+<dd><p>Runtime in minutes.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.MediaEntry.scoring">
+<span class="sig-name descname"><span class="pre">scoring</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#simplejustwatchapi.query.Scoring" title="simplejustwatchapi.query.Scoring"><span class="pre">Scoring</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#simplejustwatchapi.query.MediaEntry.scoring" title="Link to this definition"></a></dt>
+<dd><p>Scoring data.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.MediaEntry.short_description">
+<span class="sig-name descname"><span class="pre">short_description</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#simplejustwatchapi.query.MediaEntry.short_description" title="Link to this definition"></a></dt>
+<dd><p>Short description of this entry.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.MediaEntry.streaming_charts">
+<span class="sig-name descname"><span class="pre">streaming_charts</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#simplejustwatchapi.query.StreamingCharts" title="simplejustwatchapi.query.StreamingCharts"><span class="pre">StreamingCharts</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#simplejustwatchapi.query.MediaEntry.streaming_charts" title="Link to this definition"></a></dt>
+<dd><p>JustWatch charts/ranks data.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.MediaEntry.title">
+<span class="sig-name descname"><span class="pre">title</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#simplejustwatchapi.query.MediaEntry.title" title="Link to this definition"></a></dt>
+<dd><p>Full title.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.MediaEntry.tmdb_id">
+<span class="sig-name descname"><span class="pre">tmdb_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#simplejustwatchapi.query.MediaEntry.tmdb_id" title="Link to this definition"></a></dt>
+<dd><p>ID of this entry in TMDB.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.MediaEntry.url">
+<span class="sig-name descname"><span class="pre">url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#simplejustwatchapi.query.MediaEntry.url" title="Link to this definition"></a></dt>
+<dd><p>URL to JustWatch with details for this entry.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Offer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simplejustwatchapi.query.</span></span><span class="sig-name descname"><span class="pre">Offer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monetization_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">presentation_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price_currency</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_change_retail_price_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">package</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#simplejustwatchapi.query.OfferPackage" title="simplejustwatchapi.query.OfferPackage"><span class="pre">OfferPackage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">available_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deeplink_roku</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subtitle_languages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">video_technology</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">audio_technology</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">audio_languages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simplejustwatchapi/query.html#Offer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simplejustwatchapi.query.Offer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code></p>
+<p>Parsed single offer from JustWatch GraphQL API for single entry.
+One platform can have multiple offers for one entry available, e.g. renting, buying, etc.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Offer.audio_languages">
+<span class="sig-name descname"><span class="pre">audio_languages</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#simplejustwatchapi.query.Offer.audio_languages" title="Link to this definition"></a></dt>
+<dd><p>List of 2-letter language codes of available audio tracks, e.g. <code class="docutils literal notranslate"><span class="pre">[&quot;en&quot;,</span> <span class="pre">&quot;pt&quot;,</span> <span class="pre">&quot;de&quot;]</span></code>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Offer.audio_technology">
+<span class="sig-name descname"><span class="pre">audio_technology</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#simplejustwatchapi.query.Offer.audio_technology" title="Link to this definition"></a></dt>
+<dd><p>List of known audio technologies available in this offer, e.g. <code class="docutils literal notranslate"><span class="pre">DOLBY_ATMOS</span></code>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Offer.available_to">
+<span class="sig-name descname"><span class="pre">available_to</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#simplejustwatchapi.query.Offer.available_to" title="Link to this definition"></a></dt>
+<dd><p>Date until which this offer will be available.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Offer.deeplink_roku">
+<span class="sig-name descname"><span class="pre">deeplink_roku</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#simplejustwatchapi.query.Offer.deeplink_roku" title="Link to this definition"></a></dt>
+<dd><p>Deeplink to this offer in Roku.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Offer.element_count">
+<span class="sig-name descname"><span class="pre">element_count</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#simplejustwatchapi.query.Offer.element_count" title="Link to this definition"></a></dt>
+<dd><p>Element count, usually 0.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Offer.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#simplejustwatchapi.query.Offer.id" title="Link to this definition"></a></dt>
+<dd><p>Offer ID.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Offer.last_change_retail_price_value">
+<span class="sig-name descname"><span class="pre">last_change_retail_price_value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#simplejustwatchapi.query.Offer.last_change_retail_price_value" title="Link to this definition"></a></dt>
+<dd><p>Previous available price if change in price was recorded.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Offer.monetization_type">
+<span class="sig-name descname"><span class="pre">monetization_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#simplejustwatchapi.query.Offer.monetization_type" title="Link to this definition"></a></dt>
+<dd><p>Type of monetization of this offer, e.g. <code class="docutils literal notranslate"><span class="pre">FLATRATE</span></code> (streaming), <code class="docutils literal notranslate"><span class="pre">RENT</span></code>, <code class="docutils literal notranslate"><span class="pre">BUY</span></code>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Offer.package">
+<span class="sig-name descname"><span class="pre">package</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#simplejustwatchapi.query.OfferPackage" title="simplejustwatchapi.query.OfferPackage"><span class="pre">OfferPackage</span></a></em><a class="headerlink" href="#simplejustwatchapi.query.Offer.package" title="Link to this definition"></a></dt>
+<dd><p>Information about platform on which this offer is available.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Offer.presentation_type">
+<span class="sig-name descname"><span class="pre">presentation_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#simplejustwatchapi.query.Offer.presentation_type" title="Link to this definition"></a></dt>
+<dd><p>Quality of media in this offer, e.g. <code class="docutils literal notranslate"><span class="pre">HD</span></code>, <code class="docutils literal notranslate"><span class="pre">SD</span></code>, <code class="docutils literal notranslate"><span class="pre">4K</span></code>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Offer.price_currency">
+<span class="sig-name descname"><span class="pre">price_currency</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#simplejustwatchapi.query.Offer.price_currency" title="Link to this definition"></a></dt>
+<dd><p>Represents only currency, without price, or value.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Offer.price_string">
+<span class="sig-name descname"><span class="pre">price_string</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#simplejustwatchapi.query.Offer.price_string" title="Link to this definition"></a></dt>
+<dd><p>Current price as a string with currency, suitable for displaying to users.
+Format can change based on used <code class="docutils literal notranslate"><span class="pre">language</span></code> argument.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Offer.price_value">
+<span class="sig-name descname"><span class="pre">price_value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#simplejustwatchapi.query.Offer.price_value" title="Link to this definition"></a></dt>
+<dd><p>Current price as a numeric value.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Offer.subtitle_languages">
+<span class="sig-name descname"><span class="pre">subtitle_languages</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#simplejustwatchapi.query.Offer.subtitle_languages" title="Link to this definition"></a></dt>
+<dd><p>List of 2-letter language codes of available subtitles, e.g. <code class="docutils literal notranslate"><span class="pre">[&quot;en&quot;,</span> <span class="pre">&quot;pt&quot;,</span> <span class="pre">&quot;de&quot;]</span></code>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Offer.type">
+<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#simplejustwatchapi.query.Offer.type" title="Link to this definition"></a></dt>
+<dd><p>Type of offer.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Offer.url">
+<span class="sig-name descname"><span class="pre">url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#simplejustwatchapi.query.Offer.url" title="Link to this definition"></a></dt>
+<dd><p>URL to this offer.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Offer.video_technology">
+<span class="sig-name descname"><span class="pre">video_technology</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#simplejustwatchapi.query.Offer.video_technology" title="Link to this definition"></a></dt>
+<dd><p>List of known video technologies available in this offer, e.g. <code class="docutils literal notranslate"><span class="pre">DOLBY_VISION</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.OfferPackage">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simplejustwatchapi.query.</span></span><span class="sig-name descname"><span class="pre">OfferPackage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">package_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">technical_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">icon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simplejustwatchapi/query.html#OfferPackage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simplejustwatchapi.query.OfferPackage" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code></p>
+<p>Parsed single offer package from JustWatch GraphQL API for single entry.
+Contains information about platform on which given offer is available.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.OfferPackage.icon">
+<span class="sig-name descname"><span class="pre">icon</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#simplejustwatchapi.query.OfferPackage.icon" title="Link to this definition"></a></dt>
+<dd><p>Platform icon URL.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.OfferPackage.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#simplejustwatchapi.query.OfferPackage.id" title="Link to this definition"></a></dt>
+<dd><p>ID, defines whole platform on which this offer is available, not a single offer.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.OfferPackage.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#simplejustwatchapi.query.OfferPackage.name" title="Link to this definition"></a></dt>
+<dd><p>Name of the platform in format suited to display for users.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.OfferPackage.package_id">
+<span class="sig-name descname"><span class="pre">package_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#simplejustwatchapi.query.OfferPackage.package_id" title="Link to this definition"></a></dt>
+<dd><p>Package ID, defines whole platform on which this offer is available, not a single offer.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.OfferPackage.technical_name">
+<span class="sig-name descname"><span class="pre">technical_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#simplejustwatchapi.query.OfferPackage.technical_name" title="Link to this definition"></a></dt>
+<dd><p>Technical name of the platform, usually all lowercase with no whitespaces.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Scoring">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simplejustwatchapi.query.</span></span><span class="sig-name descname"><span class="pre">Scoring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imdb_score</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imdb_votes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmdb_popularity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmdb_score</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tomatometer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">certified_fresh</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jw_rating</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simplejustwatchapi/query.html#Scoring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simplejustwatchapi.query.Scoring" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code></p>
+<p>Parsed data related to user scoring for a single entry.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Scoring.certified_fresh">
+<span class="sig-name descname"><span class="pre">certified_fresh</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#simplejustwatchapi.query.Scoring.certified_fresh" title="Link to this definition"></a></dt>
+<dd><p>Flag whether entry has “Certified Fresh” seal on Rotten Tomatoes.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Scoring.imdb_score">
+<span class="sig-name descname"><span class="pre">imdb_score</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#simplejustwatchapi.query.Scoring.imdb_score" title="Link to this definition"></a></dt>
+<dd><p>IMDB score.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Scoring.imdb_votes">
+<span class="sig-name descname"><span class="pre">imdb_votes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#simplejustwatchapi.query.Scoring.imdb_votes" title="Link to this definition"></a></dt>
+<dd><p>Number of votes on IMDB.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Scoring.jw_rating">
+<span class="sig-name descname"><span class="pre">jw_rating</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#simplejustwatchapi.query.Scoring.jw_rating" title="Link to this definition"></a></dt>
+<dd><p>JustWatch rating.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Scoring.tmdb_popularity">
+<span class="sig-name descname"><span class="pre">tmdb_popularity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#simplejustwatchapi.query.Scoring.tmdb_popularity" title="Link to this definition"></a></dt>
+<dd><p>TMDB popularity score.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Scoring.tmdb_score">
+<span class="sig-name descname"><span class="pre">tmdb_score</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#simplejustwatchapi.query.Scoring.tmdb_score" title="Link to this definition"></a></dt>
+<dd><p>TMDB score.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.Scoring.tomatometer">
+<span class="sig-name descname"><span class="pre">tomatometer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#simplejustwatchapi.query.Scoring.tomatometer" title="Link to this definition"></a></dt>
+<dd><p>Tomatometer score on Rotten Tomatoes.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.StreamingCharts">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simplejustwatchapi.query.</span></span><span class="sig-name descname"><span class="pre">StreamingCharts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rank</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trend_difference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_rank</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">days_in_top_3</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">days_in_top_10</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">days_in_top_100</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">days_in_top_1000</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simplejustwatchapi/query.html#StreamingCharts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simplejustwatchapi.query.StreamingCharts" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code></p>
+<p>Parsed data related to JustWatch rank for a single entry.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.StreamingCharts.days_in_top_10">
+<span class="sig-name descname"><span class="pre">days_in_top_10</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#simplejustwatchapi.query.StreamingCharts.days_in_top_10" title="Link to this definition"></a></dt>
+<dd><p>Number of days in top 10 ranks.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.StreamingCharts.days_in_top_100">
+<span class="sig-name descname"><span class="pre">days_in_top_100</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#simplejustwatchapi.query.StreamingCharts.days_in_top_100" title="Link to this definition"></a></dt>
+<dd><p>Number of days in top 100 ranks.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.StreamingCharts.days_in_top_1000">
+<span class="sig-name descname"><span class="pre">days_in_top_1000</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#simplejustwatchapi.query.StreamingCharts.days_in_top_1000" title="Link to this definition"></a></dt>
+<dd><p>Number of days in top 1000 ranks.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.StreamingCharts.days_in_top_3">
+<span class="sig-name descname"><span class="pre">days_in_top_3</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#simplejustwatchapi.query.StreamingCharts.days_in_top_3" title="Link to this definition"></a></dt>
+<dd><p>Number of days in top 3 ranks.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.StreamingCharts.rank">
+<span class="sig-name descname"><span class="pre">rank</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#simplejustwatchapi.query.StreamingCharts.rank" title="Link to this definition"></a></dt>
+<dd><p>Rank on JustWatch.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.StreamingCharts.top_rank">
+<span class="sig-name descname"><span class="pre">top_rank</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#simplejustwatchapi.query.StreamingCharts.top_rank" title="Link to this definition"></a></dt>
+<dd><p>Top rank ever reached.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.StreamingCharts.trend">
+<span class="sig-name descname"><span class="pre">trend</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#simplejustwatchapi.query.StreamingCharts.trend" title="Link to this definition"></a></dt>
+<dd><p>Trend in ranking on JustWatch, <code class="docutils literal notranslate"><span class="pre">UP</span></code>, <code class="docutils literal notranslate"><span class="pre">DOWN</span></code>, <code class="docutils literal notranslate"><span class="pre">STABLE</span></code>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.StreamingCharts.trend_difference">
+<span class="sig-name descname"><span class="pre">trend_difference</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#simplejustwatchapi.query.StreamingCharts.trend_difference" title="Link to this definition"></a></dt>
+<dd><p>Difference in rank; related to trend.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.StreamingCharts.updated">
+<span class="sig-name descname"><span class="pre">updated</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#simplejustwatchapi.query.StreamingCharts.updated" title="Link to this definition"></a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">2024-10-06T09:20:36.397Z</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Date when rank data was last updated as a string, e.g.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.parse_details_response">
+<span class="sig-prename descclassname"><span class="pre">simplejustwatchapi.query.</span></span><span class="sig-name descname"><span class="pre">parse_details_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#simplejustwatchapi.query.MediaEntry" title="simplejustwatchapi.query.MediaEntry"><span class="pre">MediaEntry</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/simplejustwatchapi/query.html#parse_details_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simplejustwatchapi.query.parse_details_response" title="Link to this definition"></a></dt>
+<dd><p>Parse response from details query from JustWatch GraphQL API.
+Parses response for <code class="docutils literal notranslate"><span class="pre">GetTitleNode</span></code> query.</p>
+<p>If API responded with an internal error (mostly due to not found node ID),
+then <code class="docutils literal notranslate"><span class="pre">None</span></code> will be returned instead.</p>
+<p>Meant to be used together with <a class="reference internal" href="#simplejustwatchapi.query.prepare_details_request" title="simplejustwatchapi.query.prepare_details_request"><code class="xref py py-func docutils literal notranslate"><span class="pre">prepare_details_request()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>json</strong> – JSON returned by JustWatch GraphQL API</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Parsed received JSON as a <code class="docutils literal notranslate"><span class="pre">MediaEntry</span></code> NamedTuple,
+or <code class="docutils literal notranslate"><span class="pre">None</span></code> in case data for a given node ID was not found</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.parse_offers_for_countries_response">
+<span class="sig-prename descclassname"><span class="pre">simplejustwatchapi.query.</span></span><span class="sig-name descname"><span class="pre">parse_offers_for_countries_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">countries</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#simplejustwatchapi.query.Offer" title="simplejustwatchapi.query.Offer"><span class="pre">Offer</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/simplejustwatchapi/query.html#parse_offers_for_countries_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simplejustwatchapi.query.parse_offers_for_countries_response" title="Link to this definition"></a></dt>
+<dd><p>Parse response from offers query from JustWatch GraphQL API.
+Parses response for <code class="docutils literal notranslate"><span class="pre">GetTitleOffers</span></code> query.</p>
+<p>Response if searched for country codes passed as <code class="docutils literal notranslate"><span class="pre">countries</span></code> argument.
+Countries in JSON response which are not present in <code class="docutils literal notranslate"><span class="pre">countries</span></code> set will be ignored.
+If response doesn’t have offers for a country, then that country still will be present
+in returned dict, just with an empty list as value.</p>
+<p>Meant to be used together with <a class="reference internal" href="#simplejustwatchapi.query.prepare_offers_for_countries_request" title="simplejustwatchapi.query.prepare_offers_for_countries_request"><code class="xref py py-func docutils literal notranslate"><span class="pre">prepare_offers_for_countries_request()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>json</strong> – JSON returned by JustWatch GraphQL API</p></li>
+<li><p><strong>countries</strong> – set of countries to look for in API response</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dict, where keys are matching <code class="docutils literal notranslate"><span class="pre">countries</span></code> argument and values are offers for a given
+country parsed from JSON response.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.parse_search_response">
+<span class="sig-prename descclassname"><span class="pre">simplejustwatchapi.query.</span></span><span class="sig-name descname"><span class="pre">parse_search_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#simplejustwatchapi.query.MediaEntry" title="simplejustwatchapi.query.MediaEntry"><span class="pre">MediaEntry</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/simplejustwatchapi/query.html#parse_search_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simplejustwatchapi.query.parse_search_response" title="Link to this definition"></a></dt>
+<dd><p>Parse response from search query from JustWatch GraphQL API.
+Parses response for <code class="docutils literal notranslate"><span class="pre">GetSearchTitles</span></code> query.</p>
+<p>If API didn’t return any data, then an empty list is returned.</p>
+<p>Meant to be used together with <a class="reference internal" href="#simplejustwatchapi.query.prepare_search_request" title="simplejustwatchapi.query.prepare_search_request"><code class="xref py py-func docutils literal notranslate"><span class="pre">prepare_search_request()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>json</strong> – JSON returned by JustWatch GraphQL API</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Parsed received JSON as a list of <code class="docutils literal notranslate"><span class="pre">MediaEntry</span></code> NamedTuples</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.prepare_details_request">
+<span class="sig-prename descclassname"><span class="pre">simplejustwatchapi.query.</span></span><span class="sig-name descname"><span class="pre">prepare_details_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">country</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">best_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/simplejustwatchapi/query.html#prepare_details_request"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simplejustwatchapi.query.prepare_details_request" title="Link to this definition"></a></dt>
+<dd><p>Prepare a details request for specified node ID to JustWatch GraphQL API.
+Creates a <code class="docutils literal notranslate"><span class="pre">GetTitleNode</span></code> GraphQL query.</p>
+<p>Country code should be two uppercase letters, however it will be auto-converted to uppercase.</p>
+<p>Meant to be used together with <a class="reference internal" href="#simplejustwatchapi.query.parse_details_response" title="simplejustwatchapi.query.parse_details_response"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_details_response()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node_id</strong> – node ID of entry to get details for</p></li>
+<li><p><strong>country</strong> – country to search for offers</p></li>
+<li><p><strong>language</strong> – language of responses</p></li>
+<li><p><strong>best_only</strong> – return only best offers if <code class="docutils literal notranslate"><span class="pre">True</span></code>, return all offers if <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>JSON/dict with GraphQL POST body</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.prepare_offers_for_countries_request">
+<span class="sig-prename descclassname"><span class="pre">simplejustwatchapi.query.</span></span><span class="sig-name descname"><span class="pre">prepare_offers_for_countries_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">countries</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">best_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/simplejustwatchapi/query.html#prepare_offers_for_countries_request"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simplejustwatchapi.query.prepare_offers_for_countries_request" title="Link to this definition"></a></dt>
+<dd><p>Prepare an offers request for specified node ID and for all specified countries
+to JustWatch GraphQL API.
+Creates a <code class="docutils literal notranslate"><span class="pre">GetTitleOffers</span></code> GraphQL query.</p>
+<p>Country codes should be two uppercase letters, however they will be auto-converted to uppercase.
+<code class="docutils literal notranslate"><span class="pre">countries</span></code> argument mustn’t be empty.</p>
+<p>Meant to be used together with <a class="reference internal" href="#simplejustwatchapi.query.parse_offers_for_countries_response" title="simplejustwatchapi.query.parse_offers_for_countries_response"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_offers_for_countries_response()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node_id</strong> – node ID of entry to get details for</p></li>
+<li><p><strong>countries</strong> – list of country codes to search for offers</p></li>
+<li><p><strong>language</strong> – language of responses</p></li>
+<li><p><strong>best_only</strong> – return only best offers if <code class="docutils literal notranslate"><span class="pre">True</span></code>, return all offers if <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>JSON/dict with GraphQL POST body</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simplejustwatchapi.query.prepare_search_request">
+<span class="sig-prename descclassname"><span class="pre">simplejustwatchapi.query.</span></span><span class="sig-name descname"><span class="pre">prepare_search_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">country</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">best_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/simplejustwatchapi/query.html#prepare_search_request"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simplejustwatchapi.query.prepare_search_request" title="Link to this definition"></a></dt>
+<dd><p>Prepare search request for JustWatch GraphQL API.
+Creates a <code class="docutils literal notranslate"><span class="pre">GetSearchTitles</span></code> GraphQL query.</p>
+<p>Country code should be two uppercase letters, however it will be auto-converted to uppercase.</p>
+<p>Meant to be used together with <a class="reference internal" href="#simplejustwatchapi.query.parse_search_response" title="simplejustwatchapi.query.parse_search_response"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_search_response()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title</strong> – title to search</p></li>
+<li><p><strong>country</strong> – country to search for offers</p></li>
+<li><p><strong>language</strong> – language of responses</p></li>
+<li><p><strong>count</strong> – how many responses should be returned</p></li>
+<li><p><strong>best_only</strong> – return only best offers if <code class="docutils literal notranslate"><span class="pre">True</span></code>, return all offers if <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>JSON/dict with GraphQL POST body</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-simplejustwatchapi">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-simplejustwatchapi" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="simplejustwatchapi" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Electronic-Mango.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

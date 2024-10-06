@@ -20,7 +20,11 @@ result = [
         release_year=1999,
         release_date="1999-03-31",
         runtime_minutes=136,
-        short_description="Set in the 22nd century, The Matrix tells the story of a computer hacker who joins a group of underground insurgents fighting the vast and powerful computers who now rule the earth.",
+        short_description=(
+            "Set in the 22nd century, The Matrix tells the story of a computer hacker who joins a "
+            "group of underground insurgents fighting the vast and powerful computers who now rule "
+            "the earth."
+        ),
         genres=["scf", "act"],
         imdb_id="tt0133093",
         tmdb_id="603",
@@ -61,10 +65,15 @@ result = [
                     technical_name="rokuchannel",
                     icon="https://images.justwatch.com/icon/76972041/s100/rokuchannel.png",
                 ),
-                url="https://therokuchannel.roku.com/details/e981c230598059f2bf41f94156700488/the-matrix?source=bing",
+                url=(
+                    "https://therokuchannel.roku.com/"
+                    "details/e981c230598059f2bf41f94156700488/the-matrix?source=bing"
+                ),
                 element_count=0,
                 available_to=None,
-                deeplink_roku="launch/151908?contentID=e981c230598059f2bf41f94156700488&MediaType=movie",
+                deeplink_roku=(
+                    "launch/151908?contentID=e981c230598059f2bf41f94156700488&MediaType=movie"
+                ),
                 subtitle_languages=[],
                 video_technology=[],
                 audio_technology=[],
@@ -86,7 +95,10 @@ result = [
                     technical_name="fandango",
                     icon="https://images.justwatch.com/icon/811323/s100/fandango.png",
                 ),
-                url="https://www.fandango.com/the-matrix-25th-anniversary-2024-235380/movie-overview",
+                url=(
+                    "https://www.fandango.com/"
+                    "the-matrix-25th-anniversary-2024-235380/movie-overview"
+                ),
                 element_count=0,
                 available_to=None,
                 deeplink_roku=None,
@@ -111,10 +123,18 @@ result = [
                     technical_name="itunes",
                     icon="https://images.justwatch.com/icon/190848813/s100/itunes.png",
                 ),
-                url="https://tv.apple.com/us/movie/the-matrix/umc.cmc.af8k9kcq9r1s1qmmdxpq4itn?at=1000l3V2&ct=app_tv&itscg=30200&itsct=justwatch_tv_12&playableId=tvs.sbd.9001%3A271469518",
+                url=(
+                    "https://tv.apple.com/us/movie/the-matrix/umc.cmc.af8k9kcq9r1s1qmmdxpq4itn"
+                    "?at=1000l3V2&ct=app_tv&itscg=30200&itsct=justwatch_tv_12"
+                    "&playableId=tvs.sbd.9001%3A271469518"
+                ),
                 element_count=0,
                 available_to=None,
-                deeplink_roku="launch/551012?contentID=https%3A%2F%2Ftv.apple.com%2Fus%2Fmovie%2Fthe-matrix%2Fumc.cmc.af8k9kcq9r1s1qmmdxpq4itn%3FplayableId%3Dtvs.sbd.9001%253A271469518&MediaType=movie",
+                deeplink_roku=(
+                    "launch/551012?contentID=https%3A%2F%2Ftv.apple.com%2Fus%2Fmovie%2Fthe-matrix%2"
+                    "Fumc.cmc.af8k9kcq9r1s1qmmdxpq4itn%3FplayableId%3Dtvs.sbd.9001%253A271469518"
+                    "&MediaType=movie"
+                ),
                 subtitle_languages=[
                     "de",
                     "fi",
@@ -165,7 +185,10 @@ result = [
                     technical_name="amazon",
                     icon="https://images.justwatch.com/icon/430993/s100/amazon.png",
                 ),
-                url="https://watch.amazon.com/detail?gti=amzn1.dv.gti.dea9f6b7-e0a0-38c9-7467-d6079c6fb4f0",
+                url=(
+                    "https://watch.amazon.com/"
+                    "detail?gti=amzn1.dv.gti.dea9f6b7-e0a0-38c9-7467-d6079c6fb4f0"
+                ),
                 element_count=0,
                 available_to=None,
                 deeplink_roku="launch/13?contentID=B0B6DB8G7C&MediaType=movie",
@@ -190,7 +213,10 @@ result = [
                     technical_name="play",
                     icon="https://images.justwatch.com/icon/169478387/s100/play.png",
                 ),
-                url="https://play.google.com/store/movies/details/The_Matrix?gl=US&hl=en&id=ilPevtGe57s.P",
+                url=(
+                    "https://play.google.com/"
+                    "store/movies/details/The_Matrix?gl=US&hl=en&id=ilPevtGe57s.P"
+                ),
                 element_count=0,
                 available_to=None,
                 deeplink_roku=None,
@@ -373,7 +399,19 @@ result = [
         release_year=2003,
         release_date="2003-05-15",
         runtime_minutes=138,
-        short_description="Six months after the events depicted in The Matrix, Neo has proved to be a good omen for the free humans, as more and more humans are being freed from the matrix and brought to Zion, the one and only stronghold of the Resistance.  Neo himself has discovered his superpowers including super speed, ability to see the codes of the things inside the matrix and a certain degree of pre-cognition. But a nasty piece of news hits the human resistance: 250,000 machine sentinels are digging to Zion and would reach them in 72 hours. As Zion prepares for the ultimate war, Neo, Morpheus and Trinity are advised by the Oracle to find the Keymaker who would help them reach the Source.  Meanwhile Neo's recurrent dreams depicting Trinity's death have got him worried and as if it was not enough, Agent Smith has somehow escaped deletion, has become more powerful than before and has fixed Neo as his next target.",
+        short_description=(
+            "Six months after the events depicted in The Matrix, Neo has proved to be a good omen "
+            "for the free humans, as more and more humans are being freed from the matrix and "
+            "brought to Zion, the one and only stronghold of the Resistance.  Neo himself has "
+            "discovered his superpowers including super speed, ability to see the codes of the "
+            "things inside the matrix and a certain degree of pre-cognition. But a nasty piece of "
+            "news hits the human resistance: 250,000 machine sentinels are digging to Zion and "
+            "would reach them in 72 hours. As Zion prepares for the ultimate war, Neo, Morpheus "
+            "and Trinity are advised by the Oracle to find the Keymaker who would help them reach "
+            "the Source.  Meanwhile Neo's recurrent dreams depicting Trinity's death have got him "
+            "worried and as if it was not enough, Agent Smith has somehow escaped deletion, has "
+            "become more powerful than before and has fixed Neo as his next target."
+        ),
         genres=["scf", "act", "trl"],
         imdb_id="tt0234215",
         tmdb_id="604",
@@ -414,10 +452,15 @@ result = [
                     technical_name="rokuchannel",
                     icon="https://images.justwatch.com/icon/76972041/s100/rokuchannel.png",
                 ),
-                url="https://therokuchannel.roku.com/details/9e0cb3c5c86051e18be046a12b5b19b8/the-matrix-reloaded?source=bing",
+                url=(
+                    "https://therokuchannel.roku.com/"
+                    "details/9e0cb3c5c86051e18be046a12b5b19b8/the-matrix-reloaded?source=bing"
+                ),
                 element_count=0,
                 available_to=None,
-                deeplink_roku="launch/151908?contentID=9e0cb3c5c86051e18be046a12b5b19b8&MediaType=movie",
+                deeplink_roku=(
+                    "launch/151908?contentID=9e0cb3c5c86051e18be046a12b5b19b8&MediaType=movie"
+                ),
                 subtitle_languages=[],
                 video_technology=[],
                 audio_technology=[],
@@ -439,10 +482,18 @@ result = [
                     technical_name="itunes",
                     icon="https://images.justwatch.com/icon/190848813/s100/itunes.png",
                 ),
-                url="https://tv.apple.com/us/movie/the-matrix-reloaded/umc.cmc.5b3qv27alugfj95rrag186slh?at=1000l3V2&ct=app_tv&itscg=30200&itsct=justwatch_tv_12&playableId=tvs.sbd.9001%3A283218560",
+                url=(
+                    "https://tv.apple.com/us/movie/the-matrix-reloaded/"
+                    "umc.cmc.5b3qv27alugfj95rrag186slh?at=1000l3V2&ct=app_tv&itscg=30200"
+                    "&itsct=justwatch_tv_12&playableId=tvs.sbd.9001%3A283218560"
+                ),
                 element_count=0,
                 available_to=None,
-                deeplink_roku="launch/551012?contentID=https%3A%2F%2Ftv.apple.com%2Fus%2Fmovie%2Fthe-matrix-reloaded%2Fumc.cmc.5b3qv27alugfj95rrag186slh%3FplayableId%3Dtvs.sbd.9001%253A283218560&MediaType=movie",
+                deeplink_roku=(
+                    "launch/551012?contentID=https%3A%2F%2Ftv.apple.com%2Fus%2Fmovie%2"
+                    "Fthe-matrix-reloaded%2Fumc.cmc.5b3qv27alugfj95rrag186slh%3FplayableId%3"
+                    "Dtvs.sbd.9001%253A283218560&MediaType=movie"
+                ),
                 subtitle_languages=[
                     "no",
                     "sl",
@@ -491,7 +542,10 @@ result = [
                     technical_name="amazon",
                     icon="https://images.justwatch.com/icon/430993/s100/amazon.png",
                 ),
-                url="https://watch.amazon.com/detail?gti=amzn1.dv.gti.8ab2da9b-171c-3467-0647-402aac1572c3",
+                url=(
+                    "https://watch.amazon.com/"
+                    "detail?gti=amzn1.dv.gti.8ab2da9b-171c-3467-0647-402aac1572c3"
+                ),
                 element_count=0,
                 available_to=None,
                 deeplink_roku="launch/13?contentID=B0C7S9WFHK&MediaType=movie",
@@ -541,7 +595,8 @@ result = [
                     technical_name="play",
                     icon="https://images.justwatch.com/icon/169478387/s100/play.png",
                 ),
-                url="https://play.google.com/store/movies/details/The_Matrix_Reloaded?gl=US&hl=en&id=uRVdSV8nBzw.P",
+                url="https://play.google.com/"
+                "store/movies/details/The_Matrix_Reloaded?gl=US&hl=en&id=uRVdSV8nBzw.P",
                 element_count=0,
                 available_to=None,
                 deeplink_roku=None,
@@ -722,7 +777,10 @@ result = [
         release_year=2021,
         release_date="2021-12-16",
         runtime_minutes=148,
-        short_description="Plagued by strange memories, Neo's life takes an unexpected turn when he finds himself back inside the Matrix.",
+        short_description=(
+            "Plagued by strange memories, Neo's life takes an unexpected turn when he finds "
+            "himself back inside the Matrix."
+        ),
         genres=["scf", "act"],
         imdb_id="tt10838180",
         tmdb_id="624860",
@@ -823,7 +881,10 @@ result = [
                     technical_name="amazonhbomax",
                     icon="https://images.justwatch.com/icon/305591736/s100/amazonhbomax.png",
                 ),
-                url="https://watch.amazon.com/detail?gti=amzn1.dv.gti.bd6bd6ed-93ce-41f7-a06d-3a1277b94fcb",
+                url=(
+                    "https://watch.amazon.com/"
+                    "detail?gti=amzn1.dv.gti.bd6bd6ed-93ce-41f7-a06d-3a1277b94fcb"
+                ),
                 element_count=0,
                 available_to=None,
                 deeplink_roku="launch/13?contentID=B0B8TNDQ1M&MediaType=movie",
@@ -948,10 +1009,18 @@ result = [
                     technical_name="itunes",
                     icon="https://images.justwatch.com/icon/190848813/s100/itunes.png",
                 ),
-                url="https://tv.apple.com/us/movie/the-matrix-resurrections/umc.cmc.1xfut1sq2hvb9faupyabxog7q?at=1000l3V2&ct=app_tv&itscg=30200&itsct=justwatch_tv_12&playableId=tvs.sbd.9001%3A1595166379",
+                url=(
+                    "https://tv.apple.com/us/movie/the-matrix-resurrections/"
+                    "umc.cmc.1xfut1sq2hvb9faupyabxog7q?at=1000l3V2&ct=app_tv&itscg=30200"
+                    "&itsct=justwatch_tv_12&playableId=tvs.sbd.9001%3A1595166379"
+                ),
                 element_count=0,
                 available_to=None,
-                deeplink_roku="launch/551012?contentID=https%3A%2F%2Ftv.apple.com%2Fus%2Fmovie%2Fthe-matrix-resurrections%2Fumc.cmc.1xfut1sq2hvb9faupyabxog7q%3FplayableId%3Dtvs.sbd.9001%253A1595166379&MediaType=movie",
+                deeplink_roku=(
+                    "launch/551012?contentID=https%3A%2F%2Ftv.apple.com%2Fus%2Fmovie%2F"
+                    "the-matrix-resurrections%2Fumc.cmc.1xfut1sq2hvb9faupyabxog7q%3F"
+                    "playableId%3Dtvs.sbd.9001%253A1595166379&MediaType=movie"
+                ),
                 subtitle_languages=[
                     "lt",
                     "sv",
@@ -1001,7 +1070,10 @@ result = [
                     technical_name="play",
                     icon="https://images.justwatch.com/icon/169478387/s100/play.png",
                 ),
-                url="https://play.google.com/store/movies/details/The_Matrix_Resurrections?gl=US&hl=en&id=aoFm38NvOCY.P",
+                url=(
+                    "https://play.google.com/"
+                    "store/movies/details/The_Matrix_Resurrections?gl=US&hl=en&id=aoFm38NvOCY.P"
+                ),
                 element_count=0,
                 available_to=None,
                 deeplink_roku=None,
@@ -1182,7 +1254,10 @@ result = [
                     technical_name="amazon",
                     icon="https://images.justwatch.com/icon/430993/s100/amazon.png",
                 ),
-                url="https://watch.amazon.com/detail?gti=amzn1.dv.gti.bd6bd6ed-93ce-41f7-a06d-3a1277b94fcb",
+                url=(
+                    "https://watch.amazon.com/"
+                    "detail?gti=amzn1.dv.gti.bd6bd6ed-93ce-41f7-a06d-3a1277b94fcb"
+                ),
                 element_count=0,
                 available_to=None,
                 deeplink_roku="launch/13?contentID=B0B8TNDQ1M&MediaType=movie",

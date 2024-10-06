@@ -19,7 +19,10 @@ result = MediaEntry(
     release_year=1987,
     release_date="1987-06-12",
     runtime_minutes=107,
-    short_description="A team of elite commandos on a secret mission in a Central American jungle come to find themselves hunted by an extraterrestrial warrior.",
+    short_description=(
+        "A team of elite commandos on a secret mission in a Central American jungle come to find "
+        "themselves hunted by an extraterrestrial warrior."
+    ),
     genres=["act", "trl", "scf", "hrr"],
     imdb_id="tt0093773",
     tmdb_id="106",
@@ -220,10 +223,18 @@ result = MediaEntry(
                 technical_name="itunes",
                 icon="https://images.justwatch.com/icon/190848813/s100/itunes.png",
             ),
-            url="https://tv.apple.com/us/movie/predator/umc.cmc.4axzo5v4q64albtyks88pbp01?at=1000l3V2&ct=app_tv&itscg=30200&itsct=justwatch_tv_12&playableId=tvs.sbd.9001%3A363331575",
+            url=(
+                "https://tv.apple.com/us/movie/predator/umc.cmc.4axzo5v4q64albtyks88pbp01"
+                "?at=1000l3V2&ct=app_tv&itscg=30200&itsct=justwatch_tv_12"
+                "&playableId=tvs.sbd.9001%3A363331575"
+            ),
             element_count=0,
             available_to=None,
-            deeplink_roku="launch/551012?contentID=https%3A%2F%2Ftv.apple.com%2Fus%2Fmovie%2Fpredator%2Fumc.cmc.4axzo5v4q64albtyks88pbp01%3FplayableId%3Dtvs.sbd.9001%253A363331575&MediaType=movie",
+            deeplink_roku=(
+                "launch/551012?contentID=https%3A%2F%2Ftv.apple.com%2Fus%2Fmovie%2Fpredator%2"
+                "Fumc.cmc.4axzo5v4q64albtyks88pbp01%3FplayableId%3Dtvs.sbd.9001%253A363331575"
+                "&MediaType=movie"
+            ),
             subtitle_languages=[
                 "no",
                 "nl",
@@ -270,10 +281,18 @@ result = MediaEntry(
                 technical_name="itunes",
                 icon="https://images.justwatch.com/icon/190848813/s100/itunes.png",
             ),
-            url="https://tv.apple.com/us/movie/predator/umc.cmc.4axzo5v4q64albtyks88pbp01?at=1000l3V2&ct=app_tv&itscg=30200&itsct=justwatch_tv_12&playableId=tvs.sbd.9001%3A363331575",
+            url=(
+                "https://tv.apple.com/us/movie/predator/umc.cmc.4axzo5v4q64albtyks88pbp01"
+                "?at=1000l3V2&ct=app_tv&itscg=30200&itsct=justwatch_tv_12"
+                "&playableId=tvs.sbd.9001%3A363331575"
+            ),
             element_count=0,
             available_to=None,
-            deeplink_roku="launch/551012?contentID=https%3A%2F%2Ftv.apple.com%2Fus%2Fmovie%2Fpredator%2Fumc.cmc.4axzo5v4q64albtyks88pbp01%3FplayableId%3Dtvs.sbd.9001%253A363331575&MediaType=movie",
+            deeplink_roku=(
+                "launch/551012?contentID=https%3A%2F%2Ftv.apple.com%2Fus%2Fmovie%2Fpredator%2"
+                "Fumc.cmc.4axzo5v4q64albtyks88pbp01%3FplayableId%3Dtvs.sbd.9001%253A363331575"
+                "&MediaType=movie"
+            ),
             subtitle_languages=[
                 "hr",
                 "hu",
@@ -320,10 +339,18 @@ result = MediaEntry(
                 technical_name="itunes",
                 icon="https://images.justwatch.com/icon/190848813/s100/itunes.png",
             ),
-            url="https://tv.apple.com/us/movie/predator/umc.cmc.4axzo5v4q64albtyks88pbp01?at=1000l3V2&ct=app_tv&itscg=30200&itsct=justwatch_tv_12&playableId=tvs.sbd.9001%3A363331575",
+            url=(
+                "https://tv.apple.com/us/movie/predator/umc.cmc.4axzo5v4q64albtyks88pbp01"
+                "?at=1000l3V2&ct=app_tv&itscg=30200&itsct=justwatch_tv_12"
+                "&playableId=tvs.sbd.9001%3A363331575"
+            ),
             element_count=0,
             available_to=None,
-            deeplink_roku="launch/551012?contentID=https%3A%2F%2Ftv.apple.com%2Fus%2Fmovie%2Fpredator%2Fumc.cmc.4axzo5v4q64albtyks88pbp01%3FplayableId%3Dtvs.sbd.9001%253A363331575&MediaType=movie",
+            deeplink_roku=(
+                "launch/551012?contentID=https%3A%2F%2Ftv.apple.com%2Fus%2Fmovie%2Fpredator%2"
+                "Fumc.cmc.4axzo5v4q64albtyks88pbp01%3FplayableId%3Dtvs.sbd.9001%253A363331575"
+                "&MediaType=movie"
+            ),
             subtitle_languages=[
                 "da",
                 "de",
@@ -370,7 +397,10 @@ result = MediaEntry(
                 technical_name="amazon",
                 icon="https://images.justwatch.com/icon/430993/s100/amazon.png",
             ),
-            url="https://watch.amazon.com/detail?gti=amzn1.dv.gti.495d507c-a45a-4141-bdb1-62600e70d199",
+            url=(
+                "https://watch.amazon.com/"
+                "detail?gti=amzn1.dv.gti.495d507c-a45a-4141-bdb1-62600e70d199"
+            ),
             element_count=0,
             available_to=None,
             deeplink_roku="launch/13?contentID=B0B6XJCS2Y&MediaType=movie",
@@ -395,7 +425,10 @@ result = MediaEntry(
                 technical_name="amazon",
                 icon="https://images.justwatch.com/icon/430993/s100/amazon.png",
             ),
-            url="https://watch.amazon.com/detail?gti=amzn1.dv.gti.495d507c-a45a-4141-bdb1-62600e70d199",
+            url=(
+                "https://watch.amazon.com/"
+                "detail?gti=amzn1.dv.gti.495d507c-a45a-4141-bdb1-62600e70d199"
+            ),
             element_count=0,
             available_to=None,
             deeplink_roku="launch/13?contentID=B0B6XJCS2Y&MediaType=movie",
@@ -695,10 +728,18 @@ result = MediaEntry(
                 technical_name="itunes",
                 icon="https://images.justwatch.com/icon/190848813/s100/itunes.png",
             ),
-            url="https://tv.apple.com/us/movie/predator/umc.cmc.4axzo5v4q64albtyks88pbp01?at=1000l3V2&ct=app_tv&itscg=30200&itsct=justwatch_tv_12&playableId=tvs.sbd.9001%3A363331575",
+            url=(
+                "https://tv.apple.com/us/movie/predator/umc.cmc.4axzo5v4q64albtyks88pbp01"
+                "?at=1000l3V2&ct=app_tv&itscg=30200&itsct=justwatch_tv_12"
+                "&playableId=tvs.sbd.9001%3A363331575"
+            ),
             element_count=0,
             available_to=None,
-            deeplink_roku="launch/551012?contentID=https%3A%2F%2Ftv.apple.com%2Fus%2Fmovie%2Fpredator%2Fumc.cmc.4axzo5v4q64albtyks88pbp01%3FplayableId%3Dtvs.sbd.9001%253A363331575&MediaType=movie",
+            deeplink_roku=(
+                "launch/551012?contentID=https%3A%2F%2Ftv.apple.com%2Fus%2Fmovie%2Fpredator%2"
+                "Fumc.cmc.4axzo5v4q64albtyks88pbp01%3FplayableId%3Dtvs.sbd.9001%253A363331575"
+                "&MediaType=movie"
+            ),
             subtitle_languages=[
                 "no",
                 "pl",
@@ -745,10 +786,18 @@ result = MediaEntry(
                 technical_name="itunes",
                 icon="https://images.justwatch.com/icon/190848813/s100/itunes.png",
             ),
-            url="https://tv.apple.com/us/movie/predator/umc.cmc.4axzo5v4q64albtyks88pbp01?at=1000l3V2&ct=app_tv&itscg=30200&itsct=justwatch_tv_12&playableId=tvs.sbd.9001%3A363331575",
+            url=(
+                "https://tv.apple.com/us/movie/predator/umc.cmc.4axzo5v4q64albtyks88pbp01"
+                "?at=1000l3V2&ct=app_tv&itscg=30200&itsct=justwatch_tv_12"
+                "&playableId=tvs.sbd.9001%3A363331575"
+            ),
             element_count=0,
             available_to=None,
-            deeplink_roku="launch/551012?contentID=https%3A%2F%2Ftv.apple.com%2Fus%2Fmovie%2Fpredator%2Fumc.cmc.4axzo5v4q64albtyks88pbp01%3FplayableId%3Dtvs.sbd.9001%253A363331575&MediaType=movie",
+            deeplink_roku=(
+                "launch/551012?contentID=https%3A%2F%2Ftv.apple.com%2Fus%2Fmovie%2Fpredator%2"
+                "Fumc.cmc.4axzo5v4q64albtyks88pbp01%3FplayableId%3Dtvs.sbd.9001%253A363331575"
+                "&MediaType=movie"
+            ),
             subtitle_languages=[
                 "ar",
                 "bg",
@@ -795,10 +844,18 @@ result = MediaEntry(
                 technical_name="itunes",
                 icon="https://images.justwatch.com/icon/190848813/s100/itunes.png",
             ),
-            url="https://tv.apple.com/us/movie/predator/umc.cmc.4axzo5v4q64albtyks88pbp01?at=1000l3V2&ct=app_tv&itscg=30200&itsct=justwatch_tv_12&playableId=tvs.sbd.9001%3A363331575",
+            url=(
+                "https://tv.apple.com/us/movie/predator/umc.cmc.4axzo5v4q64albtyks88pbp01"
+                "?at=1000l3V2&ct=app_tv&itscg=30200&itsct=justwatch_tv_12"
+                "&playableId=tvs.sbd.9001%3A363331575"
+            ),
             element_count=0,
             available_to=None,
-            deeplink_roku="launch/551012?contentID=https%3A%2F%2Ftv.apple.com%2Fus%2Fmovie%2Fpredator%2Fumc.cmc.4axzo5v4q64albtyks88pbp01%3FplayableId%3Dtvs.sbd.9001%253A363331575&MediaType=movie",
+            deeplink_roku=(
+                "launch/551012?contentID=https%3A%2F%2Ftv.apple.com%2Fus%2Fmovie%2Fpredator%2"
+                "Fumc.cmc.4axzo5v4q64albtyks88pbp01%3FplayableId%3Dtvs.sbd.9001%253A363331575"
+                "&MediaType=movie"
+            ),
             subtitle_languages=[
                 "ar",
                 "da",
@@ -845,7 +902,10 @@ result = MediaEntry(
                 technical_name="amazon",
                 icon="https://images.justwatch.com/icon/430993/s100/amazon.png",
             ),
-            url="https://watch.amazon.com/detail?gti=amzn1.dv.gti.495d507c-a45a-4141-bdb1-62600e70d199",
+            url=(
+                "https://watch.amazon.com/"
+                "detail?gti=amzn1.dv.gti.495d507c-a45a-4141-bdb1-62600e70d199"
+            ),
             element_count=0,
             available_to=None,
             deeplink_roku="launch/13?contentID=B0B6XJCS2Y&MediaType=movie",
@@ -870,7 +930,10 @@ result = MediaEntry(
                 technical_name="amazon",
                 icon="https://images.justwatch.com/icon/430993/s100/amazon.png",
             ),
-            url="https://watch.amazon.com/detail?gti=amzn1.dv.gti.495d507c-a45a-4141-bdb1-62600e70d199",
+            url=(
+                "https://watch.amazon.com/"
+                "detail?gti=amzn1.dv.gti.495d507c-a45a-4141-bdb1-62600e70d199"
+            ),
             element_count=0,
             available_to=None,
             deeplink_roku="launch/13?contentID=B0B6XJCS2Y&MediaType=movie",

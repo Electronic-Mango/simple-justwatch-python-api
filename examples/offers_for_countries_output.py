@@ -21,7 +21,10 @@ result = {
                 technical_name="skygo",
                 icon="https://images.justwatch.com/icon/246622422/s100/skygo.png",
             ),
-            url="https://www.sky.com/watch/sky-go/all?uuid=8ffe95c2-7931-4c4e-952d-f3d6e460e1ee&videoId=A5EK6sKrAaydmp5V5Vghu",
+            url=(
+                "https://www.sky.com/watch/sky-go/all"
+                "?uuid=8ffe95c2-7931-4c4e-952d-f3d6e460e1ee&videoId=A5EK6sKrAaydmp5V5Vghu"
+            ),
             element_count=0,
             available_to=None,
             deeplink_roku=None,
@@ -71,10 +74,18 @@ result = {
                 technical_name="itunes",
                 icon="https://images.justwatch.com/icon/190848813/s100/itunes.png",
             ),
-            url="https://tv.apple.com/gb/movie/the-matrix/umc.cmc.af8k9kcq9r1s1qmmdxpq4itn?at=1000l3V2&ct=app_tv&itscg=30200&itsct=justwatch_tv_12&playableId=tvs.sbd.9001%3A271469518",
+            url=(
+                "https://tv.apple.com/gb/movie/the-matrix/umc.cmc.af8k9kcq9r1s1qmmdxpq4itn"
+                "?at=1000l3V2&ct=app_tv&itscg=30200&itsct=justwatch_tv_12"
+                "&playableId=tvs.sbd.9001%3A271469518"
+            ),
             element_count=0,
             available_to=None,
-            deeplink_roku="launch/551012?contentID=https%3A%2F%2Ftv.apple.com%2Fgb%2Fmovie%2Fthe-matrix%2Fumc.cmc.af8k9kcq9r1s1qmmdxpq4itn%3FplayableId%3Dtvs.sbd.9001%253A271469518&MediaType=movie",
+            deeplink_roku=(
+                "launch/551012?contentID=https%3A%2F%2Ftv.apple.com%2Fgb%2Fmovie%2Fthe-matrix%2"
+                "Fumc.cmc.af8k9kcq9r1s1qmmdxpq4itn%3FplayableId%3Dtvs.sbd.9001%253A271469518"
+                "&MediaType=movie"
+            ),
             subtitle_languages=[
                 "id",
                 "pl",
@@ -125,7 +136,10 @@ result = {
                 technical_name="amazon",
                 icon="https://images.justwatch.com/icon/430993/s100/amazon.png",
             ),
-            url="https://watch.amazon.co.uk/detail?gti=amzn1.dv.gti.fca9f674-fe38-4572-4345-e92842395381",
+            url=(
+                "https://watch.amazon.co.uk/"
+                "detail?gti=amzn1.dv.gti.fca9f674-fe38-4572-4345-e92842395381"
+            ),
             element_count=0,
             available_to=None,
             deeplink_roku="launch/13?contentID=B00IA4SCTO&MediaType=movie",
@@ -150,7 +164,10 @@ result = {
                 technical_name="play",
                 icon="https://images.justwatch.com/icon/169478387/s100/play.png",
             ),
-            url="https://play.google.com/store/movies/details/The_Matrix?gl=GB&hl=en&id=aDAHkg2d074.P",
+            url=(
+                "https://play.google.com/"
+                "store/movies/details/The_Matrix?gl=GB&hl=en&id=aDAHkg2d074.P"
+            ),
             element_count=0,
             available_to=None,
             deeplink_roku=None,
@@ -382,7 +399,10 @@ result = {
                 technical_name="amazonhbomax",
                 icon="https://images.justwatch.com/icon/305591736/s100/amazonhbomax.png",
             ),
-            url="https://watch.amazon.com/detail?gti=amzn1.dv.gti.ed68472f-1421-417d-800b-0cfdb21db71c",
+            url=(
+                "https://watch.amazon.com/"
+                "detail?gti=amzn1.dv.gti.ed68472f-1421-417d-800b-0cfdb21db71c"
+            ),
             element_count=0,
             available_to="2024-04-01",
             deeplink_roku="launch/13?contentID=B0B6DB8G7C&MediaType=movie",
@@ -457,10 +477,18 @@ result = {
                 technical_name="itunes",
                 icon="https://images.justwatch.com/icon/190848813/s100/itunes.png",
             ),
-            url="https://tv.apple.com/us/movie/the-matrix/umc.cmc.af8k9kcq9r1s1qmmdxpq4itn?at=1000l3V2&ct=app_tv&itscg=30200&itsct=justwatch_tv_12&playableId=tvs.sbd.9001%3A271469518",
+            url=(
+                "https://tv.apple.com/us/movie/the-matrix/umc.cmc.af8k9kcq9r1s1qmmdxpq4itn"
+                "?at=1000l3V2&ct=app_tv&itscg=30200&itsct=justwatch_tv_12"
+                "&playableId=tvs.sbd.9001%3A271469518"
+            ),
             element_count=0,
             available_to=None,
-            deeplink_roku="launch/551012?contentID=https%3A%2F%2Ftv.apple.com%2Fus%2Fmovie%2Fthe-matrix%2Fumc.cmc.af8k9kcq9r1s1qmmdxpq4itn%3FplayableId%3Dtvs.sbd.9001%253A271469518&MediaType=movie",
+            deeplink_roku=(
+                "launch/551012?contentID=https%3A%2F%2Ftv.apple.com%2Fus%2Fmovie%2Fthe-matrix%2"
+                "Fumc.cmc.af8k9kcq9r1s1qmmdxpq4itn%3FplayableId%3Dtvs.sbd.9001%253A271469518"
+                "&MediaType=movie"
+            ),
             subtitle_languages=[
                 "fi",
                 "th",
@@ -511,7 +539,10 @@ result = {
                 technical_name="amazon",
                 icon="https://images.justwatch.com/icon/430993/s100/amazon.png",
             ),
-            url="https://watch.amazon.com/detail?gti=amzn1.dv.gti.ed68472f-1421-417d-800b-0cfdb21db71c",
+            url=(
+                "https://watch.amazon.com/"
+                "detail?gti=amzn1.dv.gti.ed68472f-1421-417d-800b-0cfdb21db71c"
+            ),
             element_count=0,
             available_to=None,
             deeplink_roku="launch/13?contentID=B0B6DB8G7C&MediaType=movie",
@@ -561,7 +592,10 @@ result = {
                 technical_name="play",
                 icon="https://images.justwatch.com/icon/169478387/s100/play.png",
             ),
-            url="https://play.google.com/store/movies/details/The_Matrix?gl=US&hl=en&id=ilPevtGe57s.P",
+            url=(
+                "https://play.google.com/"
+                "store/movies/details/The_Matrix?gl=US&hl=en&id=ilPevtGe57s.P"
+            ),
             element_count=0,
             available_to=None,
             deeplink_roku=None,
@@ -801,10 +835,18 @@ result = {
                 technical_name="itunes",
                 icon="https://images.justwatch.com/icon/190848813/s100/itunes.png",
             ),
-            url="https://tv.apple.com/fr/movie/the-matrix/umc.cmc.af8k9kcq9r1s1qmmdxpq4itn?at=1000l3V2&ct=app_tv&itscg=30200&itsct=justwatch_tv_12&playableId=tvs.sbd.9001%3A271469518",
+            url=(
+                "https://tv.apple.com/fr/movie/the-matrix/umc.cmc.af8k9kcq9r1s1qmmdxpq4itn"
+                "?at=1000l3V2&ct=app_tv&itscg=30200&itsct=justwatch_tv_12"
+                "&playableId=tvs.sbd.9001%3A271469518"
+            ),
             element_count=0,
             available_to=None,
-            deeplink_roku="launch/551012?contentID=https%3A%2F%2Ftv.apple.com%2Ffr%2Fmovie%2Fthe-matrix%2Fumc.cmc.af8k9kcq9r1s1qmmdxpq4itn%3FplayableId%3Dtvs.sbd.9001%253A271469518&MediaType=movie",
+            deeplink_roku=(
+                "launch/551012?contentID=https%3A%2F%2Ftv.apple.com%2Ffr%2Fmovie%2Fthe-matrix%2"
+                "Fumc.cmc.af8k9kcq9r1s1qmmdxpq4itn%3FplayableId%3Dtvs.sbd.9001%253A271469518"
+                "&MediaType=movie"
+            ),
             subtitle_languages=[
                 "tr",
                 "lt",
@@ -930,7 +972,10 @@ result = {
                 technical_name="bbox",
                 icon="https://images.justwatch.com/icon/810793/s100/bbox.png",
             ),
-            url="http://www.services.bouyguestelecom.fr/television-vod/vod/affichervod/categorie/IC767068/IC52509/matrix",
+            url=(
+                "http://www.services.bouyguestelecom.fr/"
+                "television-vod/vod/affichervod/categorie/IC767068/IC52509/matrix"
+            ),
             element_count=0,
             available_to=None,
             deeplink_roku=None,
@@ -955,7 +1000,10 @@ result = {
                 technical_name="amazon",
                 icon="https://images.justwatch.com/icon/430993/s100/amazon.png",
             ),
-            url="https://app.primevideo.com/detail?gti=amzn1.dv.gti.70b528b4-2909-0bfa-9637-33486f767771",
+            url=(
+                "https://app.primevideo.com/"
+                "detail?gti=amzn1.dv.gti.70b528b4-2909-0bfa-9637-33486f767771"
+            ),
             element_count=0,
             available_to=None,
             deeplink_roku="launch/13?contentID=B07R3GRM5Y&MediaType=movie",

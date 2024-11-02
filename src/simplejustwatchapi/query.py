@@ -458,7 +458,7 @@ class SeasonsEntry(NamedTuple):
     seasons: list[Season]
     """List of show seasons. """
 
-    
+
 def prepare_search_request(
     title: str, country: str, language: str, count: int, best_only: bool
 ) -> dict:
@@ -593,6 +593,7 @@ def prepare_seasons_request(node_id: str, country: str, language: str) -> dict:
         },
         "query": _GRAPHQL_SEASONS_QUERY,
     }
+
 
 def parse_seasons_response(json: any) -> SeasonsEntry | None:
     """Parse response from seasons query from JustWatch GraphQL API.

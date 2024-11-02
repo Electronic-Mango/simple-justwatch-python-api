@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, patch
 
 from pytest import fixture
 
-from simplejustwatchapi.justwatch import details, seasons, offers_for_countries, search
+from simplejustwatchapi.justwatch import details, offers_for_countries, search, seasons
 
 JUSTWATCH_GRAPHQL_URL = "https://apis.justwatch.com/graphql"
 

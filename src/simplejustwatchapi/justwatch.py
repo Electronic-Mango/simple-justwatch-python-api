@@ -4,16 +4,16 @@ from httpx import post
 
 from simplejustwatchapi.query import (
     MediaEntry,
-    SeasonsEntry,
     Offer,
+    SeasonsEntry,
     parse_details_response,
-    parse_seasons_response,
     parse_offers_for_countries_response,
     parse_search_response,
+    parse_seasons_response,
     prepare_details_request,
-    prepare_seasons_request,
     prepare_offers_for_countries_request,
     prepare_search_request,
+    prepare_seasons_request,
 )
 
 _GRAPHQL_API_URL = "https://apis.justwatch.com/graphql"
@@ -70,9 +70,7 @@ def details(
     return parse_details_response(response.json())
 
 
-def seasons(
-    node_id: str, country: str = "US", language: str = "en"
-) -> SeasonsEntry:
+def seasons(node_id: str, country: str = "US", language: str = "en") -> SeasonsEntry:
     """Get show seasons for a given ID.
 
     Args:

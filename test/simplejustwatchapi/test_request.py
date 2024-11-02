@@ -2,9 +2,9 @@ from pytest import mark, raises
 
 from simplejustwatchapi.query import (
     prepare_details_request,
-    prepare_seasons_request,
     prepare_offers_for_countries_request,
     prepare_search_request,
+    prepare_seasons_request,
 )
 
 GRAPHQL_DETAILS_QUERY = """
@@ -317,9 +317,7 @@ def test_prepare_details_request_asserts_on_invalid_country_code(invalid_code: s
         ("NODE ID 1", "gb", "language 2"),
     ],
 )
-def test_prepare_seasons_request(
-    node_id: str, country: str, language: str
-) -> None:
+def test_prepare_seasons_request(node_id: str, country: str, language: str) -> None:
     expected_request = {
         "operationName": "GetNodeById",
         "variables": {

@@ -6,6 +6,47 @@ from typing import NamedTuple
 _DETAILS_URL = "https://justwatch.com"
 _IMAGES_URL = "https://images.justwatch.com"
 
+_GRAPHQL_SEASONS_QUERY = """
+fragment Episode on Episode {
+  __typename
+  id
+  content(country: $country, language: $language) {
+    title
+    seasonNumber
+    episodeNumber
+  }
+}
+fragment Season on Season {
+  __typename
+  id
+  content(country: $country, language: $language) {
+    seasonNumber
+  }
+  episodes {
+    ...Episode
+  }
+}
+fragment Show on Show {
+  __typename
+  id
+  seasons {
+    ...Season
+  }
+}
+fragment Node on Node {
+  __typename
+  id
+  ...Episode
+  ...Season
+  ...Show
+}
+query GetNodeById($nodeId: ID!, $country: Country!, $language: Language!) {
+  node(id: $nodeId) {
+    ...Node
+  }
+}
+"""
+
 _GRAPHQL_DETAILS_QUERY = """
 query GetTitleNode(
   $nodeId: ID!,
@@ -385,6 +426,39 @@ class MediaEntry(NamedTuple):
     """List of available offers for this entry, empty if there are no available offers."""
 
 
+class Episode(NamedTuple):
+    """Parsed response from JustWatch GraphQL API for "GetNodeById" query for an episode."""
+
+    seasonNumber: int
+    """Season Number of show episode."""
+
+    episodeNumber: int
+    """Episode Number of show episode."""
+
+    title: str
+    """Title of show episode."""
+
+
+class Season(NamedTuple):
+    """Parsed response from JustWatch GraphQL API for "GetNodeById" query for a season."""
+
+    seasonNumber: int
+    """Season Number of show."""
+
+    episodes: list[Episode]
+    """List of season's episodes. """
+
+
+class SeasonsEntry(NamedTuple):
+    """Parsed response from JustWatch GraphQL API for "GetNodeById" query for show seasons."""
+
+    entry_id: str
+    """Entry ID, contains type code and numeric ID."""
+
+    seasons: list[Season]
+    """List of show seasons. """
+
+    
 def prepare_search_request(
     title: str, country: str, language: str, count: int, best_only: bool
 ) -> dict:
@@ -491,6 +565,52 @@ def parse_details_response(json: any) -> MediaEntry | None:
         or ``None`` in case data for a given node ID was not found
     """
     return _parse_entry(json["data"]["node"]) if "errors" not in json else None
+
+
+def prepare_seasons_request(node_id: str, country: str, language: str) -> dict:
+    """Prepare a seasons request for specified node ID to JustWatch GraphQL API.
+    Creates a ``GetNodeById`` GraphQL query.
+
+    Country code should be two uppercase letters, however it will be auto-converted to uppercase.
+
+    Meant to be used together with :func:`parse_seasons_response`.
+
+    Args:
+        node_id: node ID of entry to get seasons for
+        country: country to search for offers
+        language: language of responses
+
+    Returns:
+        JSON/dict with GraphQL POST body
+    """
+    _assert_country_code_is_valid(country)
+    return {
+        "operationName": "GetNodeById",
+        "variables": {
+            "nodeId": node_id,
+            "language": language,
+            "country": country.upper(),
+        },
+        "query": _GRAPHQL_SEASONS_QUERY,
+    }
+
+def parse_seasons_response(json: any) -> SeasonsEntry | None:
+    """Parse response from seasons query from JustWatch GraphQL API.
+    Parses response for ``GetNodeById`` query.
+
+    If API responded with an internal error (mostly due to not found node ID),
+    then ``None`` will be returned instead.
+
+    Meant to be used together with :func:`prepare_seasons_request`.
+
+    Args:
+        json: JSON returned by JustWatch GraphQL API
+
+    Returns:
+        Parsed received JSON as a ``SeasonsEntry`` NamedTuple,
+        or ``None`` in case data for a given node ID was not found
+    """
+    return _parse_seasons(json["data"]["node"]) if "errors" not in json else None
 
 
 def prepare_offers_for_countries_request(
@@ -614,6 +734,45 @@ def _parse_entry(json: any) -> MediaEntry:
         interactions,
         streaming_charts,
         offers,
+    )
+
+
+def _parse_seasons(json: any) -> SeasonsEntry:
+    if not json:
+        return None
+    entry_id = json.get("id")
+    seasons = [_parse_season(edge) for edge in json.get("seasons", [])]
+
+    return SeasonsEntry(
+        entry_id,
+        seasons,
+    )
+
+
+def _parse_season(json: any) -> Season:
+    if not json:
+        return None
+    content = json.get("content")
+    seasonNumber = content.get("seasonNumber")
+    episodes = [_parse_episode(edge["content"]) for edge in json.get("episodes", [])]
+
+    return Season(
+        seasonNumber,
+        episodes,
+    )
+
+
+def _parse_episode(json: any) -> Episode:
+    if not json:
+        return None
+    seasonNumber = json.get("seasonNumber")
+    episodeNumber = json.get("episodeNumber")
+    title = json.get("title")
+
+    return Episode(
+        seasonNumber,
+        episodeNumber,
+        title,
     )
 
 

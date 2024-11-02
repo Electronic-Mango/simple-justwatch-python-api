@@ -2,6 +2,7 @@ from pytest import mark, raises
 
 from simplejustwatchapi.query import (
     prepare_details_request,
+    prepare_seasons_request,
     prepare_offers_for_countries_request,
     prepare_search_request,
 )
@@ -22,6 +23,47 @@ query GetTitleNode(
     __typename
   }
   __typename
+}
+"""
+
+GRAPHQL_SEASONS_QUERY = """
+fragment Episode on Episode {
+  __typename
+  id
+  content(country: $country, language: $language) {
+    title
+    seasonNumber
+    episodeNumber
+  }
+}
+fragment Season on Season {
+  __typename
+  id
+  content(country: $country, language: $language) {
+    seasonNumber
+  }
+  episodes {
+    ...Episode
+  }
+}
+fragment Show on Show {
+  __typename
+  id
+  seasons {
+    ...Season
+  }
+}
+fragment Node on Node {
+  __typename
+  id
+  ...Episode
+  ...Season
+  ...Show
+}
+query GetNodeById($nodeId: ID!, $country: Country!, $language: Language!) {
+  node(id: $nodeId) {
+    ...Node
+  }
 }
 """
 
@@ -265,6 +307,44 @@ def test_prepare_details_request_asserts_on_invalid_country_code(invalid_code: s
     expected_error_message = f"Invalid country code: {invalid_code}, code must be 2 characters long"
     with raises(AssertionError) as error:
         prepare_details_request("", invalid_code, "", True)
+        assert str(error.value) == expected_error_message
+
+
+@mark.parametrize(
+    argnames=["node_id", "country", "language"],
+    argvalues=[
+        ("NODE ID 1", "US", "language 1"),
+        ("NODE ID 1", "gb", "language 2"),
+    ],
+)
+def test_prepare_seasons_request(
+    node_id: str, country: str, language: str
+) -> None:
+    expected_request = {
+        "operationName": "GetNodeById",
+        "variables": {
+            "nodeId": node_id,
+            "language": language,
+            "country": country.upper(),
+        },
+        "query": GRAPHQL_SEASONS_QUERY,
+    }
+    request = prepare_seasons_request(node_id, country, language)
+    assert expected_request == request
+
+
+@mark.parametrize(
+    argnames=["invalid_code"],
+    argvalues=[
+        ("United Stated of America",),  # too long
+        ("usa",),  # too long
+        ("u",),  # too short
+    ],
+)
+def test_prepare_seasons_request_asserts_on_invalid_country_code(invalid_code: str) -> None:
+    expected_error_message = f"Invalid country code: {invalid_code}, code must be 2 characters long"
+    with raises(AssertionError) as error:
+        prepare_seasons_request("", invalid_code, "")
         assert str(error.value) == expected_error_message
 
 

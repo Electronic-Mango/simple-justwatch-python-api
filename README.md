@@ -18,6 +18,7 @@ A simple unofficial JustWatch Python API which uses [`GraphQL`](https://graphql.
 * [Usage](#usage)
   * [Search](#search)
   * [Details](#details)
+  * [Seasons](#seasons)
   * [Offers for countries](#offers-for-countries)
 * [Return data structures](#return-data-structures)
 * [Locale, language, country](#locale-language-country)
@@ -35,10 +36,11 @@ pip install simple-justwatch-python-api
 
 ## Usage
 
-This Python API has 3 functions:
+This Python API has 4 functions:
 
  - `search` - search for entries based on title
  - `details` - get details for entry based on its node ID
+ - `seasons` - get season details for show entry based on its node ID
  - `offers_for_countries` - get offers for entry based on its node ID, can look for offers
    in multiple countries
 
@@ -110,6 +112,33 @@ General usage of these arguments matches the [`search`](#search) command.
 Returned value is a single [`MediaEntry`](#return-data-structures) object.
 
 Example command and its output is in [`examples/details_output.py`](examples/details_output.py).
+
+
+### Seasons
+
+Seasons function allows for looking up season and episode information for a single show entry via its node ID.
+Node ID can be taken from output of the [`search`](#search) command.
+
+
+```python
+from simplejustwatchapi.justwatch import seasons
+
+results = seasons("nodeID", "US", "en")
+```
+
+Only the first argument is required - the node ID of a show element to look up details for.
+
+|   | Argument    | Type   | Required | Default value | Description                                            |
+|---|-------------|--------|----------|---------------|--------------------------------------------------------|
+| 1 | `node_id`   | `str`  | **YES**  | -             | Node ID to look up                                     |
+| 2 | `country`   | `str`  | NO       | `"US"`        | Country to search for offers                           |
+| 3 | `language`  | `str`  | NO       | `"en"`        | Language of responses                                  |
+
+General usage of these arguments matches the [`search`](#search) command.
+
+Returned value is a single [`SeasonsEntry`](#return-data-structures) object.
+
+Example command and its output is in [`examples/seasons_output.py`](examples/seasons_output.py).
 
 
 ### Offers for countries

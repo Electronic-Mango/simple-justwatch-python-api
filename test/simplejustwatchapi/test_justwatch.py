@@ -2,12 +2,13 @@ from unittest.mock import MagicMock, patch
 
 from pytest import fixture
 
-from simplejustwatchapi.justwatch import details, offers_for_countries, search
+from simplejustwatchapi.justwatch import details, seasons, offers_for_countries, search
 
 JUSTWATCH_GRAPHQL_URL = "https://apis.justwatch.com/graphql"
 
 SEARCH_INPUT = ("TITLE", "COUNTRY", "LANGUAGE", 5, True)
 DETAILS_INPUT = ("NODE ID", "COUNTRY", "LANGUAGE", False)
+SEASONS_INPUT = ("NODE ID", "COUNTRY", "LANGUAGE")
 OFFERS_COUNTRIES_INPUT = {"COUNTRY1", "COUNTRY2", "COUNTRY3"}
 OFFERS_INPUT = ("NODE ID", OFFERS_COUNTRIES_INPUT, "LANGUAGE", True)
 
@@ -39,6 +40,15 @@ def test_search(requests_mock, parser_mock, httpx_post_mock):
 def test_details(requests_mock, parser_mock, httpx_post_mock):
     results = details(*DETAILS_INPUT)
     requests_mock.assert_called_with(*DETAILS_INPUT)
+    parser_mock.assert_called_with(DUMMY_RESPONSE)
+    assert results == DUMMY_ENTRIES
+
+
+@patch("simplejustwatchapi.justwatch.parse_seasons_response", return_value=DUMMY_ENTRIES)
+@patch("simplejustwatchapi.justwatch.prepare_seasons_request", return_value=DUMMY_REQUEST)
+def test_seasons(requests_mock, parser_mock, httpx_post_mock):
+    results = seasons(*SEASONS_INPUT)
+    requests_mock.assert_called_with(*SEASONS_INPUT)
     parser_mock.assert_called_with(DUMMY_RESPONSE)
     assert results == DUMMY_ENTRIES
 

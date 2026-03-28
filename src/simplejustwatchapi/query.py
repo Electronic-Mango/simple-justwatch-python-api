@@ -87,42 +87,8 @@ fragment TitleDetails on MovieOrShow {
   objectId
   objectType
   content(country: $country, language: $language) {
-    title
-    fullPath
-    originalReleaseYear
-    originalReleaseDate
-    runtime
-    shortDescription
-    genres {
-      shortName
-      __typename
-    }
-    externalIds {
-      imdbId
-      tmdbId
-      __typename
-    }
-    posterUrl(profile: $profile, format: $formatPoster)
-    backdrops(profile: $backdropProfile, format: $formatPoster) {
-      backdropUrl
-      __typename
-    }
+    ...ContentDetails
     ageCertification
-    scoring {
-      imdbScore
-      imdbVotes
-      tmdbPopularity
-      tmdbScore
-      tomatoMeter
-      certifiedFresh
-      jwRating
-      __typename
-    }
-    interactions {
-      likelistAdditions
-      dislikelistAdditions
-      __typename
-    }
     __typename
   }
   streamingCharts(country: $country) {
@@ -146,7 +112,120 @@ fragment TitleDetails on MovieOrShow {
   offers(country: $country, platform: WEB, filter: $filter) {
     ...TitleOffer
   }
+  ...ShowDetails
   __typename
+}
+"""
+
+_GRAPHQL_SIMPLE_SHOW_DETAILS_FRAGMENT = """
+fragment ShowDetails on Show {
+  totalSeasonCount
+  __typename
+}
+"""
+
+_GRAPHQL_FULL_SHOW_FRAGMENT = """
+fragment ShowDetails on Show {
+  totalSeasonCount
+  seasons(sortDirection: ASC) {
+    id
+    objectId
+    objectType
+    totalEpisodeCount
+    content(country: $country, language: $language) {
+      seasonNumber
+      ...ContentDetails
+      __typename
+    }
+    streamingCharts(country: $country) {
+      edges {
+        streamingChartInfo {
+          rank
+          trend
+          trendDifference
+          daysInTop3
+          daysInTop10
+          daysInTop100
+          daysInTop1000
+          topRank
+          updatedAt
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    offers(country: $country, platform: WEB, filter: $filter) {
+      ...TitleOffer
+    }
+    episodes(sortDirection: ASC) {
+      ...EpisodeDetails
+    }
+    __typename
+  }
+  __typename
+}
+"""
+
+_GRAPHQL_EPISODE_FRAGMENT = """
+fragment EpisodeDetails on Episode {
+  id
+  objectId
+  objectType
+  content(country: $country, language: $language) {
+    title
+    originalReleaseYear
+    originalReleaseDate
+    runtime
+    shortDescription
+    episodeNumber
+    seasonNumber
+    __typename
+  }
+  offers(country: $country, platform: WEB, filter: $filter) {
+    ...TitleOffer
+  }
+  __typename
+}
+"""
+
+_GRAPHQL_CONTENT_FRAGMENT = """
+fragment ContentDetails on MovieOrShowOrSeasonContent {
+  title
+  fullPath
+  originalReleaseYear
+  originalReleaseDate
+  runtime
+  shortDescription
+  genres {
+    shortName
+    __typename
+  }
+  externalIds {
+    imdbId
+    tmdbId
+    __typename
+  }
+  posterUrl(profile: $profile, format: $formatPoster)
+  backdrops(profile: $backdropProfile, format: $formatPoster) {
+    backdropUrl
+    __typename
+  }
+  scoring {
+    imdbScore
+    imdbVotes
+    tmdbPopularity
+    tmdbScore
+    tomatoMeter
+    certifiedFresh
+    jwRating
+    __typename
+  }
+  interactions {
+    likelistAdditions
+    dislikelistAdditions
+    __typename
+  }
 }
 """
 
@@ -337,6 +416,110 @@ class StreamingCharts(NamedTuple):
     """Date when rank data was last updated as a string, e.g.: ``2024-10-06T09:20:36.397Z``."""
 
 
+class Episode(NamedTuple):
+    """Parsed data related to a single episode."""
+
+    episode_id: str
+    """Episode ID, contains type code and numeric ID."""
+
+    object_id: int
+    """Object ID, the numeric part of full episode ID."""
+
+    object_type: str
+    """Type of entry, for episodes should be ``SHOW_EPISODE``."""
+
+    title: str
+    """Full title."""
+
+    release_year: int
+    """Release year as a number."""
+
+    release_date: str
+    """Full release date as a string, e.g. ``2013-12-16``."""
+
+    runtime_minutes: int
+    """Runtime in minutes."""
+
+    short_description: str | None
+    """Short description of this episode."""
+
+    episode_number: int
+    """Number of this episode."""
+
+    season_number: int
+    """Season number with this episode."""
+
+    offers: list[Offer]
+    """List of available offers for this episode, empty if there are no available offers."""
+
+
+class Season(NamedTuple):
+    """Parsed data related to a single Season."""
+
+    season_id: str
+    """Season ID, contains type code and numeric ID."""
+
+    object_id: int
+    """Object ID, the numeric part of full season ID."""
+
+    object_type: str
+    """Type of entry, for season it should be ``SHOW_SEASON``."""
+
+    total_episode_count: int
+    """Total number of episodes in this season."""
+
+    season_number: int
+    """Number of this season."""
+
+    title: str
+    """Full title."""
+
+    url: str
+    """URL to JustWatch with details for this entry."""
+
+    release_year: int
+    """Release year as a number."""
+
+    release_date: str
+    """Full release date as a string, e.g. ``2013-12-16``."""
+
+    runtime_minutes: int
+    """Runtime in minutes."""
+
+    short_description: str | None
+    """Short description of this entry."""
+
+    genres: list[str]
+    """List of genre codes for this entry, e.g. ``["rly"]``, ``["cmy", "drm", "rma"]``."""
+
+    imdb_id: str | None
+    """ID of this entry in IMDB."""
+
+    tmdb_id: str | None
+    """ID of this entry in TMDB."""
+
+    poster: str | None
+    """URL to poster for this ID."""
+
+    backdrops: list[str]
+    """List of URLs for backdrops (full screen images to use as background)."""
+
+    scoring: Scoring | None
+    """Scoring data."""
+
+    interactions: Interactions | None
+    """Interactions (likes/dislikes) data."""
+
+    streaming_charts: StreamingCharts | None
+    """JustWatch charts/ranks data."""
+
+    offers: list[Offer]
+    """List of available offers for this entry, empty if there are no available offers."""
+
+    episodes: list[Episode]
+    """List of episodes within this season."""
+
+
 class MediaEntry(NamedTuple):
     """Parsed response from JustWatch GraphQL API for "GetSearchTitles" query for single entry."""
 
@@ -397,6 +580,12 @@ class MediaEntry(NamedTuple):
     offers: list[Offer]
     """List of available offers for this entry, empty if there are no available offers."""
 
+    season_count: int | None
+    """Total season count, for non-show it will be None."""
+
+    seasons: list[Season] | None
+    """Data for seasons, for non-show it will be None."""
+
 
 def prepare_search_request(
     title: str,
@@ -439,7 +628,13 @@ def prepare_search_request(
             "backdropProfile": "S1920",
             "filter": {"bestOnly": best_only},
         },
-        "query": _GRAPHQL_SEARCH_QUERY + _GRAPHQL_DETAILS_FRAGMENT + _GRAPHQL_OFFER_FRAGMENT,
+        "query": (
+            _GRAPHQL_SEARCH_QUERY
+            + _GRAPHQL_DETAILS_FRAGMENT
+            + _GRAPHQL_SIMPLE_SHOW_DETAILS_FRAGMENT
+            + _GRAPHQL_CONTENT_FRAGMENT
+            + _GRAPHQL_OFFER_FRAGMENT
+        ),
     }
 
 
@@ -496,7 +691,14 @@ def prepare_details_request(node_id: str, country: str, language: str, best_only
             "backdropProfile": "S1920",
             "filter": {"bestOnly": best_only},
         },
-        "query": _GRAPHQL_DETAILS_QUERY + _GRAPHQL_DETAILS_FRAGMENT + _GRAPHQL_OFFER_FRAGMENT,
+        "query": (
+            _GRAPHQL_DETAILS_QUERY
+            + _GRAPHQL_DETAILS_FRAGMENT
+            + _GRAPHQL_FULL_SHOW_FRAGMENT
+            + _GRAPHQL_EPISODE_FRAGMENT
+            + _GRAPHQL_CONTENT_FRAGMENT
+            + _GRAPHQL_OFFER_FRAGMENT
+        ),
     }
 
 
@@ -634,6 +836,8 @@ def _parse_entry(json: Any) -> MediaEntry:
     interactions = _parse_interactions(content.get("interactions"))
     streaming_charts = _parse_streaming_charts(json)
     offers = [_parse_offer(offer) for offer in json.get("offers", []) if offer]
+    season_count = json.get("totalSeasonCount")
+    seasons = [_parse_season(season) for season in json.get("seasons", [])] or None
     return MediaEntry(
         entry_id,
         object_id,
@@ -654,6 +858,8 @@ def _parse_entry(json: Any) -> MediaEntry:
         interactions,
         streaming_charts,
         offers,
+        season_count,
+        seasons,
     )
 
 
@@ -763,3 +969,81 @@ def _parse_package(json: Any) -> OfferPackage:
     technical_name = json.get("technicalName")
     icon = _IMAGES_URL + json.get("icon")
     return OfferPackage(platform_id, package_id, name, technical_name, icon)
+
+
+def _parse_season(json: Any) -> Season:
+    season_id = json.get("id")
+    object_id = json.get("objectId")
+    object_type = json.get("objectType")
+    total_episode_count = json.get("totalEpisodeCount")
+    content = json["content"]
+    season_number = content.get("seasonNumber")
+    title = content.get("title")
+    url = _DETAILS_URL + content.get("fullPath")
+    year = content.get("originalReleaseYear")
+    date = content.get("originalReleaseDate")
+    runtime_minutes = content.get("runtime")
+    short_description = content.get("shortDescription")
+    genres = [node.get("shortName") for node in content.get("genres", []) if node]
+    external_ids = content.get("externalIds")
+    imdb_id = external_ids.get("imdbId") if external_ids else None
+    tmdb_id = external_ids.get("tmdbId") if external_ids else None
+    poster_url_field = content.get("posterUrl")
+    poster = _IMAGES_URL + poster_url_field if poster_url_field else None
+    backdrops = [_IMAGES_URL + bd.get("backdropUrl") for bd in content.get("backdrops", []) if bd]
+    scoring = _parse_scores(content.get("scoring"))
+    interactions = _parse_interactions(content.get("interactions"))
+    streaming_charts = _parse_streaming_charts(json)
+    offers = [_parse_offer(offer) for offer in json.get("offers", []) if offer]
+    episodes = [_parse_episode(episode) for episode in json.get("episodes", [])]
+    return Season(
+        season_id,
+        object_id,
+        object_type,
+        total_episode_count,
+        season_number,
+        title,
+        url,
+        year,
+        date,
+        runtime_minutes,
+        short_description,
+        genres,
+        imdb_id,
+        tmdb_id,
+        poster,
+        backdrops,
+        scoring,
+        interactions,
+        streaming_charts,
+        offers,
+        episodes,
+    )
+
+
+def _parse_episode(json: Any) -> Episode:
+    episode_id = json.get("id")
+    object_id = json.get("objectId")
+    object_type = json.get("objectType")
+    content = json["content"]
+    title = content.get("title")
+    year = content.get("originalReleaseYear")
+    date = content.get("originalReleaseDate")
+    runtime_minutes = content.get("runtime")
+    short_description = content.get("shortDescription")
+    episode_number = content.get("episodeNumber")
+    season_number = content.get("seasonNumber")
+    offers = [_parse_offer(offer) for offer in json.get("offers", []) if offer]
+    return Episode(
+        episode_id,
+        object_id,
+        object_type,
+        title,
+        year,
+        date,
+        runtime_minutes,
+        short_description,
+        episode_number,
+        season_number,
+        offers,
+    )

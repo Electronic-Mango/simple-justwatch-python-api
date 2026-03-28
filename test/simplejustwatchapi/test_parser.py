@@ -212,6 +212,8 @@ PARSED_NODE_1 = MediaEntry(
             ["lang_4", "lang_5"],
         ),
     ],
+    None,
+    None,
 )
 
 RESPONSE_NODE_2 = {
@@ -332,6 +334,8 @@ PARSED_NODE_2 = MediaEntry(
             ["lang_4"],
         ),
     ],
+    None,
+    None,
 )
 RESPONSE_NODE_3 = {
     "id": "id3",
@@ -367,6 +371,8 @@ PARSED_NODE_3 = MediaEntry(
     None,
     None,
     [],
+    None,
+    None,
 )
 
 API_SEARCH_RESPONSE_JSON = {

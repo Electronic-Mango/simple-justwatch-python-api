@@ -82,42 +82,8 @@ fragment TitleDetails on MovieOrShow {
   objectId
   objectType
   content(country: $country, language: $language) {
-    title
-    fullPath
-    originalReleaseYear
-    originalReleaseDate
-    runtime
-    shortDescription
-    genres {
-      shortName
-      __typename
-    }
-    externalIds {
-      imdbId
-      tmdbId
-      __typename
-    }
-    posterUrl(profile: $profile, format: $formatPoster)
-    backdrops(profile: $backdropProfile, format: $formatPoster) {
-      backdropUrl
-      __typename
-    }
+    ...ContentDetails
     ageCertification
-    scoring {
-      imdbScore
-      imdbVotes
-      tmdbPopularity
-      tmdbScore
-      tomatoMeter
-      certifiedFresh
-      jwRating
-      __typename
-    }
-    interactions {
-      likelistAdditions
-      dislikelistAdditions
-      __typename
-    }
     __typename
   }
   streamingCharts(country: $country) {
@@ -141,7 +107,120 @@ fragment TitleDetails on MovieOrShow {
   offers(country: $country, platform: WEB, filter: $filter) {
     ...TitleOffer
   }
+  ...ShowDetails
   __typename
+}
+"""
+
+GRAPHQL_SIMPLE_SHOW_DETAILS_FRAGMENT = """
+fragment ShowDetails on Show {
+  totalSeasonCount
+  __typename
+}
+"""
+
+GRAPHQL_FULL_SHOW_FRAGMENT = """
+fragment ShowDetails on Show {
+  totalSeasonCount
+  seasons(sortDirection: ASC) {
+    id
+    objectId
+    objectType
+    totalEpisodeCount
+    content(country: $country, language: $language) {
+      seasonNumber
+      ...ContentDetails
+      __typename
+    }
+    streamingCharts(country: $country) {
+      edges {
+        streamingChartInfo {
+          rank
+          trend
+          trendDifference
+          daysInTop3
+          daysInTop10
+          daysInTop100
+          daysInTop1000
+          topRank
+          updatedAt
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    offers(country: $country, platform: WEB, filter: $filter) {
+      ...TitleOffer
+    }
+    episodes(sortDirection: ASC) {
+      ...EpisodeDetails
+    }
+    __typename
+  }
+  __typename
+}
+"""
+
+GRAPHQL_EPISODE_FRAGMENT = """
+fragment EpisodeDetails on Episode {
+  id
+  objectId
+  objectType
+  content(country: $country, language: $language) {
+    title
+    originalReleaseYear
+    originalReleaseDate
+    runtime
+    shortDescription
+    episodeNumber
+    seasonNumber
+    __typename
+  }
+  offers(country: $country, platform: WEB, filter: $filter) {
+    ...TitleOffer
+  }
+  __typename
+}
+"""
+
+GRAPHQL_CONTENT_FRAGMENT = """
+fragment ContentDetails on MovieOrShowOrSeasonContent {
+  title
+  fullPath
+  originalReleaseYear
+  originalReleaseDate
+  runtime
+  shortDescription
+  genres {
+    shortName
+    __typename
+  }
+  externalIds {
+    imdbId
+    tmdbId
+    __typename
+  }
+  posterUrl(profile: $profile, format: $formatPoster)
+  backdrops(profile: $backdropProfile, format: $formatPoster) {
+    backdropUrl
+    __typename
+  }
+  scoring {
+    imdbScore
+    imdbVotes
+    tmdbPopularity
+    tmdbScore
+    tomatoMeter
+    certifiedFresh
+    jwRating
+    __typename
+  }
+  interactions {
+    likelistAdditions
+    dislikelistAdditions
+    __typename
+  }
 }
 """
 
@@ -206,7 +285,13 @@ def test_prepare_search_request(
             "backdropProfile": "S1920",
             "filter": {"bestOnly": best_only},
         },
-        "query": GRAPHQL_SEARCH_QUERY + GRAPHQL_DETAILS_FRAGMENT + GRAPHQL_OFFER_FRAGMENT,
+        "query": (
+            GRAPHQL_SEARCH_QUERY
+            + GRAPHQL_DETAILS_FRAGMENT
+            + GRAPHQL_SIMPLE_SHOW_DETAILS_FRAGMENT
+            + GRAPHQL_CONTENT_FRAGMENT
+            + GRAPHQL_OFFER_FRAGMENT
+        ),
     }
     request = prepare_search_request(title, country, language, count, best_only)
     assert expected_request == request
@@ -247,7 +332,14 @@ def test_prepare_details_request(node_id: str, country: str, language: str, best
             "backdropProfile": "S1920",
             "filter": {"bestOnly": best_only},
         },
-        "query": GRAPHQL_DETAILS_QUERY + GRAPHQL_DETAILS_FRAGMENT + GRAPHQL_OFFER_FRAGMENT,
+        "query": (
+            GRAPHQL_DETAILS_QUERY
+            + GRAPHQL_DETAILS_FRAGMENT
+            + GRAPHQL_FULL_SHOW_FRAGMENT
+            + GRAPHQL_EPISODE_FRAGMENT
+            + GRAPHQL_CONTENT_FRAGMENT
+            + GRAPHQL_OFFER_FRAGMENT
+        ),
     }
     request = prepare_details_request(node_id, country, language, best_only)
     assert expected_request == request
@@ -318,8 +410,7 @@ def test_prepare_offers_for_countries_request_asserts_on_invalid_country_codes(
     codes: set[str], invalid_code_regex: set[str]
 ):
     expected_error_message = (
-        rf"Invalid country code: ({invalid_code_regex}), "
-        "code must be 2 characters long"
+        rf"Invalid country code: ({invalid_code_regex}), code must be 2 characters long"
     )
     with raises(AssertionError) as error:
         prepare_offers_for_countries_request("", codes, "", True)

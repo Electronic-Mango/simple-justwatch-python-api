@@ -384,19 +384,19 @@ API_SEARCH_RESPONSE_NO_DATA = {"data": {"popularTitles": {"edges": []}}}
 
 
 @mark.parametrize(
-    argnames=["response_json", "expected_output"],
+    argnames=("response_json", "expected_output"),
     argvalues=[
         (API_SEARCH_RESPONSE_JSON, [PARSED_NODE_1, PARSED_NODE_2, PARSED_NODE_3]),
         (API_SEARCH_RESPONSE_NO_DATA, []),
     ],
 )
-def test_parse_search_response(response_json: dict, expected_output: list[MediaEntry]) -> None:
+def test_parse_search_response(response_json: dict, expected_output: list[MediaEntry]):
     parsed_entries = parse_search_response(response_json)
     assert parsed_entries == expected_output
 
 
 @mark.parametrize(
-    argnames=["response_json", "expected_output"],
+    argnames=("response_json", "expected_output"),
     argvalues=[
         ({"data": {"node": RESPONSE_NODE_1}}, PARSED_NODE_1),
         ({"data": {"node": RESPONSE_NODE_2}}, PARSED_NODE_2),
@@ -404,13 +404,13 @@ def test_parse_search_response(response_json: dict, expected_output: list[MediaE
         ({"errors": [], "data": {"node": None}}, None),
     ],
 )
-def test_parse_details_response(response_json: dict, expected_output: MediaEntry) -> None:
+def test_parse_details_response(response_json: dict, expected_output: MediaEntry):
     parsed_entries = parse_details_response(response_json)
     assert parsed_entries == expected_output
 
 
 @mark.parametrize(
-    argnames=["response_json", "countries", "expected_output"],
+    argnames=("response_json", "countries", "expected_output"),
     argvalues=[
         (
             {"data": {"node": {"US": RESPONSE_NODE_1["offers"]}}},
@@ -442,6 +442,6 @@ def test_parse_details_response(response_json: dict, expected_output: MediaEntry
 )
 def test_parse_offers_for_countries_response(
     response_json: dict, countries: set[str], expected_output: dict[str, list[Offer]]
-) -> None:
+):
     parsed_entries = parse_offers_for_countries_response(response_json, countries)
     assert parsed_entries == expected_output

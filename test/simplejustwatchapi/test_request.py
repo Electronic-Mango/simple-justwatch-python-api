@@ -1,3 +1,5 @@
+from re import match
+
 from pytest import mark, raises
 
 from simplejustwatchapi.query import (
@@ -182,7 +184,7 @@ GRAPHQL_COUNTRY_OFFERS_ENTRY = """
 
 
 @mark.parametrize(
-    argnames=["title", "country", "language", "count", "best_only"],
+    argnames=("title", "country", "language", "count", "best_only"),
     argvalues=[
         ("TITLE 1", "US", "language 1", 5, True),
         ("TITLE 2", "gb", "language 2", 10, False),
@@ -190,7 +192,7 @@ GRAPHQL_COUNTRY_OFFERS_ENTRY = """
 )
 def test_prepare_search_request(
     title: str, country: str, language: str, count: int, best_only: bool
-) -> None:
+):
     expected_request = {
         "operationName": "GetSearchTitles",
         "variables": {
@@ -218,23 +220,21 @@ def test_prepare_search_request(
         "u",  # too short
     ],
 )
-def test_prepare_search_request_asserts_on_invalid_country_code(invalid_code: str) -> None:
+def test_prepare_search_request_asserts_on_invalid_country_code(invalid_code: str):
     expected_error_message = f"Invalid country code: {invalid_code}, code must be 2 characters long"
     with raises(AssertionError) as error:
         prepare_search_request("", invalid_code, "", 1, True)
-        assert str(error.value) == expected_error_message
+    assert str(error.value) == expected_error_message
 
 
 @mark.parametrize(
-    argnames=["node_id", "country", "language", "best_only"],
+    argnames=("node_id", "country", "language", "best_only"),
     argvalues=[
         ("NODE ID 1", "US", "language 1", True),
         ("NODE ID 1", "gb", "language 2", False),
     ],
 )
-def test_prepare_details_request(
-    node_id: str, country: str, language: str, best_only: bool
-) -> None:
+def test_prepare_details_request(node_id: str, country: str, language: str, best_only: bool):
     expected_request = {
         "operationName": "GetTitleNode",
         "variables": {
@@ -261,15 +261,15 @@ def test_prepare_details_request(
         "u",  # too short
     ],
 )
-def test_prepare_details_request_asserts_on_invalid_country_code(invalid_code: str) -> None:
+def test_prepare_details_request_asserts_on_invalid_country_code(invalid_code: str):
     expected_error_message = f"Invalid country code: {invalid_code}, code must be 2 characters long"
     with raises(AssertionError) as error:
         prepare_details_request("", invalid_code, "", True)
-        assert str(error.value) == expected_error_message
+    assert str(error.value) == expected_error_message
 
 
 @mark.parametrize(
-    argnames=["node_id", "countries", "language", "best_only"],
+    argnames=("node_id", "countries", "language", "best_only"),
     argvalues=[
         ("NODE ID 1", {"US"}, "language 1", True),
         ("NODE ID 2", {"au"}, "language 2", False),
@@ -278,7 +278,7 @@ def test_prepare_details_request_asserts_on_invalid_country_code(invalid_code: s
 )
 def test_prepare_offers_for_countries_request(
     node_id: str, countries: set[str], language: str, best_only: bool
-) -> None:
+):
     offer_requests = [
         GRAPHQL_COUNTRY_OFFERS_ENTRY.format(country_code=country_code.upper())
         for country_code in countries
@@ -305,26 +305,31 @@ def test_prepare_offers_for_countries_request(
 
 
 @mark.parametrize(
-    argnames=["codes", "invalid_code"],
+    argnames=("codes", "invalid_code_regex"),
     argvalues=[
         ({"United Stated of America", "UK"}, "United Stated of America"),  # too long
         ({"uk", "usa"}, "usa"),  # too long
-        ({"canada", "uk", "usa"}, "usa"),  # too long
-        ({"u", "uK", "a"}, "u"),  # too short
+        ({"canada", "uk", "usa"}, r"usa|canada"),  # too long
+        ({"u", "uK", "a"}, r"a|u"),  # too short
         ({"A"}, "A"),  # too short
     ],
 )
 def test_prepare_offers_for_countries_request_asserts_on_invalid_country_codes(
-    codes: set[str], invalid_code: str
-) -> None:
-    expected_error_message = f"Invalid country code: {invalid_code}, code must be 2 characters long"
+    codes: set[str], invalid_code_regex: set[str]
+):
+    expected_error_message = (
+        rf"Invalid country code: ({invalid_code_regex}), "
+        "code must be 2 characters long"
+    )
     with raises(AssertionError) as error:
         prepare_offers_for_countries_request("", codes, "", True)
-        assert str(error.value) == expected_error_message
+    # Regex here is required, as sets are unordered,
+    # so we have no guarantee which code will fail first.
+    assert match(expected_error_message, str(error.value))
 
 
 def test_prepare_offers_for_countries_request_asserts_on_empty_countries_set():
-    expected_error_message = "Cannot prepare offers request without specified countries!"
+    expected_error_message = "Cannot prepare offers request without specified countries"
     with raises(AssertionError) as error:
         prepare_offers_for_countries_request("", set(), "", True)
-        assert str(error.value) == expected_error_message
+    assert str(error.value) == expected_error_message

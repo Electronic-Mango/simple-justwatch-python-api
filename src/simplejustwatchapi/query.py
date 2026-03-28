@@ -361,7 +361,7 @@ class MediaEntry(NamedTuple):
     runtime_minutes: int
     """Runtime in minutes."""
 
-    short_description: str
+    short_description: str | None
     """Short description of this entry."""
 
     genres: list[str]

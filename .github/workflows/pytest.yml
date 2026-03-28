@@ -28,4 +28,4 @@ jobs:
       - name: Install the project
         run: uv sync --locked --all-extras --dev --python ${{ matrix.python-version }}
       - name: Run Pytest
-        run: uv run --dev pytest ./test/
+        run: uv run --dev --python ${{ matrix.python-version }} pytest ./test/

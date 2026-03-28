@@ -1,12 +1,16 @@
 # Simple JustWatch Python API
 
+[![PyPi](https://img.shields.io/pypi/v/simple-justwatch-python-api.svg)](https://pypi.python.org/pypi/simple-justwatch-python-api)
+[![License](https://img.shields.io/pypi/l/simple-justwatch-python-api.svg)](https://pypi.python.org/pypi/simple-justwatch-python-api)
+[![Python versions](https://img.shields.io/pypi/pyversions/simple-justwatch-python-api.svg)](https://pypi.python.org/pypi/simple-justwatch-python-api)
 [![CodeQL](https://github.com/Electronic-Mango/simple-justwatch-python-api/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/Electronic-Mango/simple-justwatch-python-api/actions/workflows/codeql-analysis.yml)
 [![Ruff](https://github.com/Electronic-Mango/simple-justwatch-python-api/actions/workflows/ruff.yml/badge.svg)](https://github.com/Electronic-Mango/simple-justwatch-python-api/actions/workflows/ruff.yml)
 [![Pytest](https://github.com/Electronic-Mango/simple-justwatch-python-api/actions/workflows/pytest.yml/badge.svg)](https://github.com/Electronic-Mango/simple-justwatch-python-api/actions/workflows/pytest.yml)
 [![Coverage Status](https://coveralls.io/repos/github/Electronic-Mango/simple-justwatch-python-api/badge.svg?branch=main)](https://coveralls.io/github/Electronic-Mango/simple-justwatch-python-api?branch=main)
-[![PyPI - Version](https://img.shields.io/pypi/v/simple-justwatch-python-api)](https://pypi.org/project/simple-justwatch-python-api/)
 
 A simple unofficial JustWatch Python API which uses [`GraphQL`](https://graphql.org/) to access JustWatch data, built with [`httpx`](https://www.python-httpx.org/) and `Python3.11`.
+
+This project is managed by [uv](https://docs.astral.sh/uv/).
 
 
 

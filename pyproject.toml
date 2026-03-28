@@ -22,6 +22,7 @@ dependencies = [
 dev = [
     "pytest>=9.0.2",
     "pytest-mock>=3.15.1",
+    "ruff>=0.15.8",
     "sphinx>=9.0.4",
     "sphinx-rtd-theme>=3.1.0",
 ]
@@ -41,4 +42,21 @@ module-name = "simplejustwatchapi"
 [tool.pytest.ini_options]
 pythonpath = [
   "src", "test"
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+  "ANN401",  # Type hinting JSONs is problematic
+  "COM812",  # Avoid issues with formatter
+  "D203",  # Conflicts with D211
+  "D212",  # Conflicts with D213
+  "FBT",
+  "FIX002",
+  "S101",  # Remove once asserts are converted to exceptions
+  "TD002",
+  "TD003",
 ]

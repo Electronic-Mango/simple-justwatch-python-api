@@ -17,9 +17,14 @@ _GRAPHQL_API_URL = "https://apis.justwatch.com/graphql"
 
 
 def search(
-    title: str, country: str = "US", language: str = "en", count: int = 4, best_only: bool = True
+    title: str,
+    country: str = "US",
+    language: str = "en",
+    count: int = 4,
+    best_only: bool = True,
 ) -> list[MediaEntry]:
-    """Search JustWatch for given title.
+    """
+    Search JustWatch for given title.
 
     Returns a list of entries up to ``count``.
 
@@ -36,6 +41,7 @@ def search(
 
     Returns:
         List of ``MediaEntry`` NamedTuples parsed from JustWatch response
+
     """
     request = prepare_search_request(title, country, language, count, best_only)
     response = post(_GRAPHQL_API_URL, json=request)
@@ -44,9 +50,13 @@ def search(
 
 
 def details(
-    node_id: str, country: str = "US", language: str = "en", best_only: bool = True
-) -> MediaEntry:
-    """Get details of entry for a given ID.
+    node_id: str,
+    country: str = "US",
+    language: str = "en",
+    best_only: bool = True,
+) -> MediaEntry | None:
+    """
+    Get details of entry for a given ID.
 
     ``best_only`` allows filtering out redundant offers, e.g. when if provide offers service
     in 4K, HD and SD, using ``best_only = True`` returns only 4K option, ``best_only = False``
@@ -59,18 +69,26 @@ def details(
         best_only: return only best offers if ``True``, return all offers if ``False``
 
     Returns:
-        ``MediaEntry`` NamedTuple with data about requested entry.
+        ``MediaEntry`` NamedTuple with data about requested entry,
+        or None in case data for a given node ID was not found
+
     """
     request = prepare_details_request(node_id, country, language, best_only)
     response = post(_GRAPHQL_API_URL, json=request)
     response.raise_for_status()
+    # TODO: Add a unit test checking for None response
     return parse_details_response(response.json())
 
 
 def offers_for_countries(
-    node_id: str, countries: set[str], language: str = "en", best_only: bool = True
+    node_id: str,
+    countries: set[str],
+    language: str = "en",
+    best_only: bool = True,
 ) -> dict[str, list[Offer]]:
-    """Get offers for entry of given node ID for all countries passed as argument.
+    """
+    Get offers for entry of given node ID for all countries passed as argument.
+
     Language argument only specifies format of price string, e.g. whether ".", or "," is used
     in decimal fractions.
 
@@ -108,6 +126,7 @@ def offers_for_countries(
     Returns:
         ``dict`` where keys match values in ``countries`` and keys are all found offers for their
         respective countries
+
     """
     if not countries:
         return {}

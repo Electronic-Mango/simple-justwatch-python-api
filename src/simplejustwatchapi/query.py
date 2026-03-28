@@ -1,10 +1,14 @@
-"""Module responsible for creating GraphQL queries and parsing responses from JustWatch GraphQL API.
-Parsed responses are returned as Python NamedTuples for easier access."""
+"""
+Module responsible for creating GraphQL queries and parsing responses from JustWatch GraphQL API.
 
-from typing import NamedTuple
+Parsed responses are returned as Python NamedTuples for easier access.
+"""
+
+from typing import Any, NamedTuple
 
 _DETAILS_URL = "https://justwatch.com"
 _IMAGES_URL = "https://images.justwatch.com"
+_COUNTRY_CODE_LENGTH = 2
 
 _GRAPHQL_DETAILS_QUERY = """
 query GetTitleNode(
@@ -182,8 +186,11 @@ _GRAPHQL_COUNTRY_OFFERS_ENTRY = """
 
 
 class OfferPackage(NamedTuple):
-    """Parsed single offer package from JustWatch GraphQL API for single entry.
-    Contains information about platform on which given offer is available."""
+    """
+    Parsed single offer package from JustWatch GraphQL API for single entry.
+
+    Contains information about platform on which given offer is available.
+    """
 
     id: str
     """ID, defines whole platform on which this offer is available, not a single offer."""
@@ -202,8 +209,11 @@ class OfferPackage(NamedTuple):
 
 
 class Offer(NamedTuple):
-    """Parsed single offer from JustWatch GraphQL API for single entry.
-    One platform can have multiple offers for one entry available, e.g. renting, buying, etc."""
+    """
+    Parsed single offer from JustWatch GraphQL API for single entry.
+
+    One platform can have multiple offers for one entry available, e.g. renting, buying, etc.
+    """
 
     id: str
     """Offer ID."""
@@ -386,9 +396,15 @@ class MediaEntry(NamedTuple):
 
 
 def prepare_search_request(
-    title: str, country: str, language: str, count: int, best_only: bool
+    title: str,
+    country: str,
+    language: str,
+    count: int,
+    best_only: bool,
 ) -> dict:
-    """Prepare search request for JustWatch GraphQL API.
+    """
+    Prepare search request for JustWatch GraphQL API.
+
     Creates a ``GetSearchTitles`` GraphQL query.
 
     Country code should be two uppercase letters, however it will be auto-converted to uppercase.
@@ -404,6 +420,7 @@ def prepare_search_request(
 
     Returns:
         JSON/dict with GraphQL POST body
+
     """
     _assert_country_code_is_valid(country)
     return {
@@ -424,7 +441,9 @@ def prepare_search_request(
 
 
 def parse_search_response(json: dict) -> list[MediaEntry]:
-    """Parse response from search query from JustWatch GraphQL API.
+    """
+    Parse response from search query from JustWatch GraphQL API.
+
     Parses response for ``GetSearchTitles`` query.
 
     If API didn't return any data, then an empty list is returned.
@@ -436,12 +455,15 @@ def parse_search_response(json: dict) -> list[MediaEntry]:
 
     Returns:
         Parsed received JSON as a list of ``MediaEntry`` NamedTuples
+
     """
     return [_parse_entry(edge["node"]) for edge in json["data"]["popularTitles"]["edges"]]
 
 
 def prepare_details_request(node_id: str, country: str, language: str, best_only: bool) -> dict:
-    """Prepare a details request for specified node ID to JustWatch GraphQL API.
+    """
+    Prepare a details request for specified node ID to JustWatch GraphQL API.
+
     Creates a ``GetTitleNode`` GraphQL query.
 
     Country code should be two uppercase letters, however it will be auto-converted to uppercase.
@@ -456,6 +478,7 @@ def prepare_details_request(node_id: str, country: str, language: str, best_only
 
     Returns:
         JSON/dict with GraphQL POST body
+
     """
     _assert_country_code_is_valid(country)
     return {
@@ -474,8 +497,10 @@ def prepare_details_request(node_id: str, country: str, language: str, best_only
     }
 
 
-def parse_details_response(json: any) -> MediaEntry | None:
-    """Parse response from details query from JustWatch GraphQL API.
+def parse_details_response(json: Any) -> MediaEntry | None:
+    """
+    Parse response from details query from JustWatch GraphQL API.
+
     Parses response for ``GetTitleNode`` query.
 
     If API responded with an internal error (mostly due to not found node ID),
@@ -489,15 +514,20 @@ def parse_details_response(json: any) -> MediaEntry | None:
     Returns:
         Parsed received JSON as a ``MediaEntry`` NamedTuple,
         or ``None`` in case data for a given node ID was not found
+
     """
     return _parse_entry(json["data"]["node"]) if "errors" not in json else None
 
 
 def prepare_offers_for_countries_request(
-    node_id: str, countries: set[str], language: str, best_only: bool
+    node_id: str,
+    countries: set[str],
+    language: str,
+    best_only: bool,
 ) -> dict:
-    """Prepare an offers request for specified node ID and for all specified countries
-    to JustWatch GraphQL API.
+    """
+    Prepare an offers request for the node ID and for all given countries to JustWatch GraphQL API.
+
     Creates a ``GetTitleOffers`` GraphQL query.
 
     Country codes should be two uppercase letters, however they will be auto-converted to uppercase.
@@ -513,7 +543,9 @@ def prepare_offers_for_countries_request(
 
     Returns:
         JSON/dict with GraphQL POST body
+
     """
+    # TODO: Convert assert to regular exception
     assert countries, "Cannot prepare offers request without specified countries"
     for country in countries:
         _assert_country_code_is_valid(country)
@@ -532,8 +564,10 @@ def prepare_offers_for_countries_request(
     }
 
 
-def parse_offers_for_countries_response(json: any, countries: set[str]) -> dict[str, list[Offer]]:
-    """Parse response from offers query from JustWatch GraphQL API.
+def parse_offers_for_countries_response(json: Any, countries: set[str]) -> dict[str, list[Offer]]:
+    """
+    Parse response from offers query from JustWatch GraphQL API.
+
     Parses response for ``GetTitleOffers`` query.
 
     Response if searched for country codes passed as ``countries`` argument.
@@ -550,6 +584,7 @@ def parse_offers_for_countries_response(json: any, countries: set[str]) -> dict[
     Returns:
         A dict, where keys are matching ``countries`` argument and values are offers for a given
         country parsed from JSON response.
+
     """
     offers_node = json["data"]["node"]
     return {
@@ -559,7 +594,9 @@ def parse_offers_for_countries_response(json: any, countries: set[str]) -> dict[
 
 
 def _assert_country_code_is_valid(code: str) -> None:
-    assert len(code) == 2, f"Invalid country code: {code}, code must be 2 characters long"
+    # TODO: Convert assert to regular exception
+    code_has_valid_length = len(code) == _COUNTRY_CODE_LENGTH
+    assert code_has_valid_length, f"Invalid country code: {code}, code must be 2 characters long"
 
 
 def _prepare_offers_for_countries_entry(countries: set[str]) -> str:
@@ -571,7 +608,7 @@ def _prepare_offers_for_countries_entry(countries: set[str]) -> str:
     return main_body + _GRAPHQL_OFFER_FRAGMENT
 
 
-def _parse_entry(json: any) -> MediaEntry:
+def _parse_entry(json: Any) -> MediaEntry:
     entry_id = json.get("id")
     object_id = json.get("objectId")
     object_type = json.get("objectType")
@@ -617,7 +654,7 @@ def _parse_entry(json: any) -> MediaEntry:
     )
 
 
-def _parse_scores(json: any) -> Scoring | None:
+def _parse_scores(json: Any) -> Scoring | None:
     if not json:
         return None
     imdb_score = json.get("imdbScore")
@@ -638,7 +675,7 @@ def _parse_scores(json: any) -> Scoring | None:
     )
 
 
-def _parse_interactions(json: any) -> Interactions | None:
+def _parse_interactions(json: Any) -> Interactions | None:
     if not json:
         return None
     likes = json.get("likelistAdditions")
@@ -646,7 +683,7 @@ def _parse_interactions(json: any) -> Interactions | None:
     return Interactions(likes, dislikes)
 
 
-def _parse_streaming_charts(json: any) -> StreamingCharts | None:
+def _parse_streaming_charts(json: Any) -> StreamingCharts | None:
     if (
         not (streaming_chart_info := json.get("streamingCharts", {}).get("edges"))
         or not (streaming_chart_info := streaming_chart_info[0].get("streamingChartInfo"))
@@ -677,15 +714,15 @@ def _parse_streaming_charts(json: any) -> StreamingCharts | None:
     )
 
 
-def _parse_offer(json: any) -> Offer:
-    id = json.get("id")
+def _parse_offer(json: Any) -> Offer:
+    offer_id = json.get("id")
     monetization_type = json.get("monetizationType")
     presentation_type = json.get("presentationType")
     price_string = json.get("retailPrice")
     price_value = json.get("retailPriceValue")
     price_currency = json.get("currency")
     last_change_retail_price_value = json.get("lastChangeRetailPriceValue")
-    type = json.get("type")
+    offer_type = json.get("type")
     package = _parse_package(json["package"])
     url = json.get("standardWebURL")
     element_count = json.get("elementCount")
@@ -696,14 +733,14 @@ def _parse_offer(json: any) -> Offer:
     audio_technology = json.get("audioTechnology")
     audio_languages = json.get("audioLanguages")
     return Offer(
-        id,
+        offer_id,
         monetization_type,
         presentation_type,
         price_string,
         price_value,
         price_currency,
         last_change_retail_price_value,
-        type,
+        offer_type,
         package,
         url,
         element_count,
@@ -716,10 +753,10 @@ def _parse_offer(json: any) -> Offer:
     )
 
 
-def _parse_package(json: any) -> OfferPackage:
-    id = json.get("id")
+def _parse_package(json: Any) -> OfferPackage:
+    platform_id = json.get("id")
     package_id = json.get("packageId")
     name = json.get("clearName")
     technical_name = json.get("technicalName")
     icon = _IMAGES_URL + json.get("icon")
-    return OfferPackage(id, package_id, name, technical_name, icon)
+    return OfferPackage(platform_id, package_id, name, technical_name, icon)

@@ -211,11 +211,11 @@ def test_prepare_search_request(
 
 
 @mark.parametrize(
-    argnames=["invalid_code"],
+    argnames="invalid_code",
     argvalues=[
-        ("United Stated of America",),  # too long
-        ("usa",),  # too long
-        ("u",),  # too short
+        "United Stated of America",  # too long
+        "usa",  # too long
+        "u",  # too short
     ],
 )
 def test_prepare_search_request_asserts_on_invalid_country_code(invalid_code: str) -> None:
@@ -254,11 +254,11 @@ def test_prepare_details_request(
 
 
 @mark.parametrize(
-    argnames=["invalid_code"],
+    argnames="invalid_code",
     argvalues=[
-        ("United Stated of America",),  # too long
-        ("usa",),  # too long
-        ("u",),  # too short
+        "United Stated of America",  # too long
+        "usa",  # too long
+        "u",  # too short
     ],
 )
 def test_prepare_details_request_asserts_on_invalid_country_code(invalid_code: str) -> None:

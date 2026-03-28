@@ -16,7 +16,7 @@ DUMMY_RESPONSE = {"dummy": "response"}
 DUMMY_ENTRIES = [MagicMock(), MagicMock(), None]
 
 
-@fixture()
+@fixture
 def httpx_post_mock(mocker):
     post_mock = mocker.patch("simplejustwatchapi.justwatch.post")
     post_mock.return_value.json.return_value = DUMMY_RESPONSE

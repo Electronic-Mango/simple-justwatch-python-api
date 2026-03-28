@@ -10,6 +10,9 @@ _DETAILS_URL = "https://justwatch.com"
 _IMAGES_URL = "https://images.justwatch.com"
 _COUNTRY_CODE_LENGTH = 2
 
+# TODO: Convert these strings into resources, e.g.:
+#       https://docs.python.org/3/library/importlib.resources.html
+
 _GRAPHQL_DETAILS_QUERY = """
 query GetTitleNode(
   $nodeId: ID!,

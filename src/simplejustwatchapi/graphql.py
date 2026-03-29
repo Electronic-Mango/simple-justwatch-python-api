@@ -2,8 +2,10 @@
 Module responsible for preparing full GraphQL queries.
 
 Queries are usually prepared as main query + details fragment + offers fragment.
+
 In the long term these queries should be moved to dedicated GraphQL resource files
-to allow for formatting and syntax checking.
+to allow for formatting and syntax checking. However, the functions used for constructing
+full queries shouldn't change.
 """
 
 # TODO: Convert these strings into resources, e.g.:

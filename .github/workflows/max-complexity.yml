@@ -30,7 +30,11 @@ jobs:
         uses: astral-sh/setup-uv@v7
       - name: Install the project
         run: uv sync --locked --all-extras --dev
-      - name: Check details complexity
-        run: uv run python -c "from simplejustwatchapi import details; details('ts20711', best_only=False)"
       - name: Check search complexity
         run: uv run python -c "from simplejustwatchapi import search; search('The', count=100, best_only=False)"
+      - name: Check details complexity
+        run: uv run python -c "from simplejustwatchapi import details; details('ts20711', best_only=False)"
+      - name: Check seasons complexity
+        run: uv run python -c "from simplejustwatchapi import seasons; seasons('ts20711', best_only=False)"
+      - name: Check episodes complexity
+        run: uv run python -c "from simplejustwatchapi import episodes; episodes('tss21924', best_only=False)"

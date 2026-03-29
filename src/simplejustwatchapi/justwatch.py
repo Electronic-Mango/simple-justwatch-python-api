@@ -3,14 +3,19 @@
 from httpx import post
 
 from simplejustwatchapi.query import (
+    Episode,
     MediaEntry,
     Offer,
     parse_details_response,
+    parse_episodes_response,
     parse_offers_for_countries_response,
     parse_search_response,
+    parse_seasons_response,
     prepare_details_request,
+    prepare_episodes_request,
     prepare_offers_for_countries_request,
     prepare_search_request,
+    prepare_seasons_request,
 )
 
 _GRAPHQL_API_URL = "https://apis.justwatch.com/graphql"
@@ -78,6 +83,62 @@ def details(
     response.raise_for_status()
     # TODO: Add a unit test checking for None response
     return parse_details_response(response.json())
+
+
+def seasons(
+    show_id: str, country: str = "US", language: str = "en", best_only: bool = True
+) -> list[MediaEntry] | None:
+    """
+    Get details of all seasons available for a given show ID.
+
+    ``best_only`` allows filtering out redundant offers, e.g. when if provide offers service
+    in 4K, HD and SD, using ``best_only = True`` returns only 4K option, ``best_only = False``
+    returns all three.
+
+    Args:
+        show_id: ID of show to look up seasons for
+        country: country to search for offers, ``US`` by default
+        language: language of responses, ``en`` by default
+        best_only: return only best offers if ``True``, return all offers if ``False``
+
+    Returns:
+        ``MediaEntry`` NamedTuple with data about requested entry,
+        or None in case data for a given node ID was not found
+
+    """
+    request = prepare_seasons_request(show_id, country, language, best_only)
+    response = post(_GRAPHQL_API_URL, json=request)
+    response.raise_for_status()
+    # TODO: Add a unit test checking for None response
+    return parse_seasons_response(response.json())
+
+
+def episodes(
+    season_id: str, country: str = "US", language: str = "en", best_only: bool = True
+) -> list[Episode] | None:
+    """
+    Get details of all episodes available for a given season ID.
+
+    ``best_only`` allows filtering out redundant offers, e.g. when if provide offers service
+    in 4K, HD and SD, using ``best_only = True`` returns only 4K option, ``best_only = False``
+    returns all three.
+
+    Args:
+        season_id: ID of season to look up episodes for
+        country: country to search for offers, ``US`` by default
+        language: language of responses, ``en`` by default
+        best_only: return only best offers if ``True``, return all offers if ``False``
+
+    Returns:
+        ``MediaEntry`` NamedTuple with data about requested entry,
+        or None in case data for a given node ID was not found
+
+    """
+    request = prepare_episodes_request(season_id, country, language, best_only)
+    response = post(_GRAPHQL_API_URL, json=request)
+    response.raise_for_status()
+    # TODO: Add a unit test checking for None response
+    return parse_episodes_response(response.json())
 
 
 def offers_for_countries(

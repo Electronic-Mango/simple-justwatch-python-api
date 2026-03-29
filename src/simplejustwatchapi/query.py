@@ -63,6 +63,52 @@ query GetSearchTitles(
 }
 """
 
+_GRAPHQL_SEASON_QUERY = """
+query GetTitleNode(
+  $nodeId: ID!,
+  $language: Language!,
+  $country: Country!,
+  $formatPoster: ImageFormat,
+  $formatOfferIcon: ImageFormat,
+  $profile: PosterProfile,
+  $backdropProfile: BackdropProfile,
+  $filter: OfferFilter!,
+) {
+  node(id: $nodeId) {
+    ...on Show {
+      seasons(sortDirection: ASC) {
+        ...TitleDetails
+      }
+    }
+    __typename
+  }
+  __typename
+}
+"""
+
+_GRAPHQL_EPISODES_QUERY = """
+query GetTitleNode(
+  $nodeId: ID!,
+  $language: Language!,
+  $country: Country!,
+  $formatPoster: ImageFormat,
+  $formatOfferIcon: ImageFormat,
+  $profile: PosterProfile,
+  $backdropProfile: BackdropProfile,
+  $filter: OfferFilter!,
+) {
+  node(id: $nodeId) {
+    ...on Season {
+      episodes(sortDirection: ASC) {
+        ...TitleDetails
+      }
+    }
+    __typename
+  }
+  __typename
+}
+"""
+
 _GRAPHQL_OFFERS_BY_COUNTRY_QUERY = """
 query GetTitleOffers(
   $nodeId: ID!,
@@ -82,15 +128,28 @@ query GetTitleOffers(
 """
 
 _GRAPHQL_DETAILS_FRAGMENT = """
-fragment TitleDetails on MovieOrShow {
+fragment TitleDetails on MovieOrShowOrSeasonOrEpisode {
   id
   objectId
   objectType
   content(country: $country, language: $language) {
     ...ContentDetails
-    ageCertification
     __typename
   }
+  ...StreamingChartInfoFragment
+  ...on Show {
+    totalSeasonCount
+  }
+  ...on Season {
+    totalEpisodeCount
+  }
+  offers(country: $country, platform: WEB, filter: $filter) {
+    ...TitleOffer
+  }
+  __typename
+}
+
+fragment StreamingChartInfoFragment on MovieOrShowOrSeason {
   streamingCharts(country: $country) {
     edges {
       streamingChartInfo {
@@ -109,91 +168,28 @@ fragment TitleDetails on MovieOrShow {
     }
     __typename
   }
-  offers(country: $country, platform: WEB, filter: $filter) {
-    ...TitleOffer
-  }
-  ...ShowDetails
-  __typename
-}
-"""
-
-_GRAPHQL_SIMPLE_SHOW_FRAGMENT = """
-fragment ShowDetails on Show {
-  totalSeasonCount
-  __typename
-}
-"""
-
-_GRAPHQL_FULL_SHOW_FRAGMENT = """
-fragment ShowDetails on Show {
-  totalSeasonCount
-  seasons(sortDirection: ASC) {
-    id
-    objectId
-    objectType
-    totalEpisodeCount
-    content(country: $country, language: $language) {
-      seasonNumber
-      ...ContentDetails
-      __typename
-    }
-    streamingCharts(country: $country) {
-      edges {
-        streamingChartInfo {
-          rank
-          trend
-          trendDifference
-          daysInTop3
-          daysInTop10
-          daysInTop100
-          daysInTop1000
-          topRank
-          updatedAt
-          __typename
-        }
-        __typename
-      }
-      __typename
-    }
-    offers(country: $country, platform: WEB, filter: $filter) {
-      ...TitleOffer
-    }
-    episodes(sortDirection: ASC) {
-      ...EpisodeDetails
-    }
-    __typename
-  }
-  __typename
 }
 
-fragment EpisodeDetails on Episode {
-  id
-  objectId
-  objectType
-  content(country: $country, language: $language) {
-    ...BasicContentDetails
-    episodeNumber
-    seasonNumber
-    __typename
-  }
-  offers(country: $country, platform: WEB, filter: $filter) {
-    ...TitleOffer
-  }
-  __typename
-}
-"""
-
-_GRAPHQL_CONTENT_FRAGMENT = """
-fragment BasicContentDetails on MovieOrShowOrSeasonOrEpisodeContent {
+fragment ContentDetails on MovieOrShowOrSeasonOrEpisodeContent {
   title
   originalReleaseYear
   originalReleaseDate
   runtime
   shortDescription
+  ...FullContentDetails
+  ...on MovieOrShowContent {
+    ageCertification
+  }
+  ...on SeasonContent {
+    seasonNumber
+  }
+  ...on EpisodeContent {
+    seasonNumber
+    episodeNumber
+  }
 }
 
-fragment ContentDetails on MovieOrShowOrSeasonContent {
-  ...BasicContentDetails
+fragment FullContentDetails on MovieOrShowOrSeasonContent {
   fullPath
   genres {
     shortName
@@ -451,73 +447,6 @@ class Episode(NamedTuple):
     """List of available offers for this episode, empty if there are no available offers."""
 
 
-class Season(NamedTuple):
-    """Parsed data related to a single Season."""
-
-    season_id: str
-    """Season ID, contains type code and numeric ID."""
-
-    object_id: int
-    """Object ID, the numeric part of full season ID."""
-
-    object_type: str
-    """Type of entry, for season it should be ``SHOW_SEASON``."""
-
-    total_episode_count: int
-    """Total number of episodes in this season."""
-
-    season_number: int
-    """Number of this season."""
-
-    title: str
-    """Full title."""
-
-    url: str
-    """URL to JustWatch with details for this entry."""
-
-    release_year: int
-    """Release year as a number."""
-
-    release_date: str
-    """Full release date as a string, e.g. ``2013-12-16``."""
-
-    runtime_minutes: int
-    """Runtime in minutes."""
-
-    short_description: str | None
-    """Short description of this entry."""
-
-    genres: list[str]
-    """List of genre codes for this entry, e.g. ``["rly"]``, ``["cmy", "drm", "rma"]``."""
-
-    imdb_id: str | None
-    """ID of this entry in IMDB."""
-
-    tmdb_id: str | None
-    """ID of this entry in TMDB."""
-
-    poster: str | None
-    """URL to poster for this ID."""
-
-    backdrops: list[str]
-    """List of URLs for backdrops (full screen images to use as background)."""
-
-    scoring: Scoring | None
-    """Scoring data."""
-
-    interactions: Interactions | None
-    """Interactions (likes/dislikes) data."""
-
-    streaming_charts: StreamingCharts | None
-    """JustWatch charts/ranks data."""
-
-    offers: list[Offer]
-    """List of available offers for this entry, empty if there are no available offers."""
-
-    episodes: list[Episode]
-    """List of episodes within this season."""
-
-
 class MediaEntry(NamedTuple):
     """Parsed response from JustWatch GraphQL API for "GetSearchTitles" query for single entry."""
 
@@ -533,13 +462,13 @@ class MediaEntry(NamedTuple):
     title: str
     """Full title."""
 
-    url: str
+    url: str | None
     """URL to JustWatch with details for this entry."""
 
-    release_year: int
+    release_year: int | None
     """Release year as a number."""
 
-    release_date: str
+    release_date: str | None
     """Full release date as a string, e.g. ``2013-12-16``."""
 
     runtime_minutes: int
@@ -578,11 +507,17 @@ class MediaEntry(NamedTuple):
     offers: list[Offer]
     """List of available offers for this entry, empty if there are no available offers."""
 
-    season_count: int | None
+    total_season_count: int | None
     """Total season count, for non-show it will be None."""
 
-    seasons: list[Season] | None
-    """Data for seasons, for non-show it will be None."""
+    total_episode_count: int | None
+    """Total number of episodes in this season."""
+
+    season_number: int | None
+    """Number of this season."""
+
+    episode_number: int | None
+    """Number of this episode."""
 
 
 def prepare_search_request(
@@ -626,13 +561,7 @@ def prepare_search_request(
             "backdropProfile": "S1920",
             "filter": {"bestOnly": best_only},
         },
-        "query": (
-            _GRAPHQL_SEARCH_QUERY
-            + _GRAPHQL_DETAILS_FRAGMENT
-            + _GRAPHQL_SIMPLE_SHOW_FRAGMENT
-            + _GRAPHQL_CONTENT_FRAGMENT
-            + _GRAPHQL_OFFER_FRAGMENT
-        ),
+        "query": _GRAPHQL_SEARCH_QUERY + _GRAPHQL_DETAILS_FRAGMENT + _GRAPHQL_OFFER_FRAGMENT,
     }
 
 
@@ -654,6 +583,132 @@ def parse_search_response(json: dict) -> list[MediaEntry]:
 
     """
     return [_parse_entry(edge["node"]) for edge in json["data"]["popularTitles"]["edges"]]
+
+
+def prepare_seasons_request(show_id: str, country: str, language: str, best_only: bool) -> dict:
+    """
+    Prepare a seasons details request for specified show ID to JustWatch GraphQL API.
+
+    Creates a ``GetTitleNode`` GraphQL query.
+
+    Country code should be two uppercase letters, however it will be auto-converted to uppercase.
+
+    Meant to be used together with :func:`parse_seasons_response`.
+
+    Args:
+        show_id: show ID of entry to get details for
+        country: country to search for offers
+        language: language of responses
+        best_only: return only best offers if ``True``, return all offers if ``False``
+
+    Returns:
+        JSON/dict with GraphQL POST body
+
+    """
+    _assert_country_code_is_valid(country)
+    return {
+        "operationName": "GetTitleNode",
+        "variables": {
+            "nodeId": show_id,
+            "language": language,
+            "country": country.upper(),
+            "formatPoster": "JPG",
+            "formatOfferIcon": "PNG",
+            "profile": "S718",
+            "backdropProfile": "S1920",
+            "filter": {"bestOnly": best_only},
+        },
+        "query": _GRAPHQL_SEASON_QUERY + _GRAPHQL_DETAILS_FRAGMENT + _GRAPHQL_OFFER_FRAGMENT,
+    }
+
+
+def parse_seasons_response(json: Any) -> list[MediaEntry] | None:
+    """
+    Parse response from seasons details query from JustWatch GraphQL API.
+
+    Parses response for ``GetTitleNode`` query.
+
+    If API responded with an internal error (mostly due to not found node ID),
+    then ``None`` will be returned instead.
+
+    Meant to be used together with :func:`prepare_seasons_request`.
+
+    Args:
+        json: JSON returned by JustWatch GraphQL API
+
+    Returns:
+        Parsed received JSON as a ``MediaEntry`` NamedTuple list,
+        or ``None`` in case data for a given node ID was not found
+
+    """
+    return (
+        [_parse_entry(season) for season in json["data"]["node"].get("seasons", [])]
+        if "errors" not in json
+        else None
+    )
+
+
+def prepare_episodes_request(episode_id: str, country: str, language: str, best_only: bool) -> dict:
+    """
+    Prepare a episodes details request for specified node ID to JustWatch GraphQL API.
+
+    Creates a ``GetTitleNode`` GraphQL query.
+
+    Country code should be two uppercase letters, however it will be auto-converted to uppercase.
+
+    Meant to be used together with :func:`parse_episodes_response`.
+
+    Args:
+        episode_id: episode ID of entry to get details for
+        country: country to search for offers
+        language: language of responses
+        best_only: return only best offers if ``True``, return all offers if ``False``
+
+    Returns:
+        JSON/dict with GraphQL POST body
+
+    """
+    _assert_country_code_is_valid(country)
+    return {
+        "operationName": "GetTitleNode",
+        "variables": {
+            "nodeId": episode_id,
+            "language": language,
+            "country": country.upper(),
+            "formatPoster": "JPG",
+            "formatOfferIcon": "PNG",
+            "profile": "S718",
+            "backdropProfile": "S1920",
+            "filter": {"bestOnly": best_only},
+        },
+        "query": _GRAPHQL_EPISODES_QUERY + _GRAPHQL_DETAILS_FRAGMENT + _GRAPHQL_OFFER_FRAGMENT,
+    }
+
+
+def parse_episodes_response(json: Any) -> list[Episode] | None:
+    """
+    Parse response from episodes details query from JustWatch GraphQL API.
+
+    Parses response for ``GetTitleNode`` query.
+
+    If API responded with an internal error (mostly due to not found node ID),
+    then ``None`` will be returned instead.
+
+    Meant to be used together with :func:`prepare_episodes_request`.
+
+    Args:
+        json: JSON returned by JustWatch GraphQL API
+
+    Returns:
+        Parsed received JSON as a ``Episode`` NamedTuple list,
+        or ``None`` in case data for a given node ID was not found
+
+    """
+    return (
+        [_parse_episode(episode) for episode in json["data"]["node"].get("episodes", [])]
+        if "errors" not in json
+        else None
+    )
 
 
 def prepare_details_request(node_id: str, country: str, language: str, best_only: bool) -> dict:
@@ -689,13 +744,7 @@ def prepare_details_request(node_id: str, country: str, language: str, best_only
             "backdropProfile": "S1920",
             "filter": {"bestOnly": best_only},
         },
-        "query": (
-            _GRAPHQL_DETAILS_QUERY
-            + _GRAPHQL_DETAILS_FRAGMENT
-            + _GRAPHQL_FULL_SHOW_FRAGMENT
-            + _GRAPHQL_CONTENT_FRAGMENT
-            + _GRAPHQL_OFFER_FRAGMENT
-        ),
+        "query": _GRAPHQL_DETAILS_QUERY + _GRAPHQL_DETAILS_FRAGMENT + _GRAPHQL_OFFER_FRAGMENT,
     }
 
 
@@ -814,9 +863,13 @@ def _parse_entry(json: Any) -> MediaEntry:
     entry_id = json.get("id")
     object_id = json.get("objectId")
     object_type = json.get("objectType")
+    total_episode_count = json.get("totalEpisodeCount")
     content = json["content"]
+    season_number = content.get("seasonNumber")
+    episode_number = content.get("episodeNumber")
     title = content.get("title")
-    url = _DETAILS_URL + content.get("fullPath")
+    url_field = content.get("fullPath")
+    url = _DETAILS_URL + url_field if url_field else None
     year = content.get("originalReleaseYear")
     date = content.get("originalReleaseDate")
     runtime_minutes = content.get("runtime")
@@ -833,8 +886,7 @@ def _parse_entry(json: Any) -> MediaEntry:
     interactions = _parse_interactions(content.get("interactions"))
     streaming_charts = _parse_streaming_charts(json)
     offers = [_parse_offer(offer) for offer in json.get("offers", []) if offer]
-    season_count = json.get("totalSeasonCount")
-    seasons = [_parse_season(season) for season in json.get("seasons", [])] or None
+    total_season_count = json.get("totalSeasonCount")
     return MediaEntry(
         entry_id,
         object_id,
@@ -855,8 +907,38 @@ def _parse_entry(json: Any) -> MediaEntry:
         interactions,
         streaming_charts,
         offers,
-        season_count,
-        seasons,
+        total_season_count,
+        total_episode_count,
+        season_number,
+        episode_number,
+    )
+
+
+def _parse_episode(json: Any) -> Episode:
+    episode_id = json.get("id")
+    object_id = json.get("objectId")
+    object_type = json.get("objectType")
+    content = json["content"]
+    title = content.get("title")
+    year = content.get("originalReleaseYear")
+    date = content.get("originalReleaseDate")
+    runtime_minutes = content.get("runtime")
+    short_description = content.get("shortDescription")
+    episode_number = content.get("episodeNumber")
+    season_number = content.get("seasonNumber")
+    offers = [_parse_offer(offer) for offer in json.get("offers", []) if offer]
+    return Episode(
+        episode_id,
+        object_id,
+        object_type,
+        title,
+        year,
+        date,
+        runtime_minutes,
+        short_description,
+        episode_number,
+        season_number,
+        offers,
     )
 
 
@@ -966,81 +1048,3 @@ def _parse_package(json: Any) -> OfferPackage:
     technical_name = json.get("technicalName")
     icon = _IMAGES_URL + json.get("icon")
     return OfferPackage(platform_id, package_id, name, technical_name, icon)
-
-
-def _parse_season(json: Any) -> Season:
-    season_id = json.get("id")
-    object_id = json.get("objectId")
-    object_type = json.get("objectType")
-    total_episode_count = json.get("totalEpisodeCount")
-    content = json["content"]
-    season_number = content.get("seasonNumber")
-    title = content.get("title")
-    url = _DETAILS_URL + content.get("fullPath")
-    year = content.get("originalReleaseYear")
-    date = content.get("originalReleaseDate")
-    runtime_minutes = content.get("runtime")
-    short_description = content.get("shortDescription")
-    genres = [node.get("shortName") for node in content.get("genres", []) if node]
-    external_ids = content.get("externalIds")
-    imdb_id = external_ids.get("imdbId") if external_ids else None
-    tmdb_id = external_ids.get("tmdbId") if external_ids else None
-    poster_url_field = content.get("posterUrl")
-    poster = _IMAGES_URL + poster_url_field if poster_url_field else None
-    backdrops = [_IMAGES_URL + bd.get("backdropUrl") for bd in content.get("backdrops", []) if bd]
-    scoring = _parse_scores(content.get("scoring"))
-    interactions = _parse_interactions(content.get("interactions"))
-    streaming_charts = _parse_streaming_charts(json)
-    offers = [_parse_offer(offer) for offer in json.get("offers", []) if offer]
-    episodes = [_parse_episode(episode) for episode in json.get("episodes", [])]
-    return Season(
-        season_id,
-        object_id,
-        object_type,
-        total_episode_count,
-        season_number,
-        title,
-        url,
-        year,
-        date,
-        runtime_minutes,
-        short_description,
-        genres,
-        imdb_id,
-        tmdb_id,
-        poster,
-        backdrops,
-        scoring,
-        interactions,
-        streaming_charts,
-        offers,
-        episodes,
-    )
-
-
-def _parse_episode(json: Any) -> Episode:
-    episode_id = json.get("id")
-    object_id = json.get("objectId")
-    object_type = json.get("objectType")
-    content = json["content"]
-    title = content.get("title")
-    year = content.get("originalReleaseYear")
-    date = content.get("originalReleaseDate")
-    runtime_minutes = content.get("runtime")
-    short_description = content.get("shortDescription")
-    episode_number = content.get("episodeNumber")
-    season_number = content.get("seasonNumber")
-    offers = [_parse_offer(offer) for offer in json.get("offers", []) if offer]
-    return Episode(
-        episode_id,
-        object_id,
-        object_type,
-        title,
-        year,
-        date,
-        runtime_minutes,
-        short_description,
-        episode_number,
-        season_number,
-        offers,
-    )

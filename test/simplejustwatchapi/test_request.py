@@ -77,15 +77,28 @@ query GetTitleOffers(
 """
 
 GRAPHQL_DETAILS_FRAGMENT = """
-fragment TitleDetails on MovieOrShow {
+fragment TitleDetails on MovieOrShowOrSeasonOrEpisode {
   id
   objectId
   objectType
   content(country: $country, language: $language) {
     ...ContentDetails
-    ageCertification
     __typename
   }
+  ...StreamingChartInfoFragment
+  ...on Show {
+    totalSeasonCount
+  }
+  ...on Season {
+    totalEpisodeCount
+  }
+  offers(country: $country, platform: WEB, filter: $filter) {
+    ...TitleOffer
+  }
+  __typename
+}
+
+fragment StreamingChartInfoFragment on MovieOrShowOrSeason {
   streamingCharts(country: $country) {
     edges {
       streamingChartInfo {
@@ -104,91 +117,28 @@ fragment TitleDetails on MovieOrShow {
     }
     __typename
   }
-  offers(country: $country, platform: WEB, filter: $filter) {
-    ...TitleOffer
-  }
-  ...ShowDetails
-  __typename
-}
-"""
-
-GRAPHQL_SIMPLE_SHOW_DETAILS_FRAGMENT = """
-fragment ShowDetails on Show {
-  totalSeasonCount
-  __typename
-}
-"""
-
-GRAPHQL_FULL_SHOW_FRAGMENT = """
-fragment ShowDetails on Show {
-  totalSeasonCount
-  seasons(sortDirection: ASC) {
-    id
-    objectId
-    objectType
-    totalEpisodeCount
-    content(country: $country, language: $language) {
-      seasonNumber
-      ...ContentDetails
-      __typename
-    }
-    streamingCharts(country: $country) {
-      edges {
-        streamingChartInfo {
-          rank
-          trend
-          trendDifference
-          daysInTop3
-          daysInTop10
-          daysInTop100
-          daysInTop1000
-          topRank
-          updatedAt
-          __typename
-        }
-        __typename
-      }
-      __typename
-    }
-    offers(country: $country, platform: WEB, filter: $filter) {
-      ...TitleOffer
-    }
-    episodes(sortDirection: ASC) {
-      ...EpisodeDetails
-    }
-    __typename
-  }
-  __typename
 }
 
-fragment EpisodeDetails on Episode {
-  id
-  objectId
-  objectType
-  content(country: $country, language: $language) {
-    ...BasicContentDetails
-    episodeNumber
-    seasonNumber
-    __typename
-  }
-  offers(country: $country, platform: WEB, filter: $filter) {
-    ...TitleOffer
-  }
-  __typename
-}
-"""
-
-GRAPHQL_CONTENT_FRAGMENT = """
-fragment BasicContentDetails on MovieOrShowOrSeasonOrEpisodeContent {
+fragment ContentDetails on MovieOrShowOrSeasonOrEpisodeContent {
   title
   originalReleaseYear
   originalReleaseDate
   runtime
   shortDescription
+  ...FullContentDetails
+  ...on MovieOrShowContent {
+    ageCertification
+  }
+  ...on SeasonContent {
+    seasonNumber
+  }
+  ...on EpisodeContent {
+    seasonNumber
+    episodeNumber
+  }
 }
 
-fragment ContentDetails on MovieOrShowOrSeasonContent {
-  ...BasicContentDetails
+fragment FullContentDetails on MovieOrShowOrSeasonContent {
   fullPath
   genres {
     shortName
@@ -283,13 +233,7 @@ def test_prepare_search_request(
             "backdropProfile": "S1920",
             "filter": {"bestOnly": best_only},
         },
-        "query": (
-            GRAPHQL_SEARCH_QUERY
-            + GRAPHQL_DETAILS_FRAGMENT
-            + GRAPHQL_SIMPLE_SHOW_DETAILS_FRAGMENT
-            + GRAPHQL_CONTENT_FRAGMENT
-            + GRAPHQL_OFFER_FRAGMENT
-        ),
+        "query": (GRAPHQL_SEARCH_QUERY + GRAPHQL_DETAILS_FRAGMENT + GRAPHQL_OFFER_FRAGMENT),
     }
     request = prepare_search_request(title, country, language, count, best_only)
     assert expected_request == request
@@ -330,13 +274,7 @@ def test_prepare_details_request(node_id: str, country: str, language: str, best
             "backdropProfile": "S1920",
             "filter": {"bestOnly": best_only},
         },
-        "query": (
-            GRAPHQL_DETAILS_QUERY
-            + GRAPHQL_DETAILS_FRAGMENT
-            + GRAPHQL_FULL_SHOW_FRAGMENT
-            + GRAPHQL_CONTENT_FRAGMENT
-            + GRAPHQL_OFFER_FRAGMENT
-        ),
+        "query": (GRAPHQL_DETAILS_QUERY + GRAPHQL_DETAILS_FRAGMENT + GRAPHQL_OFFER_FRAGMENT),
     }
     request = prepare_details_request(node_id, country, language, best_only)
     assert expected_request == request

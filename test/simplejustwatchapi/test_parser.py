@@ -214,6 +214,8 @@ PARSED_NODE_1 = MediaEntry(
     ],
     None,
     None,
+    None,
+    None,
 )
 
 RESPONSE_NODE_2 = {
@@ -336,6 +338,8 @@ PARSED_NODE_2 = MediaEntry(
     ],
     None,
     None,
+    None,
+    None,
 )
 RESPONSE_NODE_3 = {
     "id": "id3",
@@ -371,6 +375,8 @@ PARSED_NODE_3 = MediaEntry(
     None,
     None,
     [],
+    None,
+    None,
     None,
     None,
 )

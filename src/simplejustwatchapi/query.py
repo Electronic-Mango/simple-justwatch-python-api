@@ -117,7 +117,7 @@ fragment TitleDetails on MovieOrShow {
 }
 """
 
-_GRAPHQL_SIMPLE_SHOW_DETAILS_FRAGMENT = """
+_GRAPHQL_SIMPLE_SHOW_FRAGMENT = """
 fragment ShowDetails on Show {
   totalSeasonCount
   __typename
@@ -631,7 +631,7 @@ def prepare_search_request(
         "query": (
             _GRAPHQL_SEARCH_QUERY
             + _GRAPHQL_DETAILS_FRAGMENT
-            + _GRAPHQL_SIMPLE_SHOW_DETAILS_FRAGMENT
+            + _GRAPHQL_SIMPLE_SHOW_FRAGMENT
             + _GRAPHQL_CONTENT_FRAGMENT
             + _GRAPHQL_OFFER_FRAGMENT
         ),

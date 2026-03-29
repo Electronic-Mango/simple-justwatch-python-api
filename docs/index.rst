@@ -6,6 +6,9 @@
 Welcome to Simple JustWatch Python API's documentation!
 =======================================================
 
+A simple unofficial JustWatch Python API which uses GraphQL to access JustWatch data,
+built with httpx and Python3.11.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:

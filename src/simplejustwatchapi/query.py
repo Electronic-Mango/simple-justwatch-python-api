@@ -368,7 +368,9 @@ def _parse_entry(json: Any) -> MediaEntry:
     episode_number = content.get("episodeNumber")
     title = content.get("title")
     url_field = content.get("fullPath")
-    url = _DETAILS_URL + url_field if url_field else None
+    # Missing URL should be "None", not an empty string,
+    # but I want to keep the MediaEntry structure unchanged for now.
+    url = _DETAILS_URL + url_field if url_field else ""
     year = content.get("originalReleaseYear")
     date = content.get("originalReleaseDate")
     runtime_minutes = content.get("runtime")

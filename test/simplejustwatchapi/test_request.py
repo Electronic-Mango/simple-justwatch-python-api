@@ -66,7 +66,7 @@ query GetTitleOffers(
   $filter: OfferFilter!,
 ) {{
   node(id: $nodeId) {{
-    ... on MovieOrShow {{
+    ... on MovieOrShowOrSeasonOrEpisode {{
       {country_entries}
       __typename
     }}

@@ -5,10 +5,10 @@ from simplejustwatchapi.justwatch import episodes as episodes
 from simplejustwatchapi.justwatch import offers_for_countries as offers_for_countries
 from simplejustwatchapi.justwatch import search as search
 from simplejustwatchapi.justwatch import seasons as seasons
-from simplejustwatchapi.query import Episode as Episode
-from simplejustwatchapi.query import Interactions as Interactions
-from simplejustwatchapi.query import MediaEntry as MediaEntry
-from simplejustwatchapi.query import Offer as Offer
-from simplejustwatchapi.query import OfferPackage as OfferPackage
-from simplejustwatchapi.query import Scoring as Scoring
-from simplejustwatchapi.query import StreamingCharts as StreamingCharts
+from simplejustwatchapi.tuples import Episode as Episode
+from simplejustwatchapi.tuples import Interactions as Interactions
+from simplejustwatchapi.tuples import MediaEntry as MediaEntry
+from simplejustwatchapi.tuples import Offer as Offer
+from simplejustwatchapi.tuples import OfferPackage as OfferPackage
+from simplejustwatchapi.tuples import Scoring as Scoring
+from simplejustwatchapi.tuples import StreamingCharts as StreamingCharts

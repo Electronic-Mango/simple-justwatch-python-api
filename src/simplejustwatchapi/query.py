@@ -4,520 +4,28 @@ Module responsible for creating GraphQL queries and parsing responses from JustW
 Parsed responses are returned as Python NamedTuples for easier access.
 """
 
-from typing import Any, NamedTuple
+from typing import Any
+
+from simplejustwatchapi.graphql import (
+    graphql_details_query,
+    graphql_episodes_query,
+    graphql_offers_for_countries_query,
+    graphql_search_query,
+    graphql_seasons_query,
+)
+from simplejustwatchapi.tuples import (
+    Episode,
+    Interactions,
+    MediaEntry,
+    Offer,
+    OfferPackage,
+    Scoring,
+    StreamingCharts,
+)
 
 _DETAILS_URL = "https://justwatch.com"
 _IMAGES_URL = "https://images.justwatch.com"
 _COUNTRY_CODE_LENGTH = 2
-
-# TODO: Convert these strings into resources, e.g.:
-#       https://docs.python.org/3/library/importlib.resources.html
-
-_GRAPHQL_DETAILS_QUERY = """
-query GetTitleNode(
-  $nodeId: ID!,
-  $language: Language!,
-  $country: Country!,
-  $formatPoster: ImageFormat,
-  $formatOfferIcon: ImageFormat,
-  $profile: PosterProfile,
-  $backdropProfile: BackdropProfile,
-  $filter: OfferFilter!,
-) {
-  node(id: $nodeId) {
-    ...TitleDetails
-    __typename
-  }
-  __typename
-}
-"""
-
-_GRAPHQL_SEARCH_QUERY = """
-query GetSearchTitles(
-  $searchTitlesFilter: TitleFilter!,
-  $country: Country!,
-  $language: Language!,
-  $first: Int!,
-  $formatPoster: ImageFormat,
-  $formatOfferIcon: ImageFormat,
-  $profile: PosterProfile,
-  $backdropProfile: BackdropProfile,
-  $filter: OfferFilter!,
-) {
-  popularTitles(
-    country: $country
-    filter: $searchTitlesFilter
-    first: $first
-    sortBy: POPULAR
-    sortRandomSeed: 0
-  ) {
-    edges {
-      node {
-        ...TitleDetails
-        __typename
-      }
-      __typename
-    }
-    __typename
-  }
-}
-"""
-
-_GRAPHQL_SEASON_QUERY = """
-query GetTitleNode(
-  $nodeId: ID!,
-  $language: Language!,
-  $country: Country!,
-  $formatPoster: ImageFormat,
-  $formatOfferIcon: ImageFormat,
-  $profile: PosterProfile,
-  $backdropProfile: BackdropProfile,
-  $filter: OfferFilter!,
-) {
-  node(id: $nodeId) {
-    ...on Show {
-      seasons(sortDirection: ASC) {
-        ...TitleDetails
-      }
-    }
-    __typename
-  }
-  __typename
-}
-"""
-
-_GRAPHQL_EPISODES_QUERY = """
-query GetTitleNode(
-  $nodeId: ID!,
-  $language: Language!,
-  $country: Country!,
-  $formatPoster: ImageFormat,
-  $formatOfferIcon: ImageFormat,
-  $profile: PosterProfile,
-  $backdropProfile: BackdropProfile,
-  $filter: OfferFilter!,
-) {
-  node(id: $nodeId) {
-    ...on Season {
-      episodes(sortDirection: ASC) {
-        ...TitleDetails
-      }
-    }
-    __typename
-  }
-  __typename
-}
-"""
-
-_GRAPHQL_OFFERS_BY_COUNTRY_QUERY = """
-query GetTitleOffers(
-  $nodeId: ID!,
-  $language: Language!,
-  $formatOfferIcon: ImageFormat,
-  $filter: OfferFilter!,
-) {{
-  node(id: $nodeId) {{
-    ... on MovieOrShow {{
-      {country_entries}
-      __typename
-    }}
-    __typename
-  }}
-  __typename
-}}
-"""
-
-_GRAPHQL_DETAILS_FRAGMENT = """
-fragment TitleDetails on MovieOrShowOrSeasonOrEpisode {
-  id
-  objectId
-  objectType
-  content(country: $country, language: $language) {
-    ...ContentDetails
-    __typename
-  }
-  ...StreamingChartInfoFragment
-  ...on Show {
-    totalSeasonCount
-  }
-  ...on Season {
-    totalEpisodeCount
-  }
-  offers(country: $country, platform: WEB, filter: $filter) {
-    ...TitleOffer
-  }
-  __typename
-}
-
-fragment StreamingChartInfoFragment on MovieOrShowOrSeason {
-  streamingCharts(country: $country) {
-    edges {
-      streamingChartInfo {
-        rank
-        trend
-        trendDifference
-        daysInTop3
-        daysInTop10
-        daysInTop100
-        daysInTop1000
-        topRank
-        updatedAt
-        __typename
-      }
-      __typename
-    }
-    __typename
-  }
-}
-
-fragment ContentDetails on MovieOrShowOrSeasonOrEpisodeContent {
-  title
-  originalReleaseYear
-  originalReleaseDate
-  runtime
-  shortDescription
-  ...FullContentDetails
-  ...on MovieOrShowContent {
-    ageCertification
-  }
-  ...on SeasonContent {
-    seasonNumber
-  }
-  ...on EpisodeContent {
-    seasonNumber
-    episodeNumber
-  }
-}
-
-fragment FullContentDetails on MovieOrShowOrSeasonContent {
-  fullPath
-  genres {
-    shortName
-    __typename
-  }
-  externalIds {
-    imdbId
-    tmdbId
-    __typename
-  }
-  posterUrl(profile: $profile, format: $formatPoster)
-  backdrops(profile: $backdropProfile, format: $formatPoster) {
-    backdropUrl
-    __typename
-  }
-  scoring {
-    imdbScore
-    imdbVotes
-    tmdbPopularity
-    tmdbScore
-    tomatoMeter
-    certifiedFresh
-    jwRating
-    __typename
-  }
-  interactions {
-    likelistAdditions
-    dislikelistAdditions
-    __typename
-  }
-}
-"""
-
-_GRAPHQL_OFFER_FRAGMENT = """
-fragment TitleOffer on Offer {
-  id
-  monetizationType
-  presentationType
-  retailPrice(language: $language)
-  retailPriceValue
-  currency
-  lastChangeRetailPriceValue
-  type
-  package {
-    id
-    packageId
-    clearName
-    technicalName
-    icon(profile: S100, format: $formatOfferIcon)
-    __typename
-  }
-  standardWebURL
-  elementCount
-  availableTo
-  deeplinkRoku: deeplinkURL(platform: ROKU_OS)
-  subtitleLanguages
-  videoTechnology
-  audioTechnology
-  audioLanguages
-  __typename
-}
-"""
-
-_GRAPHQL_COUNTRY_OFFERS_ENTRY = """
-      {country_code}: offers(country: {country_code}, platform: WEB, filter: $filter) {{
-        ...TitleOffer
-        __typename
-      }}
-"""
-
-
-class OfferPackage(NamedTuple):
-    """
-    Parsed single offer package from JustWatch GraphQL API for single entry.
-
-    Contains information about platform on which given offer is available.
-    """
-
-    id: str
-    """ID, defines whole platform on which this offer is available, not a single offer."""
-
-    package_id: int
-    """Package ID, defines whole platform on which this offer is available, not a single offer."""
-
-    name: str
-    """Name of the platform in format suited to display for users."""
-
-    technical_name: str
-    """Technical name of the platform, usually all lowercase with no whitespaces."""
-
-    icon: str
-    """Platform icon URL."""
-
-
-class Offer(NamedTuple):
-    """
-    Parsed single offer from JustWatch GraphQL API for single entry.
-
-    One platform can have multiple offers for one entry available, e.g. renting, buying, etc.
-    """
-
-    id: str
-    """Offer ID."""
-
-    monetization_type: str
-    """Type of monetization of this offer, e.g. ``FLATRATE`` (streaming), ``RENT``, ``BUY``."""
-
-    presentation_type: str
-    """Quality of media in this offer, e.g. ``HD``, ``SD``, ``4K``."""
-
-    price_string: str | None
-    """Current price as a string with currency, suitable for displaying to users.
-    Format can change based on used ``language`` argument."""
-
-    price_value: float | None
-    """Current price as a numeric value."""
-
-    price_currency: str
-    """Represents only currency, without price, or value."""
-
-    last_change_retail_price_value: float | None
-    """Previous available price if change in price was recorded."""
-
-    type: str
-    """Type of offer."""
-
-    package: OfferPackage
-    """Information about platform on which this offer is available."""
-
-    url: str
-    """URL to this offer."""
-
-    element_count: int | None
-    """Element count, usually 0."""
-
-    available_to: str | None
-    """Date until which this offer will be available."""
-
-    deeplink_roku: str | None
-    """Deeplink to this offer in Roku."""
-
-    subtitle_languages: list[str]
-    """List of 2-letter language codes of available subtitles, e.g. ``["en", "pt", "de"]``."""
-
-    video_technology: list[str]
-    """List of known video technologies available in this offer, e.g. ``DOLBY_VISION``."""
-
-    audio_technology: list[str]
-    """List of known audio technologies available in this offer, e.g. ``DOLBY_ATMOS``."""
-
-    audio_languages: list[str]
-    """List of 2-letter language codes of available audio tracks, e.g. ``["en", "pt", "de"]``."""
-
-
-class Scoring(NamedTuple):
-    """Parsed data related to user scoring for a single entry."""
-
-    imdb_score: float | None
-    """IMDB score."""
-
-    imdb_votes: int | None
-    """Number of votes on IMDB."""
-
-    tmdb_popularity: float | None
-    """TMDB popularity score."""
-
-    tmdb_score: float | None
-    """TMDB score."""
-
-    tomatometer: int | None
-    """Tomatometer score on Rotten Tomatoes."""
-
-    certified_fresh: bool | None
-    """Flag whether entry has "Certified Fresh" seal on Rotten Tomatoes."""
-
-    jw_rating: float | None
-    """JustWatch rating."""
-
-
-class Interactions(NamedTuple):
-    """Parsed data regarding number of likes and dislikes on JustWatch for a single entry."""
-
-    likes: int | None
-    """Number of likes on JustWatch."""
-
-    dislikes: int | None
-    """Number of dislikes on JustWatch."""
-
-
-class StreamingCharts(NamedTuple):
-    """Parsed data related to JustWatch rank for a single entry."""
-
-    rank: int
-    """Rank on JustWatch."""
-
-    trend: str
-    """Trend in ranking on JustWatch, ``UP``, ``DOWN``, ``STABLE``."""
-
-    trend_difference: int
-    """Difference in rank; related to trend."""
-
-    top_rank: int
-    """Top rank ever reached."""
-
-    days_in_top_3: int
-    """Number of days in top 3 ranks."""
-
-    days_in_top_10: int
-    """Number of days in top 10 ranks."""
-
-    days_in_top_100: int
-    """Number of days in top 100 ranks."""
-
-    days_in_top_1000: int
-    """Number of days in top 1000 ranks."""
-
-    updated: str
-    """Date when rank data was last updated as a string, e.g.: ``2024-10-06T09:20:36.397Z``."""
-
-
-class Episode(NamedTuple):
-    """Parsed data related to a single episode."""
-
-    episode_id: str
-    """Episode ID, contains type code and numeric ID."""
-
-    object_id: int
-    """Object ID, the numeric part of full episode ID."""
-
-    object_type: str
-    """Type of entry, for episodes should be ``SHOW_EPISODE``."""
-
-    title: str
-    """Full title."""
-
-    release_year: int
-    """Release year as a number."""
-
-    release_date: str
-    """Full release date as a string, e.g. ``2013-12-16``."""
-
-    runtime_minutes: int
-    """Runtime in minutes."""
-
-    short_description: str | None
-    """Short description of this episode."""
-
-    episode_number: int
-    """Number of this episode."""
-
-    season_number: int
-    """Season number with this episode."""
-
-    offers: list[Offer]
-    """List of available offers for this episode, empty if there are no available offers."""
-
-
-class MediaEntry(NamedTuple):
-    """Parsed response from JustWatch GraphQL API for "GetSearchTitles" query for single entry."""
-
-    entry_id: str
-    """Entry ID, contains type code and numeric ID."""
-
-    object_id: int
-    """Object ID, the numeric part of full entry ID."""
-
-    object_type: str
-    """Type of entry, e.g. ``MOVIE``, ``SHOW``."""
-
-    title: str
-    """Full title."""
-
-    url: str | None
-    """URL to JustWatch with details for this entry."""
-
-    release_year: int | None
-    """Release year as a number."""
-
-    release_date: str | None
-    """Full release date as a string, e.g. ``2013-12-16``."""
-
-    runtime_minutes: int
-    """Runtime in minutes."""
-
-    short_description: str
-    """Short description of this entry."""
-
-    genres: list[str]
-    """List of genre codes for this entry, e.g. ``["rly"]``, ``["cmy", "drm", "rma"]``."""
-
-    imdb_id: str | None
-    """ID of this entry in IMDB."""
-
-    tmdb_id: str | None
-    """ID of this entry in TMDB."""
-
-    poster: str | None
-    """URL to poster for this ID."""
-
-    backdrops: list[str]
-    """List of URLs for backdrops (full screen images to use as background)."""
-
-    age_certification: str | None
-    """Age rating as a string, e.g.: "R", "TV-14"."""
-
-    scoring: Scoring | None
-    """Scoring data."""
-
-    interactions: Interactions | None
-    """Interactions (likes/dislikes) data."""
-
-    streaming_charts: StreamingCharts | None
-    """JustWatch charts/ranks data."""
-
-    offers: list[Offer]
-    """List of available offers for this entry, empty if there are no available offers."""
-
-    total_season_count: int | None
-    """Total season count, for non-show it will be None."""
-
-    total_episode_count: int | None
-    """Total number of episodes in this season."""
-
-    season_number: int | None
-    """Number of this season."""
-
-    episode_number: int | None
-    """Number of this episode."""
 
 
 def prepare_search_request(
@@ -561,7 +69,7 @@ def prepare_search_request(
             "backdropProfile": "S1920",
             "filter": {"bestOnly": best_only},
         },
-        "query": _GRAPHQL_SEARCH_QUERY + _GRAPHQL_DETAILS_FRAGMENT + _GRAPHQL_OFFER_FRAGMENT,
+        "query": graphql_search_query(),
     }
 
 
@@ -583,6 +91,65 @@ def parse_search_response(json: dict) -> list[MediaEntry]:
 
     """
     return [_parse_entry(edge["node"]) for edge in json["data"]["popularTitles"]["edges"]]
+
+
+def prepare_details_request(node_id: str, country: str, language: str, best_only: bool) -> dict:
+    """
+    Prepare a details request for specified node ID to JustWatch GraphQL API.
+
+    Creates a ``GetTitleNode`` GraphQL query.
+
+    Country code should be two uppercase letters, however it will be auto-converted to uppercase.
+
+    Meant to be used together with :func:`parse_details_response`.
+
+    Args:
+        node_id: node ID of entry to get details for
+        country: country to search for offers
+        language: language of responses
+        best_only: return only best offers if ``True``, return all offers if ``False``
+
+    Returns:
+        JSON/dict with GraphQL POST body
+
+    """
+    _assert_country_code_is_valid(country)
+    return {
+        "operationName": "GetTitleNode",
+        "variables": {
+            "nodeId": node_id,
+            "language": language,
+            "country": country.upper(),
+            "formatPoster": "JPG",
+            "formatOfferIcon": "PNG",
+            "profile": "S718",
+            "backdropProfile": "S1920",
+            "filter": {"bestOnly": best_only},
+        },
+        "query": graphql_details_query(),
+    }
+
+
+def parse_details_response(json: Any) -> MediaEntry | None:
+    """
+    Parse response from details query from JustWatch GraphQL API.
+
+    Parses response for ``GetTitleNode`` query.
+
+    If API responded with an internal error (mostly due to not found node ID),
+    then ``None`` will be returned instead.
+
+    Meant to be used together with :func:`prepare_details_request`.
+
+    Args:
+        json: JSON returned by JustWatch GraphQL API
+
+    Returns:
+        Parsed received JSON as a ``MediaEntry`` NamedTuple,
+        or ``None`` in case data for a given node ID was not found
+
+    """
+    return _parse_entry(json["data"]["node"]) if "errors" not in json else None
 
 
 def prepare_seasons_request(show_id: str, country: str, language: str, best_only: bool) -> dict:
@@ -618,7 +185,7 @@ def prepare_seasons_request(show_id: str, country: str, language: str, best_only
             "backdropProfile": "S1920",
             "filter": {"bestOnly": best_only},
         },
-        "query": _GRAPHQL_SEASON_QUERY + _GRAPHQL_DETAILS_FRAGMENT + _GRAPHQL_OFFER_FRAGMENT,
+        "query": graphql_seasons_query(),
     }
 
 
@@ -681,7 +248,7 @@ def prepare_episodes_request(episode_id: str, country: str, language: str, best_
             "backdropProfile": "S1920",
             "filter": {"bestOnly": best_only},
         },
-        "query": _GRAPHQL_EPISODES_QUERY + _GRAPHQL_DETAILS_FRAGMENT + _GRAPHQL_OFFER_FRAGMENT,
+        "query": graphql_episodes_query(),
     }
 
 
@@ -709,65 +276,6 @@ def parse_episodes_response(json: Any) -> list[Episode] | None:
         if "errors" not in json
         else None
     )
-
-
-def prepare_details_request(node_id: str, country: str, language: str, best_only: bool) -> dict:
-    """
-    Prepare a details request for specified node ID to JustWatch GraphQL API.
-
-    Creates a ``GetTitleNode`` GraphQL query.
-
-    Country code should be two uppercase letters, however it will be auto-converted to uppercase.
-
-    Meant to be used together with :func:`parse_details_response`.
-
-    Args:
-        node_id: node ID of entry to get details for
-        country: country to search for offers
-        language: language of responses
-        best_only: return only best offers if ``True``, return all offers if ``False``
-
-    Returns:
-        JSON/dict with GraphQL POST body
-
-    """
-    _assert_country_code_is_valid(country)
-    return {
-        "operationName": "GetTitleNode",
-        "variables": {
-            "nodeId": node_id,
-            "language": language,
-            "country": country.upper(),
-            "formatPoster": "JPG",
-            "formatOfferIcon": "PNG",
-            "profile": "S718",
-            "backdropProfile": "S1920",
-            "filter": {"bestOnly": best_only},
-        },
-        "query": _GRAPHQL_DETAILS_QUERY + _GRAPHQL_DETAILS_FRAGMENT + _GRAPHQL_OFFER_FRAGMENT,
-    }
-
-
-def parse_details_response(json: Any) -> MediaEntry | None:
-    """
-    Parse response from details query from JustWatch GraphQL API.
-
-    Parses response for ``GetTitleNode`` query.
-
-    If API responded with an internal error (mostly due to not found node ID),
-    then ``None`` will be returned instead.
-
-    Meant to be used together with :func:`prepare_details_request`.
-
-    Args:
-        json: JSON returned by JustWatch GraphQL API
-
-    Returns:
-        Parsed received JSON as a ``MediaEntry`` NamedTuple,
-        or ``None`` in case data for a given node ID was not found
-
-    """
-    return _parse_entry(json["data"]["node"]) if "errors" not in json else None
 
 
 def prepare_offers_for_countries_request(
@@ -811,7 +319,7 @@ def prepare_offers_for_countries_request(
             "backdropProfile": "S1920",
             "filter": {"bestOnly": best_only},
         },
-        "query": _prepare_offers_for_countries_entry(countries),
+        "query": graphql_offers_for_countries_query(countries),
     }
 
 
@@ -848,15 +356,6 @@ def _assert_country_code_is_valid(code: str) -> None:
     # TODO: Convert assert to regular exception
     code_has_valid_length = len(code) == _COUNTRY_CODE_LENGTH
     assert code_has_valid_length, f"Invalid country code: {code}, code must be 2 characters long"
-
-
-def _prepare_offers_for_countries_entry(countries: set[str]) -> str:
-    offer_requests = [
-        _GRAPHQL_COUNTRY_OFFERS_ENTRY.format(country_code=country_code.upper())
-        for country_code in countries
-    ]
-    main_body = _GRAPHQL_OFFERS_BY_COUNTRY_QUERY.format(country_entries="\n".join(offer_requests))
-    return main_body + _GRAPHQL_OFFER_FRAGMENT
 
 
 def _parse_entry(json: Any) -> MediaEntry:

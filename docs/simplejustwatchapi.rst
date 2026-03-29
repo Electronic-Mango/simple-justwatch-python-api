@@ -4,6 +4,14 @@ simplejustwatchapi package
 Submodules
 ----------
 
+simplejustwatchapi.graphql module
+-------------------------------
+
+.. automodule:: simplejustwatchapi.graphql
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 simplejustwatchapi.justwatch module
 -----------------------------------
 
@@ -16,6 +24,14 @@ simplejustwatchapi.query module
 -------------------------------
 
 .. automodule:: simplejustwatchapi.query
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+simplejustwatchapi.tuples module
+-------------------------------
+
+.. automodule:: simplejustwatchapi.tuples
    :members:
    :undoc-members:
    :show-inheritance:

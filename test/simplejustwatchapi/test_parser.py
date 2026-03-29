@@ -343,6 +343,7 @@ RESPONSE_NODE_3 = {
         "originalReleaseYear": 2020,
         "originalReleaseDate": "12-02-2020",
         "runtime": 123,
+        "shortDescription": "Other description",
         "posterUrl": "/poster/url/3.jpg",
     },
 }
@@ -355,7 +356,7 @@ PARSED_NODE_3 = MediaEntry(
     2020,
     "12-02-2020",
     123,
-    None,
+    "Other description",
     [],
     None,
     None,

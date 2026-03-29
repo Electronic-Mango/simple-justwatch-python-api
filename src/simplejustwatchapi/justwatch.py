@@ -81,7 +81,6 @@ def details(
     request = prepare_details_request(node_id, country, language, best_only)
     response = post(_GRAPHQL_API_URL, json=request)
     response.raise_for_status()
-    # TODO: Add a unit test checking for None response
     return parse_details_response(response.json())
 
 
@@ -109,7 +108,6 @@ def seasons(
     request = prepare_seasons_request(show_id, country, language, best_only)
     response = post(_GRAPHQL_API_URL, json=request)
     response.raise_for_status()
-    # TODO: Add a unit test checking for None response
     return parse_seasons_response(response.json())
 
 
@@ -137,7 +135,6 @@ def episodes(
     request = prepare_episodes_request(season_id, country, language, best_only)
     response = post(_GRAPHQL_API_URL, json=request)
     response.raise_for_status()
-    # TODO: Add a unit test checking for None response
     return parse_episodes_response(response.json())
 
 

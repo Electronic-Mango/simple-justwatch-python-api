@@ -1,8 +1,8 @@
 from unittest.mock import MagicMock, patch
 
-from pytest import fixture
+from pytest import fixture, mark
 
-from simplejustwatchapi.justwatch import details, offers_for_countries, search
+from simplejustwatchapi.justwatch import details, episodes, offers_for_countries, search, seasons
 
 JUSTWATCH_GRAPHQL_URL = "https://apis.justwatch.com/graphql"
 
@@ -16,7 +16,7 @@ DUMMY_RESPONSE = {"dummy": "response"}
 DUMMY_ENTRIES = [MagicMock(), MagicMock(), None]
 
 
-@fixture
+@fixture(autouse=True)
 def httpx_post_mock(mocker):
     post_mock = mocker.patch("simplejustwatchapi.justwatch.post")
     post_mock.return_value.json.return_value = DUMMY_RESPONSE
@@ -27,20 +27,44 @@ def httpx_post_mock(mocker):
 
 @patch("simplejustwatchapi.justwatch.parse_search_response", return_value=DUMMY_ENTRIES)
 @patch("simplejustwatchapi.justwatch.prepare_search_request", return_value=DUMMY_REQUEST)
-def test_search(requests_mock, parser_mock, httpx_post_mock):
+def test_search(requests_mock, parser_mock):
     results = search(*SEARCH_INPUT)
     requests_mock.assert_called_with(*SEARCH_INPUT)
     parser_mock.assert_called_with(DUMMY_RESPONSE)
     assert results == DUMMY_ENTRIES
 
 
-@patch("simplejustwatchapi.justwatch.parse_details_response", return_value=DUMMY_ENTRIES)
+@patch("simplejustwatchapi.justwatch.parse_details_response")
 @patch("simplejustwatchapi.justwatch.prepare_details_request", return_value=DUMMY_REQUEST)
-def test_details(requests_mock, parser_mock, httpx_post_mock):
+@mark.parametrize("parse_results", [DUMMY_ENTRIES, None])
+def test_details(requests_mock, parser_mock, parse_results):
+    parser_mock.return_value = parse_results
     results = details(*DETAILS_INPUT)
     requests_mock.assert_called_with(*DETAILS_INPUT)
     parser_mock.assert_called_with(DUMMY_RESPONSE)
-    assert results == DUMMY_ENTRIES
+    assert results == parse_results
+
+
+@patch("simplejustwatchapi.justwatch.parse_seasons_response")
+@patch("simplejustwatchapi.justwatch.prepare_seasons_request", return_value=DUMMY_REQUEST)
+@mark.parametrize("parse_results", [DUMMY_ENTRIES, None])
+def test_seasons(requests_mock, parser_mock, parse_results):
+    parser_mock.return_value = parse_results
+    results = seasons(*DETAILS_INPUT)
+    requests_mock.assert_called_with(*DETAILS_INPUT)
+    parser_mock.assert_called_with(DUMMY_RESPONSE)
+    assert results == parse_results
+
+
+@patch("simplejustwatchapi.justwatch.parse_episodes_response")
+@patch("simplejustwatchapi.justwatch.prepare_episodes_request", return_value=DUMMY_REQUEST)
+@mark.parametrize("parse_results", [DUMMY_ENTRIES, None])
+def test_episodes(requests_mock, parser_mock, parse_results):
+    parser_mock.return_value = parse_results
+    results = episodes(*DETAILS_INPUT)
+    requests_mock.assert_called_with(*DETAILS_INPUT)
+    parser_mock.assert_called_with(DUMMY_RESPONSE)
+    assert results == parse_results
 
 
 @patch(
@@ -49,7 +73,7 @@ def test_details(requests_mock, parser_mock, httpx_post_mock):
 @patch(
     "simplejustwatchapi.justwatch.prepare_offers_for_countries_request", return_value=DUMMY_REQUEST
 )
-def test_offers_for_countries(requests_mock, parser_mock, httpx_post_mock):
+def test_offers_for_countries(requests_mock, parser_mock):
     results = offers_for_countries(*OFFERS_INPUT)
     requests_mock.assert_called_with(*OFFERS_INPUT)
     parser_mock.assert_called_with(DUMMY_RESPONSE, OFFERS_COUNTRIES_INPUT)

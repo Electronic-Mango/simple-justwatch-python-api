@@ -11,4 +11,5 @@ ignore = [
   "ARG",  # Mocks can be unused arguments
   "INP001",  # __init__.py here seems unnecessary
   "PT013",  # Kinda don't care, maybe fix one day
+  "PT019",  # Regular "patch" seems fine
 ]

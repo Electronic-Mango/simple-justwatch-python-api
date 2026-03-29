@@ -8,12 +8,175 @@ from simplejustwatchapi.query import (
     Scoring,
     StreamingCharts,
     parse_details_response,
+    parse_episodes_response,
     parse_offers_for_countries_response,
     parse_search_response,
+    parse_seasons_response,
 )
+from simplejustwatchapi.tuples import Episode
 
 DETAILS_URL = "https://justwatch.com"
 IMAGES_URL = "https://images.justwatch.com"
+
+RESPONSE_OFFERS_1 = [
+    {
+        "id": "OFFER ID 1",
+        "monetizationType": "MON_TYPE_1",
+        "presentationType": "HD",
+        "retailPrice": "$19.99",
+        "retailPriceValue": 19.99,
+        "currency": "USD",
+        "lastChangeRetailPriceValue": 9.99,
+        "type": "SOME_TYPE_1",
+        "package": {
+            "id": "id1",
+            "packageId": 1,
+            "clearName": "Service 1",
+            "technicalName": "service1",
+            "icon": "/icon/url/service1",
+        },
+        "standardWebURL": "www.service1.com/offer/url/1/",
+        "elementCount": 123,
+        "availableTo": "2100-07-15",
+        "deeplinkRoku": "/link/to/roku/service1",
+        "subtitleLanguages": ["sub_lang_1", "sub_lang_2", "sub_lang_3"],
+        "videoTechnology": ["GOOD_ONE", "BAD_ONE", "IDK"],
+        "audioTechnology": ["ALSO_GOOD_ONE", "ALSO_BAD_ONE", "ALSO_IDK"],
+        "audioLanguages": ["lang_1", "lang_2", "lang_3"],
+    },
+    {
+        "id": "OFFER ID 2",
+        "monetizationType": "MON_TYPE_1",
+        "presentationType": "SD",
+        "retailPrice": "$9.99",
+        "retailPriceValue": 9.99,
+        "currency": "USD",
+        "lastChangeRetailPriceValue": 4.99,
+        "type": "SOME_TYPE_2",
+        "package": {
+            "id": "id2",
+            "packageId": 2,
+            "clearName": "Service 2",
+            "technicalName": "service2",
+            "icon": "/icon/url/service2",
+        },
+        "standardWebURL": "www.service1.com/offer/url/2/",
+        "elementCount": 456,
+        "availableTo": "2100-04-12",
+        "deeplinkRoku": "/link/to/roku/service2",
+        "subtitleLanguages": ["sub_lang_4", "sub_lang_5"],
+        "videoTechnology": ["BAD_ONE", "IDK"],
+        "audioTechnology": ["ALSO_BAD_ONE", "ALSO_IDK"],
+        "audioLanguages": ["lang_4", "lang_5"],
+    },
+]
+PARSED_OFFERS_1 = [
+    Offer(
+        "OFFER ID 1",
+        "MON_TYPE_1",
+        "HD",
+        "$19.99",
+        19.99,
+        "USD",
+        9.99,
+        "SOME_TYPE_1",
+        OfferPackage(
+            "id1",
+            1,
+            "Service 1",
+            "service1",
+            IMAGES_URL + "/icon/url/service1",
+        ),
+        "www.service1.com/offer/url/1/",
+        123,
+        "2100-07-15",
+        "/link/to/roku/service1",
+        ["sub_lang_1", "sub_lang_2", "sub_lang_3"],
+        ["GOOD_ONE", "BAD_ONE", "IDK"],
+        ["ALSO_GOOD_ONE", "ALSO_BAD_ONE", "ALSO_IDK"],
+        ["lang_1", "lang_2", "lang_3"],
+    ),
+    Offer(
+        "OFFER ID 2",
+        "MON_TYPE_1",
+        "SD",
+        "$9.99",
+        9.99,
+        "USD",
+        4.99,
+        "SOME_TYPE_2",
+        OfferPackage(
+            "id2",
+            2,
+            "Service 2",
+            "service2",
+            IMAGES_URL + "/icon/url/service2",
+        ),
+        "www.service1.com/offer/url/2/",
+        456,
+        "2100-04-12",
+        "/link/to/roku/service2",
+        ["sub_lang_4", "sub_lang_5"],
+        ["BAD_ONE", "IDK"],
+        ["ALSO_BAD_ONE", "ALSO_IDK"],
+        ["lang_4", "lang_5"],
+    ),
+]
+
+RESPONSE_OFFERS_2 = [
+    {
+        "id": "offer_id_3",
+        "monetizationType": "MON_TYPE_3",
+        "presentationType": "_4K",
+        "retailPrice": "£199.9",
+        "retailPriceValue": 199.9,
+        "currency": "GBP",
+        "lastChangeRetailPriceValue": 399.99,
+        "type": "SOME_TYPE_3",
+        "package": {
+            "id": "id3",
+            "packageId": 3,
+            "clearName": "Service 3",
+            "technicalName": "service3",
+            "icon": "/icon/url/service3",
+        },
+        "standardWebURL": "www.service3.com/offer/url/1/",
+        "elementCount": 0,
+        "availableTo": None,
+        "deeplinkRoku": None,
+        "subtitleLanguages": ["sub_lang_4"],
+        "videoTechnology": ["BAD_ONE"],
+        "audioTechnology": ["ALSO_BAD_ONE"],
+        "audioLanguages": ["lang_4"],
+    },
+]
+PARSED_OFFERS_2 = [
+    Offer(
+        "offer_id_3",
+        "MON_TYPE_3",
+        "_4K",
+        "£199.9",
+        199.9,
+        "GBP",
+        399.99,
+        "SOME_TYPE_3",
+        OfferPackage(
+            "id3",
+            3,
+            "Service 3",
+            "service3",
+            IMAGES_URL + "/icon/url/service3",
+        ),
+        "www.service3.com/offer/url/1/",
+        0,
+        None,
+        None,
+        ["sub_lang_4"],
+        ["BAD_ONE"],
+        ["ALSO_BAD_ONE"],
+        ["lang_4"],
+    ),
+]
 
 RESPONSE_NODE_1 = {
     "id": "id1",
@@ -70,58 +233,7 @@ RESPONSE_NODE_1 = {
         ],
         "__typename": "StreamingChartsConnection",
     },
-    "offers": [
-        {
-            "id": "OFFER ID 1",
-            "monetizationType": "MON_TYPE_1",
-            "presentationType": "HD",
-            "retailPrice": "$19.99",
-            "retailPriceValue": 19.99,
-            "currency": "USD",
-            "lastChangeRetailPriceValue": 9.99,
-            "type": "SOME_TYPE_1",
-            "package": {
-                "id": "id1",
-                "packageId": 1,
-                "clearName": "Service 1",
-                "technicalName": "service1",
-                "icon": "/icon/url/service1",
-            },
-            "standardWebURL": "www.service1.com/offer/url/1/",
-            "elementCount": 123,
-            "availableTo": "2100-07-15",
-            "deeplinkRoku": "/link/to/roku/service1",
-            "subtitleLanguages": ["sub_lang_1", "sub_lang_2", "sub_lang_3"],
-            "videoTechnology": ["GOOD_ONE", "BAD_ONE", "IDK"],
-            "audioTechnology": ["ALSO_GOOD_ONE", "ALSO_BAD_ONE", "ALSO_IDK"],
-            "audioLanguages": ["lang_1", "lang_2", "lang_3"],
-        },
-        {
-            "id": "OFFER ID 2",
-            "monetizationType": "MON_TYPE_1",
-            "presentationType": "SD",
-            "retailPrice": "$9.99",
-            "retailPriceValue": 9.99,
-            "currency": "USD",
-            "lastChangeRetailPriceValue": 4.99,
-            "type": "SOME_TYPE_2",
-            "package": {
-                "id": "id2",
-                "packageId": 2,
-                "clearName": "Service 2",
-                "technicalName": "service2",
-                "icon": "/icon/url/service2",
-            },
-            "standardWebURL": "www.service1.com/offer/url/2/",
-            "elementCount": 456,
-            "availableTo": "2100-04-12",
-            "deeplinkRoku": "/link/to/roku/service2",
-            "subtitleLanguages": ["sub_lang_4", "sub_lang_5"],
-            "videoTechnology": ["BAD_ONE", "IDK"],
-            "audioTechnology": ["ALSO_BAD_ONE", "ALSO_IDK"],
-            "audioLanguages": ["lang_4", "lang_5"],
-        },
-    ],
+    "offers": RESPONSE_OFFERS_1,
 }
 PARSED_NODE_1 = MediaEntry(
     "id1",
@@ -160,58 +272,7 @@ PARSED_NODE_1 = MediaEntry(
         3202,
         "2024-10-06T05:16:37.603Z",
     ),
-    [
-        Offer(
-            "OFFER ID 1",
-            "MON_TYPE_1",
-            "HD",
-            "$19.99",
-            19.99,
-            "USD",
-            9.99,
-            "SOME_TYPE_1",
-            OfferPackage(
-                "id1",
-                1,
-                "Service 1",
-                "service1",
-                IMAGES_URL + "/icon/url/service1",
-            ),
-            "www.service1.com/offer/url/1/",
-            123,
-            "2100-07-15",
-            "/link/to/roku/service1",
-            ["sub_lang_1", "sub_lang_2", "sub_lang_3"],
-            ["GOOD_ONE", "BAD_ONE", "IDK"],
-            ["ALSO_GOOD_ONE", "ALSO_BAD_ONE", "ALSO_IDK"],
-            ["lang_1", "lang_2", "lang_3"],
-        ),
-        Offer(
-            "OFFER ID 2",
-            "MON_TYPE_1",
-            "SD",
-            "$9.99",
-            9.99,
-            "USD",
-            4.99,
-            "SOME_TYPE_2",
-            OfferPackage(
-                "id2",
-                2,
-                "Service 2",
-                "service2",
-                IMAGES_URL + "/icon/url/service2",
-            ),
-            "www.service1.com/offer/url/2/",
-            456,
-            "2100-04-12",
-            "/link/to/roku/service2",
-            ["sub_lang_4", "sub_lang_5"],
-            ["BAD_ONE", "IDK"],
-            ["ALSO_BAD_ONE", "ALSO_IDK"],
-            ["lang_4", "lang_5"],
-        ),
-    ],
+    PARSED_OFFERS_1,
     None,
     None,
     None,
@@ -254,33 +315,7 @@ RESPONSE_NODE_2 = {
         "edges": None,
         "__typename": "StreamingChartsConnection",
     },
-    "offers": [
-        {
-            "id": "offer_id_3",
-            "monetizationType": "MON_TYPE_3",
-            "presentationType": "_4K",
-            "retailPrice": "£199.9",
-            "retailPriceValue": 199.9,
-            "currency": "GBP",
-            "lastChangeRetailPriceValue": 399.99,
-            "type": "SOME_TYPE_3",
-            "package": {
-                "id": "id3",
-                "packageId": 3,
-                "clearName": "Service 3",
-                "technicalName": "service3",
-                "icon": "/icon/url/service3",
-            },
-            "standardWebURL": "www.service3.com/offer/url/1/",
-            "elementCount": 0,
-            "availableTo": None,
-            "deeplinkRoku": None,
-            "subtitleLanguages": ["sub_lang_4"],
-            "videoTechnology": ["BAD_ONE"],
-            "audioTechnology": ["ALSO_BAD_ONE"],
-            "audioLanguages": ["lang_4"],
-        },
-    ],
+    "offers": RESPONSE_OFFERS_2,
 }
 PARSED_NODE_2 = MediaEntry(
     "id2",
@@ -309,38 +344,13 @@ PARSED_NODE_2 = MediaEntry(
     ),
     Interactions(1, None),
     None,
-    [
-        Offer(
-            "offer_id_3",
-            "MON_TYPE_3",
-            "_4K",
-            "£199.9",
-            199.9,
-            "GBP",
-            399.99,
-            "SOME_TYPE_3",
-            OfferPackage(
-                "id3",
-                3,
-                "Service 3",
-                "service3",
-                IMAGES_URL + "/icon/url/service3",
-            ),
-            "www.service3.com/offer/url/1/",
-            0,
-            None,
-            None,
-            ["sub_lang_4"],
-            ["BAD_ONE"],
-            ["ALSO_BAD_ONE"],
-            ["lang_4"],
-        ),
-    ],
+    PARSED_OFFERS_2,
     None,
     None,
     None,
     None,
 )
+
 RESPONSE_NODE_3 = {
     "id": "id3",
     "objectId": 3,
@@ -381,6 +391,90 @@ PARSED_NODE_3 = MediaEntry(
     None,
 )
 
+RESPONSE_EPISODE_1 = {
+    "id": "id1",
+    "objectId": 1,
+    "objectType": "EPISODE",
+    "content": {
+        "title": "title 1",
+        "originalReleaseYear": 2000,
+        "originalReleaseDate": "21-06-2000",
+        "runtime": 12,
+        "shortDescription": "Episode 1 description",
+        "episodeNumber": 1,
+        "seasonNumber": 1,
+    },
+    "offers": RESPONSE_OFFERS_1,
+}
+PARSED_EPISODE_1 = Episode(
+    "id1",
+    1,
+    "EPISODE",
+    "title 1",
+    2000,
+    "21-06-2000",
+    12,
+    "Episode 1 description",
+    1,
+    1,
+    PARSED_OFFERS_1,
+)
+
+RESPONSE_EPISODE_2 = {
+    "id": "id2",
+    "objectId": 2,
+    "objectType": "EPISODE",
+    "content": {
+        "title": "title 2",
+        "originalReleaseYear": 2010,
+        "originalReleaseDate": "11-01-2010",
+        "runtime": 34,
+        "shortDescription": "Episode 2 description",
+        "episodeNumber": 2,
+        "seasonNumber": 1,
+    },
+    "offers": RESPONSE_OFFERS_2,
+}
+PARSED_EPISODE_2 = Episode(
+    "id2",
+    2,
+    "EPISODE",
+    "title 2",
+    2010,
+    "11-01-2010",
+    34,
+    "Episode 2 description",
+    2,
+    1,
+    PARSED_OFFERS_2,
+)
+
+RESPONSE_EPISODE_3 = {
+    "id": "id3",
+    "objectId": 3,
+    "objectType": "EPISODE",
+    "content": {
+        "title": "title 3",
+        "originalReleaseYear": 2020,
+        "originalReleaseDate": "12-02-2020",
+        "episodeNumber": 3,
+        "seasonNumber": 2,
+    },
+}
+PARSED_EPISODE_3 = Episode(
+    "id3",
+    3,
+    "EPISODE",
+    "title 3",
+    2020,
+    "12-02-2020",
+    None,
+    None,
+    3,
+    2,
+    [],
+)
+
 API_SEARCH_RESPONSE_JSON = {
     "data": {
         "popularTitles": {
@@ -392,8 +486,33 @@ API_SEARCH_RESPONSE_JSON = {
         }
     }
 }
-
 API_SEARCH_RESPONSE_NO_DATA = {"data": {"popularTitles": {"edges": []}}}
+
+API_SEASONS_RESPONSE_JSON = {
+    "data": {
+        "node": {
+            "seasons": [
+                RESPONSE_NODE_1,
+                RESPONSE_NODE_2,
+                RESPONSE_NODE_3,
+            ]
+        }
+    }
+}
+API_SEASONS_RESPONSE_NO_DATA = {"data": {"node": {"seasons": []}}}
+
+API_EPISODES_RESPONSE_JSON = {
+    "data": {
+        "node": {
+            "episodes": [
+                RESPONSE_EPISODE_1,
+                RESPONSE_EPISODE_2,
+                RESPONSE_EPISODE_3,
+            ]
+        }
+    }
+}
+API_EPISODES_RESPONSE_NO_DATA = {"data": {"node": {"episodes": []}}}
 
 
 @mark.parametrize(
@@ -419,6 +538,32 @@ def test_parse_search_response(response_json: dict, expected_output: list[MediaE
 )
 def test_parse_details_response(response_json: dict, expected_output: MediaEntry):
     parsed_entries = parse_details_response(response_json)
+    assert parsed_entries == expected_output
+
+
+@mark.parametrize(
+    argnames=("response_json", "expected_output"),
+    argvalues=[
+        (API_SEASONS_RESPONSE_JSON, [PARSED_NODE_1, PARSED_NODE_2, PARSED_NODE_3]),
+        (API_SEASONS_RESPONSE_NO_DATA, []),
+        ({"errors": [], "data": {"node": None}}, None),
+    ],
+)
+def test_parse_seasons_response(response_json: dict, expected_output: MediaEntry):
+    parsed_entries = parse_seasons_response(response_json)
+    assert parsed_entries == expected_output
+
+
+@mark.parametrize(
+    argnames=("response_json", "expected_output"),
+    argvalues=[
+        (API_EPISODES_RESPONSE_JSON, [PARSED_EPISODE_1, PARSED_EPISODE_2, PARSED_EPISODE_3]),
+        (API_EPISODES_RESPONSE_NO_DATA, []),
+        ({"errors": [], "data": {"node": None}}, None),
+    ],
+)
+def test_parse_episodes_response(response_json: dict, expected_output: MediaEntry):
+    parsed_entries = parse_episodes_response(response_json)
     assert parsed_entries == expected_output
 
 

@@ -1,215 +1,24 @@
 from re import match
+from unittest.mock import MagicMock, patch
 
 from pytest import mark, raises
 
 from simplejustwatchapi.query import (
     prepare_details_request,
+    prepare_episodes_request,
     prepare_offers_for_countries_request,
     prepare_search_request,
+    prepare_seasons_request,
 )
 
-GRAPHQL_DETAILS_QUERY = """
-query GetTitleNode(
-  $nodeId: ID!,
-  $language: Language!,
-  $country: Country!,
-  $formatPoster: ImageFormat,
-  $formatOfferIcon: ImageFormat,
-  $profile: PosterProfile,
-  $backdropProfile: BackdropProfile,
-  $filter: OfferFilter!,
-) {
-  node(id: $nodeId) {
-    ...TitleDetails
-    __typename
-  }
-  __typename
-}
-"""
-
-GRAPHQL_SEARCH_QUERY = """
-query GetSearchTitles(
-  $searchTitlesFilter: TitleFilter!,
-  $country: Country!,
-  $language: Language!,
-  $first: Int!,
-  $formatPoster: ImageFormat,
-  $formatOfferIcon: ImageFormat,
-  $profile: PosterProfile,
-  $backdropProfile: BackdropProfile,
-  $filter: OfferFilter!,
-) {
-  popularTitles(
-    country: $country
-    filter: $searchTitlesFilter
-    first: $first
-    sortBy: POPULAR
-    sortRandomSeed: 0
-  ) {
-    edges {
-      node {
-        ...TitleDetails
-        __typename
-      }
-      __typename
-    }
-    __typename
-  }
-}
-"""
-
-GRAPHQL_OFFERS_BY_COUNTRY_QUERY = """
-query GetTitleOffers(
-  $nodeId: ID!,
-  $language: Language!,
-  $formatOfferIcon: ImageFormat,
-  $filter: OfferFilter!,
-) {{
-  node(id: $nodeId) {{
-    ... on MovieOrShowOrSeasonOrEpisode {{
-      {country_entries}
-      __typename
-    }}
-    __typename
-  }}
-  __typename
-}}
-"""
-
-GRAPHQL_DETAILS_FRAGMENT = """
-fragment TitleDetails on MovieOrShowOrSeasonOrEpisode {
-  id
-  objectId
-  objectType
-  content(country: $country, language: $language) {
-    ...ContentDetails
-    __typename
-  }
-  ...StreamingChartInfoFragment
-  ...on Show {
-    totalSeasonCount
-  }
-  ...on Season {
-    totalEpisodeCount
-  }
-  offers(country: $country, platform: WEB, filter: $filter) {
-    ...TitleOffer
-  }
-  __typename
-}
-
-fragment StreamingChartInfoFragment on MovieOrShowOrSeason {
-  streamingCharts(country: $country) {
-    edges {
-      streamingChartInfo {
-        rank
-        trend
-        trendDifference
-        daysInTop3
-        daysInTop10
-        daysInTop100
-        daysInTop1000
-        topRank
-        updatedAt
-        __typename
-      }
-      __typename
-    }
-    __typename
-  }
-}
-
-fragment ContentDetails on MovieOrShowOrSeasonOrEpisodeContent {
-  title
-  originalReleaseYear
-  originalReleaseDate
-  runtime
-  shortDescription
-  ...FullContentDetails
-  ...on MovieOrShowContent {
-    ageCertification
-  }
-  ...on SeasonContent {
-    seasonNumber
-  }
-  ...on EpisodeContent {
-    seasonNumber
-    episodeNumber
-  }
-}
-
-fragment FullContentDetails on MovieOrShowOrSeasonContent {
-  fullPath
-  genres {
-    shortName
-    __typename
-  }
-  externalIds {
-    imdbId
-    tmdbId
-    __typename
-  }
-  posterUrl(profile: $profile, format: $formatPoster)
-  backdrops(profile: $backdropProfile, format: $formatPoster) {
-    backdropUrl
-    __typename
-  }
-  scoring {
-    imdbScore
-    imdbVotes
-    tmdbPopularity
-    tmdbScore
-    tomatoMeter
-    certifiedFresh
-    jwRating
-    __typename
-  }
-  interactions {
-    likelistAdditions
-    dislikelistAdditions
-    __typename
-  }
-}
-"""
-
-GRAPHQL_OFFER_FRAGMENT = """
-fragment TitleOffer on Offer {
-  id
-  monetizationType
-  presentationType
-  retailPrice(language: $language)
-  retailPriceValue
-  currency
-  lastChangeRetailPriceValue
-  type
-  package {
-    id
-    packageId
-    clearName
-    technicalName
-    icon(profile: S100, format: $formatOfferIcon)
-    __typename
-  }
-  standardWebURL
-  elementCount
-  availableTo
-  deeplinkRoku: deeplinkURL(platform: ROKU_OS)
-  subtitleLanguages
-  videoTechnology
-  audioTechnology
-  audioLanguages
-  __typename
-}
-"""
-
-GRAPHQL_COUNTRY_OFFERS_ENTRY = """
-      {country_code}: offers(country: {country_code}, platform: WEB, filter: $filter) {{
-        ...TitleOffer
-        __typename
-      }}
-"""
+DUMMY_SEARCH_QUERY = "A DUMMY SEARCH QUERY"
+DUMMY_DETAILS_QUERY = "A DUMMY DETAILS QUERY"
+DUMMY_SEASONS_QUERY = "A DUMMY SEASONS QUERY"
+DUMMY_EPISODES_QUERY = "A DUMMY EPISODES QUERY"
+DUMMY_OFFERS_FOR_COUNTRIES_QUERY = "A DUMMY OFFERS FOR COUNTRIES QUERY"
 
 
+@patch("simplejustwatchapi.query.graphql_search_query", return_value=DUMMY_SEARCH_QUERY)
 @mark.parametrize(
     argnames=("title", "country", "language", "count", "best_only"),
     argvalues=[
@@ -218,7 +27,12 @@ GRAPHQL_COUNTRY_OFFERS_ENTRY = """
     ],
 )
 def test_prepare_search_request(
-    title: str, country: str, language: str, count: int, best_only: bool
+    _,
+    title: str,
+    country: str,
+    language: str,
+    count: int,
+    best_only: bool,
 ):
     expected_request = {
         "operationName": "GetSearchTitles",
@@ -233,12 +47,13 @@ def test_prepare_search_request(
             "backdropProfile": "S1920",
             "filter": {"bestOnly": best_only},
         },
-        "query": (GRAPHQL_SEARCH_QUERY + GRAPHQL_DETAILS_FRAGMENT + GRAPHQL_OFFER_FRAGMENT),
+        "query": DUMMY_SEARCH_QUERY,
     }
     request = prepare_search_request(title, country, language, count, best_only)
     assert expected_request == request
 
 
+@patch("simplejustwatchapi.query.graphql_search_query")
 @mark.parametrize(
     argnames="invalid_code",
     argvalues=[
@@ -247,13 +62,17 @@ def test_prepare_search_request(
         "u",  # too short
     ],
 )
-def test_prepare_search_request_asserts_on_invalid_country_code(invalid_code: str):
+def test_prepare_search_request_asserts_on_invalid_country_code(
+    query_mock: MagicMock, invalid_code: str
+):
     expected_error_message = f"Invalid country code: {invalid_code}, code must be 2 characters long"
     with raises(AssertionError) as error:
         prepare_search_request("", invalid_code, "", 1, True)
     assert str(error.value) == expected_error_message
+    query_mock.assert_not_called()
 
 
+@patch("simplejustwatchapi.query.graphql_details_query", return_value=DUMMY_DETAILS_QUERY)
 @mark.parametrize(
     argnames=("node_id", "country", "language", "best_only"),
     argvalues=[
@@ -261,7 +80,7 @@ def test_prepare_search_request_asserts_on_invalid_country_code(invalid_code: st
         ("NODE ID 1", "gb", "language 2", False),
     ],
 )
-def test_prepare_details_request(node_id: str, country: str, language: str, best_only: bool):
+def test_prepare_details_request(_, node_id: str, country: str, language: str, best_only: bool):
     expected_request = {
         "operationName": "GetTitleNode",
         "variables": {
@@ -274,12 +93,13 @@ def test_prepare_details_request(node_id: str, country: str, language: str, best
             "backdropProfile": "S1920",
             "filter": {"bestOnly": best_only},
         },
-        "query": (GRAPHQL_DETAILS_QUERY + GRAPHQL_DETAILS_FRAGMENT + GRAPHQL_OFFER_FRAGMENT),
+        "query": DUMMY_DETAILS_QUERY,
     }
     request = prepare_details_request(node_id, country, language, best_only)
     assert expected_request == request
 
 
+@patch("simplejustwatchapi.query.graphql_details_query")
 @mark.parametrize(
     argnames="invalid_code",
     argvalues=[
@@ -288,13 +108,112 @@ def test_prepare_details_request(node_id: str, country: str, language: str, best
         "u",  # too short
     ],
 )
-def test_prepare_details_request_asserts_on_invalid_country_code(invalid_code: str):
+def test_prepare_details_request_asserts_on_invalid_country_code(
+    query_mock: MagicMock, invalid_code: str
+):
     expected_error_message = f"Invalid country code: {invalid_code}, code must be 2 characters long"
     with raises(AssertionError) as error:
         prepare_details_request("", invalid_code, "", True)
     assert str(error.value) == expected_error_message
+    query_mock.assert_not_called()
 
 
+@patch("simplejustwatchapi.query.graphql_seasons_query", return_value=DUMMY_SEASONS_QUERY)
+@mark.parametrize(
+    argnames=("node_id", "country", "language", "best_only"),
+    argvalues=[
+        ("NODE ID 1", "US", "language 1", True),
+        ("NODE ID 1", "gb", "language 2", False),
+    ],
+)
+def test_prepare_seasons_request(_, node_id: str, country: str, language: str, best_only: bool):
+    expected_request = {
+        "operationName": "GetTitleNode",
+        "variables": {
+            "nodeId": node_id,
+            "language": language,
+            "country": country.upper(),
+            "formatPoster": "JPG",
+            "formatOfferIcon": "PNG",
+            "profile": "S718",
+            "backdropProfile": "S1920",
+            "filter": {"bestOnly": best_only},
+        },
+        "query": DUMMY_SEASONS_QUERY,
+    }
+    request = prepare_seasons_request(node_id, country, language, best_only)
+    assert expected_request == request
+
+
+@patch("simplejustwatchapi.query.graphql_seasons_query")
+@mark.parametrize(
+    argnames="invalid_code",
+    argvalues=[
+        "United Stated of America",  # too long
+        "usa",  # too long
+        "u",  # too short
+    ],
+)
+def test_prepare_seasons_request_asserts_on_invalid_country_code(
+    query_mock: MagicMock, invalid_code: str
+):
+    expected_error_message = f"Invalid country code: {invalid_code}, code must be 2 characters long"
+    with raises(AssertionError) as error:
+        prepare_seasons_request("", invalid_code, "", True)
+    assert str(error.value) == expected_error_message
+    query_mock.assert_not_called()
+
+
+@patch("simplejustwatchapi.query.graphql_episodes_query", return_value=DUMMY_EPISODES_QUERY)
+@mark.parametrize(
+    argnames=("node_id", "country", "language", "best_only"),
+    argvalues=[
+        ("NODE ID 1", "US", "language 1", True),
+        ("NODE ID 1", "gb", "language 2", False),
+    ],
+)
+def test_prepare_episodes_request(_, node_id: str, country: str, language: str, best_only: bool):
+    expected_request = {
+        "operationName": "GetTitleNode",
+        "variables": {
+            "nodeId": node_id,
+            "language": language,
+            "country": country.upper(),
+            "formatPoster": "JPG",
+            "formatOfferIcon": "PNG",
+            "profile": "S718",
+            "backdropProfile": "S1920",
+            "filter": {"bestOnly": best_only},
+        },
+        "query": DUMMY_EPISODES_QUERY,
+    }
+    request = prepare_episodes_request(node_id, country, language, best_only)
+    assert expected_request == request
+
+
+@patch("simplejustwatchapi.query.graphql_episodes_query")
+@mark.parametrize(
+    argnames="invalid_code",
+    argvalues=[
+        "United Stated of America",  # too long
+        "usa",  # too long
+        "u",  # too short
+    ],
+)
+def test_prepare_episodes_request_asserts_on_invalid_country_code(
+    query_mock: MagicMock, invalid_code: str
+):
+    expected_error_message = f"Invalid country code: {invalid_code}, code must be 2 characters long"
+    with raises(AssertionError) as error:
+        prepare_episodes_request("", invalid_code, "", True)
+    assert str(error.value) == expected_error_message
+    query_mock.assert_not_called()
+
+
+@patch(
+    "simplejustwatchapi.query.graphql_offers_for_countries_query",
+    return_value=DUMMY_OFFERS_FOR_COUNTRIES_QUERY,
+)
 @mark.parametrize(
     argnames=("node_id", "countries", "language", "best_only"),
     argvalues=[
@@ -304,14 +223,8 @@ def test_prepare_details_request_asserts_on_invalid_country_code(invalid_code: s
     ],
 )
 def test_prepare_offers_for_countries_request(
-    node_id: str, countries: set[str], language: str, best_only: bool
+    _, node_id: str, countries: set[str], language: str, best_only: bool
 ):
-    offer_requests = [
-        GRAPHQL_COUNTRY_OFFERS_ENTRY.format(country_code=country_code.upper())
-        for country_code in countries
-    ]
-    main_body = GRAPHQL_OFFERS_BY_COUNTRY_QUERY.format(country_entries="\n".join(offer_requests))
-    full_query = main_body + GRAPHQL_OFFER_FRAGMENT
     expected_request = {
         "operationName": "GetTitleOffers",
         "variables": {
@@ -323,7 +236,7 @@ def test_prepare_offers_for_countries_request(
             "backdropProfile": "S1920",
             "filter": {"bestOnly": best_only},
         },
-        "query": full_query,
+        "query": DUMMY_OFFERS_FOR_COUNTRIES_QUERY,
     }
 
     request = prepare_offers_for_countries_request(node_id, countries, language, best_only)
@@ -331,6 +244,7 @@ def test_prepare_offers_for_countries_request(
     assert expected_request == request
 
 
+@patch("simplejustwatchapi.query.graphql_offers_for_countries_query")
 @mark.parametrize(
     argnames=("codes", "invalid_code_regex"),
     argvalues=[
@@ -342,7 +256,7 @@ def test_prepare_offers_for_countries_request(
     ],
 )
 def test_prepare_offers_for_countries_request_asserts_on_invalid_country_codes(
-    codes: set[str], invalid_code_regex: set[str]
+    query_mock: MagicMock, codes: set[str], invalid_code_regex: set[str]
 ):
     expected_error_message = (
         rf"Invalid country code: ({invalid_code_regex}), code must be 2 characters long"
@@ -352,10 +266,13 @@ def test_prepare_offers_for_countries_request_asserts_on_invalid_country_codes(
     # Regex here is required, as sets are unordered,
     # so we have no guarantee which code will fail first.
     assert match(expected_error_message, str(error.value))
+    query_mock.assert_not_called()
 
 
-def test_prepare_offers_for_countries_request_asserts_on_empty_countries_set():
+@patch("simplejustwatchapi.query.graphql_offers_for_countries_query")
+def test_prepare_offers_for_countries_request_asserts_on_empty_countries_set(query_mock: MagicMock):
     expected_error_message = "Cannot prepare offers request without specified countries"
     with raises(AssertionError) as error:
         prepare_offers_for_countries_request("", set(), "", True)
     assert str(error.value) == expected_error_message
+    query_mock.assert_not_called()

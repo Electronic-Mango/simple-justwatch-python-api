@@ -204,19 +204,19 @@ class MediaEntry(NamedTuple):
     title: str
     """Full title."""
 
-    url: str | None
+    url: str
     """URL to JustWatch with details for this entry."""
 
-    release_year: int | None
+    release_year: int
     """Release year as a number."""
 
-    release_date: str | None
+    release_date: str
     """Full release date as a string, e.g. ``2013-12-16``."""
 
     runtime_minutes: int
     """Runtime in minutes."""
 
-    short_description: str | None
+    short_description: str
     """Short description of this entry."""
 
     genres: list[str]

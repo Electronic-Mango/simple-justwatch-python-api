@@ -12,3 +12,18 @@ from simplejustwatchapi.tuples import Offer as Offer
 from simplejustwatchapi.tuples import OfferPackage as OfferPackage
 from simplejustwatchapi.tuples import Scoring as Scoring
 from simplejustwatchapi.tuples import StreamingCharts as StreamingCharts
+
+__all__ = [
+    "Episode",
+    "Interactions",
+    "MediaEntry",
+    "Offer",
+    "OfferPackage",
+    "Scoring",
+    "StreamingCharts",
+    "details",
+    "episodes",
+    "offers_for_countries",
+    "search",
+    "seasons",
+]

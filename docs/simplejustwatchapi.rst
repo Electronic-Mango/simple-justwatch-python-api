@@ -1,6 +1,14 @@
 simplejustwatchapi package
 ==========================
 
+Module contents
+---------------
+
+.. automodule:: simplejustwatchapi
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Submodules
 ----------
 
@@ -32,14 +40,6 @@ simplejustwatchapi.tuples module
 -------------------------------
 
 .. automodule:: simplejustwatchapi.tuples
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: simplejustwatchapi
    :members:
    :undoc-members:
    :show-inheritance:

@@ -160,19 +160,13 @@ fragment ShowDetails on Show {
   }
   __typename
 }
-"""
 
-GRAPHQL_EPISODE_FRAGMENT = """
 fragment EpisodeDetails on Episode {
   id
   objectId
   objectType
   content(country: $country, language: $language) {
-    title
-    originalReleaseYear
-    originalReleaseDate
-    runtime
-    shortDescription
+    ...BasicContentDetails
     episodeNumber
     seasonNumber
     __typename
@@ -185,13 +179,17 @@ fragment EpisodeDetails on Episode {
 """
 
 GRAPHQL_CONTENT_FRAGMENT = """
-fragment ContentDetails on MovieOrShowOrSeasonContent {
+fragment BasicContentDetails on MovieOrShowOrSeasonOrEpisodeContent {
   title
-  fullPath
   originalReleaseYear
   originalReleaseDate
   runtime
   shortDescription
+}
+
+fragment ContentDetails on MovieOrShowOrSeasonContent {
+  ...BasicContentDetails
+  fullPath
   genres {
     shortName
     __typename
@@ -336,7 +334,6 @@ def test_prepare_details_request(node_id: str, country: str, language: str, best
             GRAPHQL_DETAILS_QUERY
             + GRAPHQL_DETAILS_FRAGMENT
             + GRAPHQL_FULL_SHOW_FRAGMENT
-            + GRAPHQL_EPISODE_FRAGMENT
             + GRAPHQL_CONTENT_FRAGMENT
             + GRAPHQL_OFFER_FRAGMENT
         ),

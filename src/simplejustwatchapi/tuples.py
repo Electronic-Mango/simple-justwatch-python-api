@@ -164,25 +164,25 @@ class Episode(NamedTuple):
     object_type: str
     """Type of entry, for episodes should be ``SHOW_EPISODE``."""
 
-    title: str
+    title: str | None
     """Full title."""
 
-    release_year: int
+    release_year: int | None
     """Release year as a number."""
 
-    release_date: str
+    release_date: str | None
     """Full release date as a string, e.g. ``2013-12-16``."""
 
-    runtime_minutes: int
+    runtime_minutes: int | None
     """Runtime in minutes."""
 
     short_description: str | None
     """Short description of this episode."""
 
-    episode_number: int
+    episode_number: int | None
     """Number of this episode."""
 
-    season_number: int
+    season_number: int | None
     """Season number with this episode."""
 
     offers: list[Offer]

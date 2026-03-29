@@ -1,0 +1,36 @@
+# Check if query might hit max complexity
+
+# Might be strange, but checking details of seasons/episodes can result with errors regarding
+# max complexity of query being reached.
+# This workflow will run actual request for "The Simpsons" ("ts20711") with "best_only=False"
+# (the largest response I could find) to check if it errors out.
+# It won't prevent errors due to too large searches, but should check if it's impossible
+# to get details of something "as is", due to too complex query.
+
+name: Query complexity
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    name: Check if max query complexity is reached
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: "Install Python"
+        uses: actions/setup-python@v6
+        with:
+          python-version-file: "pyproject.toml"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+      - name: Install the project
+        run: uv sync --locked --all-extras --dev
+      - name: Check details complexity
+        run: uv run python -c "from simplejustwatchapi import details; details('ts20711', best_only=False)"
+      - name: Check search complexity
+        run: uv run python -c "from simplejustwatchapi import search; search('The', count=100, best_only=False)"

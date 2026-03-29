@@ -1,3 +1,5 @@
+from pytest import mark
+
 from simplejustwatchapi.graphql import (
     graphql_details_query,
     graphql_episodes_query,
@@ -278,8 +280,8 @@ def test_graphql_episodes_query():
     assert expected_query == query
 
 
-def test_graphql_offers_for_countries_query():
-    country_codes = {"gb", "Us", "fR", "CA"}
+@mark.parametrize("country_codes", [{"gb", "Us", "fR", "CA"}, {"us"}, set()])
+def test_graphql_offers_for_countries_query(country_codes):
     offer_requests = [
         GRAPHQL_COUNTRY_OFFERS_ENTRY.format(country_code=country_code.upper())
         for country_code in country_codes

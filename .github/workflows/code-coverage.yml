@@ -24,6 +24,6 @@ jobs:
       - name: Install the project
         run: uv sync --locked --all-extras --dev
       - name: Check coverage
-        run: |
-          uv run --dev --with coveralls coverage run --source=simplejustwatchapi -m pytest test/
-          COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_TOKEN }} uv run --dev --with coveralls
+        run: uv run --dev --with coveralls coverage run --source=simplejustwatchapi -m pytest test/
+      - name: Upload coverage
+        run: COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_TOKEN }} uv run --dev coveralls

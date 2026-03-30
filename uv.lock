@@ -409,7 +409,7 @@ wheels = [
 
 [[package]]
 name = "simple-justwatch-python-api"
-version = "0.17"
+version = "0.17.1"
 source = { editable = "." }
 dependencies = [
     { name = "httpx" },

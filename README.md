@@ -95,7 +95,7 @@ Output from this function contains the same data as a single entry from the [`se
 
 > **In general using this function is only useful if you have node ID already stored.**
 There's no reason to first use the [`search`](#search) function, then use node ID from one of entries for `details`, you won't get any additional information.
-If you want to get seasons/episodes you can use the ID from [`search`](#search) function to call [`seasons`](#seasons), and then [`episodes`](#episodes). Calling `details` on an individual season/episode won't give you more information than outputs from the dedicated commands.
+If you want to get seasons/episodes you can use the ID from [`search`](#search) function to call [`seasons`](#seasons), and then [`episodes`](#episodes). Calling `details` on an individual season/episode won't give you more information than outputs from the dedicated functions.
 
 Usage is similar to [`search`](#search) function, just without `count` argument:
 ```python

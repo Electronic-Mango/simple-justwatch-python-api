@@ -266,7 +266,7 @@ def graphql_search_query() -> str:
     The query is GetSearchTitles query + details fragment + offers fragment.
 
     Returns:
-        str with full GraphQL "search" query
+        str: Full GraphQL "search" query.
 
     """
     return _GRAPHQL_SEARCH_QUERY + _GRAPHQL_DETAILS_FRAGMENT + _GRAPHQL_OFFER_FRAGMENT
@@ -281,7 +281,7 @@ def graphql_details_query() -> str:
     it just won't return full season/episodes list.
 
     Returns:
-        str with full GraphQL "get details" query
+        str: Full GraphQL "get details" query.
 
     """
     return _GRAPHQL_DETAILS_QUERY + _GRAPHQL_DETAILS_FRAGMENT + _GRAPHQL_OFFER_FRAGMENT
@@ -297,7 +297,7 @@ def graphql_seasons_query() -> str:
     relevant data for seasons.
 
     Returns:
-        str with full GraphQL "get seasons" query
+        str: Full GraphQL "get seasons" query.
 
     """
     return _GRAPHQL_SEASONS_QUERY + _GRAPHQL_DETAILS_FRAGMENT + _GRAPHQL_OFFER_FRAGMENT
@@ -313,7 +313,7 @@ def graphql_episodes_query() -> str:
     relevant data for episodes.
 
     Returns:
-        str with full GraphQL "get episodes" query
+        str: Full GraphQL "get episodes" query.
 
     """
     return _GRAPHQL_EPISODES_QUERY + _GRAPHQL_DETAILS_FRAGMENT + _GRAPHQL_OFFER_FRAGMENT
@@ -331,10 +331,10 @@ def graphql_offers_for_countries_query(countries: set[str]) -> str:
     the set is not empty; it performs no additional verification.
 
     Args:
-        countries: set of 2-letter country codes
+        countries (set[str]): 2-letter country codes.
 
     Returns:
-        str with full GraphQL "get offers per country" query
+        str: Full GraphQL "get offers per country" query.
 
     """
     offer_requests = [

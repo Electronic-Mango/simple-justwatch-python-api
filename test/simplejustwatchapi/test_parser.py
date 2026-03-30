@@ -1,19 +1,21 @@
 from pytest import mark
 
 from simplejustwatchapi.query import (
-    Interactions,
-    MediaEntry,
-    Offer,
-    OfferPackage,
-    Scoring,
-    StreamingCharts,
     parse_details_response,
     parse_episodes_response,
     parse_offers_for_countries_response,
     parse_search_response,
     parse_seasons_response,
 )
-from simplejustwatchapi.tuples import Episode
+from simplejustwatchapi.tuples import (
+    Episode,
+    Interactions,
+    MediaEntry,
+    Offer,
+    OfferPackage,
+    Scoring,
+    StreamingCharts,
+)
 
 DETAILS_URL = "https://justwatch.com"
 IMAGES_URL = "https://images.justwatch.com"

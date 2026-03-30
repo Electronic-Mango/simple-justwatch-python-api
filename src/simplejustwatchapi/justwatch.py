@@ -3,9 +3,6 @@
 from httpx import post
 
 from simplejustwatchapi.query import (
-    Episode,
-    MediaEntry,
-    Offer,
     parse_details_response,
     parse_episodes_response,
     parse_offers_for_countries_response,
@@ -17,6 +14,7 @@ from simplejustwatchapi.query import (
     prepare_search_request,
     prepare_seasons_request,
 )
+from simplejustwatchapi.tuples import Episode, MediaEntry, Offer
 
 _GRAPHQL_API_URL = "https://apis.justwatch.com/graphql"
 
@@ -33,19 +31,22 @@ def search(
 
     Returns a list of entries up to ``count``.
 
-    ``best_only`` allows filtering out redundant offers, e.g. when if provide offers service
+    ``best_only`` allows filtering out redundant offers, e.g. when service provides offers
     in 4K, HD and SD, using ``best_only = True`` returns only 4K option, ``best_only = False``
     returns all three.
 
     Args:
-        title: title to search
-        country: country to search for offers, ``US`` by default
-        language: language of responses, ``en`` by default
-        count: how many responses should be returned
-        best_only: return only best offers if ``True``, return all offers if ``False``
+        title (str): Title to search.
+        country (str): Country to search for offers, ``US`` by default.
+        language (str): Language of responses, ``en`` by default.
+        count (int): How many responses should be returned.
+        best_only (bool): Return only best offers if ``True``, return all offers if ``False``.
 
     Returns:
-        List of ``MediaEntry`` NamedTuples parsed from JustWatch response
+        list[MediaEntry]: List of ``MediaEntry`` NamedTuples parsed from JustWatch response.
+
+    Raises:
+        httpx.HTTPStatusError: If JustWatch API doesn't respond with success code.
 
     """
     request = prepare_search_request(title, country, language, count, best_only)
@@ -68,14 +69,17 @@ def details(
     returns all three.
 
     Args:
-        node_id: ID of entry to look up
-        country: country to search for offers, ``US`` by default
-        language: language of responses, ``en`` by default
-        best_only: return only best offers if ``True``, return all offers if ``False``
+        node_id (str): ID of entry to look up.
+        country (str): Country to search for offers, ``US`` by default.
+        language (str): Language of responses, ``en`` by default.
+        best_only (bool): Return only best offers if ``True``, return all offers if ``False``.
 
     Returns:
-        ``MediaEntry`` NamedTuple with data about requested entry,
+        MediaEntry | None: ``MediaEntry`` NamedTuple with data about requested entry,
         or None in case data for a given node ID was not found
+
+    Raises:
+        httpx.HTTPStatusError: If JustWatch API doesn't respond with success code.
 
     """
     request = prepare_details_request(node_id, country, language, best_only)
@@ -95,14 +99,17 @@ def seasons(
     returns all three.
 
     Args:
-        show_id: ID of show to look up seasons for
-        country: country to search for offers, ``US`` by default
-        language: language of responses, ``en`` by default
-        best_only: return only best offers if ``True``, return all offers if ``False``
+        show_id (str): ID of show to look up seasons for.
+        country (str): Country to search for offers, ``US`` by default.
+        language (str): Language of responses, ``en`` by default.
+        best_only (bool): Return only best offers if ``True``, return all offers if ``False``.
 
     Returns:
-        ``MediaEntry`` NamedTuple with data about requested entry,
+        list[MediaEntry] | None: List of ``MediaEntry`` NamedTuples with data about requested entry,
         or None in case data for a given node ID was not found
+
+    Raises:
+        httpx.HTTPStatusError: If JustWatch API doesn't respond with success code.
 
     """
     request = prepare_seasons_request(show_id, country, language, best_only)
@@ -122,14 +129,17 @@ def episodes(
     returns all three.
 
     Args:
-        season_id: ID of season to look up episodes for
-        country: country to search for offers, ``US`` by default
-        language: language of responses, ``en`` by default
-        best_only: return only best offers if ``True``, return all offers if ``False``
+        season_id (str): ID of season to look up episodes for.
+        country (str): Country to search for offers, ``US`` by default.
+        language (str): Language of responses, ``en`` by default.
+        best_only (bool): Return only best offers if ``True``, return all offers if ``False``.
 
     Returns:
-        ``MediaEntry`` NamedTuple with data about requested entry,
-        or None in case data for a given node ID was not found
+        list[Episode] | None: List of ``Episode`` NamedTuples with data about requested entry,
+        or None in case data for a given node ID was not found.
+
+    Raises:
+        httpx.HTTPStatusError: If JustWatch API doesn't respond with success code.
 
     """
     request = prepare_episodes_request(season_id, country, language, best_only)
@@ -176,14 +186,17 @@ def offers_for_countries(
     returns all three.
 
     Args:
-        node_id: ID of entry to look up offers for
-        countries: set of country codes to search for offers
-        language: language of responses, ``en`` by default
-        best_only: return only best offers if ``True``, return all offers if ``False``
+        node_id (str): ID of entry to look up offers for.
+        countries (set[str]): 2-letter country codes to search for offers.
+        language (str): Language of responses, ``en`` by default.
+        best_only (bool): Return only best offers if ``True``, return all offers if ``False``.
 
     Returns:
-        ``dict`` where keys match values in ``countries`` and keys are all found offers for their
-        respective countries
+        dict[str, list[Offer]]: ``dict`` where keys match values in ``countries``
+        and keys are all found offers for their respective countries.
+
+    Raises:
+        httpx.HTTPStatusError: If JustWatch API doesn't respond with success code.
 
     """
     if not countries:

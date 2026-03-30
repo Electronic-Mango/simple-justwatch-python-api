@@ -45,14 +45,14 @@ def prepare_search_request(
     Meant to be used together with :func:`parse_search_response`.
 
     Args:
-        title: title to search
-        country: country to search for offers
-        language: language of responses
-        count: how many responses should be returned
-        best_only: return only best offers if ``True``, return all offers if ``False``
+        title (str): Title to search.
+        country (str): Country to search for offers.
+        language (str): Language of responses.
+        count (int): How many responses should be returned.
+        best_only (bool): Return only best offers if ``True``, return all offers if ``False``.
 
     Returns:
-        JSON/dict with GraphQL POST body
+        dict: JSON/dict with GraphQL POST body.
 
     """
     _assert_country_code_is_valid(country)
@@ -84,10 +84,10 @@ def parse_search_response(json: dict) -> list[MediaEntry]:
     Meant to be used together with :func:`prepare_search_request`.
 
     Args:
-        json: JSON returned by JustWatch GraphQL API
+        json (dict): JSON returned by JustWatch GraphQL API.
 
     Returns:
-        Parsed received JSON as a list of ``MediaEntry`` NamedTuples
+        list[MediaEntry]: Parsed received JSON as a list of ``MediaEntry`` NamedTuples.
 
     """
     return [_parse_entry(edge["node"]) for edge in json["data"]["popularTitles"]["edges"]]
@@ -104,13 +104,13 @@ def prepare_details_request(node_id: str, country: str, language: str, best_only
     Meant to be used together with :func:`parse_details_response`.
 
     Args:
-        node_id: node ID of entry to get details for
-        country: country to search for offers
-        language: language of responses
-        best_only: return only best offers if ``True``, return all offers if ``False``
+        node_id (str): Node ID of entry to get details for.
+        country (str): Country to search for offers.
+        language (str): Language of responses.
+        best_only (bool): Return only best offers if ``True``, return all offers if ``False``.
 
     Returns:
-        JSON/dict with GraphQL POST body
+        dict: JSON/dict with GraphQL POST body.
 
     """
     _assert_country_code_is_valid(country)
@@ -130,7 +130,7 @@ def prepare_details_request(node_id: str, country: str, language: str, best_only
     }
 
 
-def parse_details_response(json: Any) -> MediaEntry | None:
+def parse_details_response(json: dict) -> MediaEntry | None:
     """
     Parse response from details query from JustWatch GraphQL API.
 
@@ -142,11 +142,11 @@ def parse_details_response(json: Any) -> MediaEntry | None:
     Meant to be used together with :func:`prepare_details_request`.
 
     Args:
-        json: JSON returned by JustWatch GraphQL API
+        json (dict): JSON returned by JustWatch GraphQL API.
 
     Returns:
-        Parsed received JSON as a ``MediaEntry`` NamedTuple,
-        or ``None`` in case data for a given node ID was not found
+        MediaEntry | None: Parsed received JSON as a ``MediaEntry`` NamedTuple,
+        or ``None`` in case data for a given node ID was not found.
 
     """
     return _parse_entry(json["data"]["node"]) if "errors" not in json else None
@@ -163,13 +163,13 @@ def prepare_seasons_request(show_id: str, country: str, language: str, best_only
     Meant to be used together with :func:`parse_seasons_response`.
 
     Args:
-        show_id: show ID of entry to get details for
-        country: country to search for offers
-        language: language of responses
-        best_only: return only best offers if ``True``, return all offers if ``False``
+        show_id (str): Show ID of entry to get details for.
+        country (str): Country to search for offers.
+        language (str): Language of responses.
+        best_only (bool): Return only best offers if ``True``, return all offers if ``False``.
 
     Returns:
-        JSON/dict with GraphQL POST body
+        dict: JSON/dict with GraphQL POST body.
 
     """
     _assert_country_code_is_valid(country)
@@ -189,7 +189,7 @@ def prepare_seasons_request(show_id: str, country: str, language: str, best_only
     }
 
 
-def parse_seasons_response(json: Any) -> list[MediaEntry] | None:
+def parse_seasons_response(json: dict) -> list[MediaEntry] | None:
     """
     Parse response from seasons details query from JustWatch GraphQL API.
 
@@ -201,11 +201,11 @@ def parse_seasons_response(json: Any) -> list[MediaEntry] | None:
     Meant to be used together with :func:`prepare_seasons_request`.
 
     Args:
-        json: JSON returned by JustWatch GraphQL API
+        json (dict): JSON returned by JustWatch GraphQL API.
 
     Returns:
-        Parsed received JSON as a ``MediaEntry`` NamedTuple list,
-        or ``None`` in case data for a given node ID was not found
+        list[MediaEntry] | None: Parsed received JSON as a ``MediaEntry`` NamedTuple list,
+        or ``None`` in case data for a given node ID was not found.
 
     """
     return (
@@ -226,13 +226,13 @@ def prepare_episodes_request(episode_id: str, country: str, language: str, best_
     Meant to be used together with :func:`parse_episodes_response`.
 
     Args:
-        episode_id: episode ID of entry to get details for
-        country: country to search for offers
-        language: language of responses
-        best_only: return only best offers if ``True``, return all offers if ``False``
+        episode_id (str): Episode ID of entry to get details for.
+        country (str): Country to search for offers.
+        language (str): Language of responses.
+        best_only (bool): Return only best offers if ``True``, return all offers if ``False``.
 
     Returns:
-        JSON/dict with GraphQL POST body
+        dict: JSON/dict with GraphQL POST body.
 
     """
     _assert_country_code_is_valid(country)
@@ -252,7 +252,7 @@ def prepare_episodes_request(episode_id: str, country: str, language: str, best_
     }
 
 
-def parse_episodes_response(json: Any) -> list[Episode] | None:
+def parse_episodes_response(json: dict) -> list[Episode] | None:
     """
     Parse response from episodes details query from JustWatch GraphQL API.
 
@@ -264,11 +264,11 @@ def parse_episodes_response(json: Any) -> list[Episode] | None:
     Meant to be used together with :func:`prepare_episodes_request`.
 
     Args:
-        json: JSON returned by JustWatch GraphQL API
+        json (dict): JSON returned by JustWatch GraphQL API.
 
     Returns:
-        Parsed received JSON as a ``Episode`` NamedTuple list,
-        or ``None`` in case data for a given node ID was not found
+        list[Episode] | None: Parsed received JSON as a ``Episode`` NamedTuple list,
+        or ``None`` in case data for a given node ID was not found.
 
     """
     return (
@@ -295,13 +295,13 @@ def prepare_offers_for_countries_request(
     Meant to be used together with :func:`parse_offers_for_countries_response`.
 
     Args:
-        node_id: node ID of entry to get details for
-        countries: list of country codes to search for offers
-        language: language of responses
-        best_only: return only best offers if ``True``, return all offers if ``False``
+        node_id (str): Node ID of entry to get details for.
+        countries (set[str]): Set of country codes to search for offers.
+        language (str): Language of responses.
+        best_only (bool): Return only best offers if ``True``, return all offers if ``False``.
 
     Returns:
-        JSON/dict with GraphQL POST body
+        dict: JSON/dict with GraphQL POST body.
 
     """
     # TODO: Convert assert to regular exception
@@ -323,7 +323,7 @@ def prepare_offers_for_countries_request(
     }
 
 
-def parse_offers_for_countries_response(json: Any, countries: set[str]) -> dict[str, list[Offer]]:
+def parse_offers_for_countries_response(json: dict, countries: set[str]) -> dict[str, list[Offer]]:
     """
     Parse response from offers query from JustWatch GraphQL API.
 
@@ -337,12 +337,12 @@ def parse_offers_for_countries_response(json: Any, countries: set[str]) -> dict[
     Meant to be used together with :func:`prepare_offers_for_countries_request`.
 
     Args:
-        json: JSON returned by JustWatch GraphQL API
-        countries: set of countries to look for in API response
+        json (dict): JSON returned by JustWatch GraphQL API.
+        countries (set[str]): Set of country codes to look for in API response.
 
     Returns:
-        A dict, where keys are matching ``countries`` argument and values are offers for a given
-        country parsed from JSON response.
+        dict[str, list[Offer]]: A dict, where keys are matching ``countries`` argument and values
+        are offers for a given country parsed from JSON response.
 
     """
     offers_node = json["data"]["node"]

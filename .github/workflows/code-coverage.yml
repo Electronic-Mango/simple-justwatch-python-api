@@ -26,4 +26,4 @@ jobs:
       - name: Check coverage
         run: uv run --dev --with coveralls coverage run --source=simplejustwatchapi -m pytest test/
       - name: Upload coverage
-        run: COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_TOKEN }} uv run --dev coveralls
+        run: COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_TOKEN }} uv run --dev --with coveralls coveralls

@@ -2,6 +2,9 @@
 
 name: Coveralls.io code coverage report
 
+permissions:
+  contents: read
+
 on:
   push:
     branches: [ "main" ]

@@ -9,6 +9,9 @@
 
 name: Query complexity
 
+permissions:
+  contents: read
+
 on:
   push:
     branches: [ "main" ]

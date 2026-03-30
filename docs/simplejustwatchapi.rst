@@ -13,7 +13,7 @@ Submodules
 ----------
 
 simplejustwatchapi.graphql module
--------------------------------
+---------------------------------
 
 .. automodule:: simplejustwatchapi.graphql
    :members:
@@ -37,7 +37,7 @@ simplejustwatchapi.query module
    :show-inheritance:
 
 simplejustwatchapi.tuples module
--------------------------------
+--------------------------------
 
 .. automodule:: simplejustwatchapi.tuples
    :members:

@@ -3,7 +3,7 @@
 [![PyPi](https://img.shields.io/pypi/v/simple-justwatch-python-api.svg)](https://pypi.python.org/pypi/simple-justwatch-python-api)
 [![License](https://img.shields.io/pypi/l/simple-justwatch-python-api.svg)](https://pypi.python.org/pypi/simple-justwatch-python-api)
 [![Python versions](https://img.shields.io/pypi/pyversions/simple-justwatch-python-api.svg)](https://pypi.python.org/pypi/simple-justwatch-python-api)
-[![CodeQL](https://github.com/Electronic-Mango/simple-justwatch-python-api/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/Electronic-Mango/simple-justwatch-python-api/actions/workflows/codeql-analysis.yml)
+[![CodeQL](https://github.com/Electronic-Mango/simple-justwatch-python-api/actions/workflows/codeql.yml/badge.svg)](https://github.com/Electronic-Mango/simple-justwatch-python-api/actions/workflows/codeql.yml)
 [![Ruff](https://github.com/Electronic-Mango/simple-justwatch-python-api/actions/workflows/ruff.yml/badge.svg)](https://github.com/Electronic-Mango/simple-justwatch-python-api/actions/workflows/ruff.yml)
 [![Pytest](https://github.com/Electronic-Mango/simple-justwatch-python-api/actions/workflows/pytest.yml/badge.svg)](https://github.com/Electronic-Mango/simple-justwatch-python-api/actions/workflows/pytest.yml)
 [![Coverage Status](https://coveralls.io/repos/github/Electronic-Mango/simple-justwatch-python-api/badge.svg?branch=main)](https://coveralls.io/github/Electronic-Mango/simple-justwatch-python-api?branch=main)

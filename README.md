@@ -46,7 +46,7 @@ This Python API has 3 functions:
 
 Detailed documentation is available in https://electronic-mango.github.io/simple-justwatch-python-api/.
 
-Example outputs from all commands are in [`examples/`](examples/) directory.
+Example outputs from all functions are in [`examples/`](examples/) directory.
 
 
 ### Search
@@ -83,16 +83,16 @@ Returned value is a list of [`MediaEntry`](#return-data-structures) objects.
 
 For very large searches (high `count` value) I recommend using default `best_only=True` to avoid issues with [request complexity](#request-complexity).
 
-Example command and its output is in [`examples/search_output.py`](examples/search_output.py).
+Example function call and its output is in [`examples/search_output.py`](examples/search_output.py).
 
 
 ### Details
 
 Details function allows for looking up details for a single entry via its node ID.
-Node ID can be taken from output of the [`search`](#search) command.
+Node ID can be taken from output of the [`search`](#search) function.
 
-Output from this function contains the same data as a single entry from the [`search`](#search) command.
-There's no reason to first use the [`search`](#search) command, then use node ID from one of entries for this command.
+Output from this function contains the same data as a single entry from the [`search`](#search) function.
+There's no reason to first use the [`search`](#search) function, then use node ID from one of entries for this function.
 
 ```python
 from simplejustwatchapi.justwatch import details
@@ -109,7 +109,7 @@ Only the first argument is required - the node ID of element to look up details 
 | 3 | `language`  | `str`  | NO       | `"en"`        | Language of responses                                  |
 | 5 | `best_only` | `bool` | NO       | `True`        | Determines whether only best offers should be returned |
 
-General usage of these arguments matches the [`search`](#search) command.
+General usage of these arguments matches the [`search`](#search) function.
 
 Returned value is a single [`MediaEntry`](#return-data-structures) object.
 
@@ -121,20 +121,20 @@ Some fields are specific for one of the media types and will be `None` for other
  - `episode_number` is present only for episodes
  - `age_certification` is present only for movies and shows
 
-For episodes specifically most of the fields will be empty (which is why [`episodes`](#episodes) command returns different structure).
+For episodes specifically most of the fields will be empty (which is why [`episodes`](#episodes) function returns different structure).
 
-Example command and its output is in [`examples/details_output.py`](examples/details_output.py).
+Example function call and its output is in [`examples/details_output.py`](examples/details_output.py).
 
 
 ### Seasons
 
 Seasons function allows for looking up all seasons of a show via its node ID.
-Node/show ID can be taken from output of the [`search`](#search) command.
-It's also the same ID as input for [`details`](#details) command.
+Node/show ID can be taken from output of the [`search`](#search) function.
+It's also the same ID as input for [`details`](#details) function.
 
-Each season contains similar data to the [`details`](#details) command, with additional season number and number of episodes.
+Each season contains similar data to the [`details`](#details) function, with additional season number and number of episodes.
 
-Usage also matches [`details`](#details) command:
+Usage also matches [`details`](#details) function:
 ```python
 from simplejustwatchapi.justwatch import seasons
 
@@ -156,9 +156,9 @@ Returned value is a list of [`MediaEntry`](#return-data-structures) objects, eac
 ### Episodes
 
 Episodes function allows for looking up all episodes of a season via season's node ID.
-Node/season ID can be taken from output of the [`seasons`](#seasons) command.
+Node/season ID can be taken from output of the [`seasons`](#seasons) function.
 
-Usage matches [`details`](#details) command:
+Usage matches [`details`](#details) function:
 ```python
 from simplejustwatchapi.justwatch import seasons
 
@@ -200,11 +200,11 @@ First two arguments are required - node ID, and set of countries.
 | 3 | `language`  | `str`      | NO       | `"en"`        | Language of responses                                  |
 | 5 | `best_only` | `bool`     | NO       | `True`        | Determines whether only best offers should be returned |
 
-Usage of `language` and `best_only` arguments matches the [`search`](#search) command.
+Usage of `language` and `best_only` arguments matches the [`search`](#search) function.
 
 Returned value `dict[str, list[Offer]]`, where key is country given as argument and value is a list of [`Offer`](#return-data-structures) tuples.
 
-Example command and its output is in [`examples/offers_for_countries_output.py`](examples/offers_for_countries_output.py).
+Example function call and its output is in [`examples/offers_for_countries_output.py`](examples/offers_for_countries_output.py).
 
 
 
@@ -219,7 +219,7 @@ Some fields are specific for one of the media types and will be `None` for other
  - `episode_number` is present only for episodes
  - `age_certification` is present only for movies and shows
 
-For episodes specifically most of the fields will be empty (which is why [`episodes`](#episodes) command returns different structure).
+For episodes specifically most of the fields will be empty (which is why [`episodes`](#episodes) function returns different structure).
 
 As [`search`](#search) function can return only movies and shows the episode-specific and season-specific fields will always be `None`,
 but are included in `MediaEntry` so they will be present in output from [`details`](#details) function.

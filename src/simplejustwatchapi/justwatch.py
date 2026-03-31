@@ -28,6 +28,7 @@ def search(
     count: int = 4,
     best_only: bool = True,
     offset: int = 0,
+    providers: list[str] | str | None = None,
 ) -> list[MediaEntry]:
     """
     Search JustWatch for given title.
@@ -62,7 +63,7 @@ def search(
         httpx.HTTPStatusError: If JustWatch API doesn't respond with success code.
 
     """
-    request = prepare_search_request(title, country, language, count, best_only, offset)
+    request = prepare_search_request(title, country, language, count, best_only, offset, providers)
     response = post(_GRAPHQL_API_URL, json=request)
     response.raise_for_status()
     return parse_search_response(response.json())

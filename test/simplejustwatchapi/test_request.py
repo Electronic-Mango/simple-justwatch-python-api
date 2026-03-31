@@ -20,10 +20,13 @@ DUMMY_OFFERS_FOR_COUNTRIES_QUERY = "A DUMMY OFFERS FOR COUNTRIES QUERY"
 
 @patch("simplejustwatchapi.query.graphql_search_query", return_value=DUMMY_SEARCH_QUERY)
 @mark.parametrize(
-    argnames=("title", "country", "language", "count", "best_only", "offset"),
+    argnames=("title", "country", "language", "count", "best_only", "offset", "providers"),
     argvalues=[
-        ("TITLE 1", "US", "language 1", 5, True, 0),
-        ("TITLE 2", "gb", "language 2", 10, False, 20),
+        ("TITLE 1", "US", "language 1", 5, True, 0, ""),
+        ("TITLE 2", "gb", "language 2", 10, False, 20, ["provider1", "provider2"]),
+        ("TITLE 3", "fr", "language 3", 20, True, 20, "provider3"),
+        ("TITLE 4", "it", "language 4", 30, True, 30, []),
+        ("TITLE 5", "dk", "language 5", 40, True, 40, None),
     ],
 )
 def test_prepare_search_request(
@@ -34,12 +37,13 @@ def test_prepare_search_request(
     count: int,
     best_only: bool,
     offset: int,
+    providers: list[str] | str | None,
 ):
     expected_request = {
         "operationName": "GetSearchTitles",
         "variables": {
             "first": count,
-            "searchTitlesFilter": {"searchQuery": title},
+            "searchTitlesFilter": {"searchQuery": title, "packages": providers},
             "language": language,
             "country": country.upper(),
             "formatPoster": "JPG",
@@ -51,7 +55,7 @@ def test_prepare_search_request(
         },
         "query": DUMMY_SEARCH_QUERY,
     }
-    request = prepare_search_request(title, country, language, count, best_only, offset)
+    request = prepare_search_request(title, country, language, count, best_only, offset, providers)
     assert expected_request == request
 
 
@@ -69,7 +73,7 @@ def test_prepare_search_request_asserts_on_invalid_country_code(
 ):
     expected_error_message = f"Invalid country code: {invalid_code}, code must be 2 characters long"
     with raises(AssertionError) as error:
-        prepare_search_request("", invalid_code, "", 1, True, 2)
+        prepare_search_request("", invalid_code, "", 1, True, 2, None)
     assert str(error.value) == expected_error_message
     query_mock.assert_not_called()
 

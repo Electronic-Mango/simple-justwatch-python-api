@@ -36,6 +36,7 @@ def prepare_search_request(
     count: int,
     best_only: bool,
     offset: int,
+    providers: list[str] | str | None,
 ) -> dict:
     """
     Prepare search request for JustWatch GraphQL API.
@@ -63,7 +64,7 @@ def prepare_search_request(
         "operationName": "GetSearchTitles",
         "variables": {
             "first": count,
-            "searchTitlesFilter": {"searchQuery": title},
+            "searchTitlesFilter": {"searchQuery": title, "packages": providers},
             "language": language,
             "country": country.upper(),
             "formatPoster": "JPG",

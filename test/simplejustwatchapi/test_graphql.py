@@ -19,6 +19,7 @@ query GetSearchTitles(
   $profile: PosterProfile,
   $backdropProfile: BackdropProfile,
   $filter: OfferFilter!,
+  $offset: Int = 0,
 ) {
   popularTitles(
     country: $country
@@ -26,6 +27,7 @@ query GetSearchTitles(
     first: $first
     sortBy: POPULAR
     sortRandomSeed: 0
+    offset: $offset
   ) {
     edges {
       node {

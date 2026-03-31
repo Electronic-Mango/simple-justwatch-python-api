@@ -25,11 +25,21 @@ def search(
     language: str = "en",
     count: int = 4,
     best_only: bool = True,
+    offset: int = 0,
 ) -> list[MediaEntry]:
     """
     Search JustWatch for given title.
 
     Returns a list of entries up to ``count``.
+
+    ``offset`` specifies how many first entries should be skipped. This is done on API side,
+    not the library side; the returned list is still directly parsed from API response.
+    I'm not sure if it guarantees stability of results - whether repeated calls to this function
+    with increasing offset will guarantee that you won't get repeats.
+
+    JustWatch API won't allow for getting more than 2000 responses, either through ``count``, or
+    when ``count + offset`` is equal or greater than 2000 - it will return an empty list instead
+    (ALWAYS an empty list, if ``offset`` is lower than 2000 it won't include entries up to 2000).
 
     ``best_only`` allows filtering out redundant offers, e.g. when service provides offers
     in 4K, HD and SD, using ``best_only = True`` returns only 4K option, ``best_only = False``
@@ -41,6 +51,7 @@ def search(
         language (str): Language of responses, ``en`` by default.
         count (int): How many responses should be returned.
         best_only (bool): Return only best offers if ``True``, return all offers if ``False``.
+        offset (int): Search results offset.
 
     Returns:
         list[MediaEntry]: List of ``MediaEntry`` NamedTuples parsed from JustWatch response.
@@ -49,7 +60,7 @@ def search(
         httpx.HTTPStatusError: If JustWatch API doesn't respond with success code.
 
     """
-    request = prepare_search_request(title, country, language, count, best_only)
+    request = prepare_search_request(title, country, language, count, best_only, offset)
     response = post(_GRAPHQL_API_URL, json=request)
     response.raise_for_status()
     return parse_search_response(response.json())

@@ -34,6 +34,7 @@ def prepare_search_request(
     language: str,
     count: int,
     best_only: bool,
+    offset: int,
 ) -> dict:
     """
     Prepare search request for JustWatch GraphQL API.
@@ -50,6 +51,7 @@ def prepare_search_request(
         language (str): Language of responses.
         count (int): How many responses should be returned.
         best_only (bool): Return only best offers if ``True``, return all offers if ``False``.
+        offset (int): Search results offset.
 
     Returns:
         dict: JSON/dict with GraphQL POST body.
@@ -68,6 +70,7 @@ def prepare_search_request(
             "profile": "S718",
             "backdropProfile": "S1920",
             "filter": {"bestOnly": best_only},
+            "offset": offset or None,
         },
         "query": graphql_search_query(),
     }

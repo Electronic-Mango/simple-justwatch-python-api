@@ -20,10 +20,10 @@ DUMMY_OFFERS_FOR_COUNTRIES_QUERY = "A DUMMY OFFERS FOR COUNTRIES QUERY"
 
 @patch("simplejustwatchapi.query.graphql_search_query", return_value=DUMMY_SEARCH_QUERY)
 @mark.parametrize(
-    argnames=("title", "country", "language", "count", "best_only"),
+    argnames=("title", "country", "language", "count", "best_only", "offset"),
     argvalues=[
-        ("TITLE 1", "US", "language 1", 5, True),
-        ("TITLE 2", "gb", "language 2", 10, False),
+        ("TITLE 1", "US", "language 1", 5, True, 0),
+        ("TITLE 2", "gb", "language 2", 10, False, 20),
     ],
 )
 def test_prepare_search_request(
@@ -33,6 +33,7 @@ def test_prepare_search_request(
     language: str,
     count: int,
     best_only: bool,
+    offset: int,
 ):
     expected_request = {
         "operationName": "GetSearchTitles",
@@ -46,10 +47,11 @@ def test_prepare_search_request(
             "profile": "S718",
             "backdropProfile": "S1920",
             "filter": {"bestOnly": best_only},
+            "offset": offset or None,
         },
         "query": DUMMY_SEARCH_QUERY,
     }
-    request = prepare_search_request(title, country, language, count, best_only)
+    request = prepare_search_request(title, country, language, count, best_only, offset)
     assert expected_request == request
 
 
@@ -67,7 +69,7 @@ def test_prepare_search_request_asserts_on_invalid_country_code(
 ):
     expected_error_message = f"Invalid country code: {invalid_code}, code must be 2 characters long"
     with raises(AssertionError) as error:
-        prepare_search_request("", invalid_code, "", 1, True)
+        prepare_search_request("", invalid_code, "", 1, True, 2)
     assert str(error.value) == expected_error_message
     query_mock.assert_not_called()
 

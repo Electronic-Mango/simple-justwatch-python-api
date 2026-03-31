@@ -6,11 +6,13 @@ from simplejustwatchapi.query import (
     parse_details_response,
     parse_episodes_response,
     parse_offers_for_countries_response,
+    parse_popular_response,
     parse_search_response,
     parse_seasons_response,
     prepare_details_request,
     prepare_episodes_request,
     prepare_offers_for_countries_request,
+    prepare_popular_request,
     prepare_search_request,
     prepare_seasons_request,
 )
@@ -64,6 +66,20 @@ def search(
     response = post(_GRAPHQL_API_URL, json=request)
     response.raise_for_status()
     return parse_search_response(response.json())
+
+
+def popular(
+    country: str = "US",
+    language: str = "en",
+    count: int = 4,
+    best_only: bool = True,
+    offset: int = 0,
+    providers: list[str] | str | None = None,
+) -> list[MediaEntry]:
+    request = prepare_popular_request(country, language, count, best_only, offset, providers)
+    response = post(_GRAPHQL_API_URL, json=request)
+    response.raise_for_status()
+    return parse_popular_response(response.json())
 
 
 def details(

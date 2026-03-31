@@ -10,6 +10,7 @@ from simplejustwatchapi.graphql import (
     graphql_details_query,
     graphql_episodes_query,
     graphql_offers_for_countries_query,
+    graphql_popular_query,
     graphql_search_query,
     graphql_seasons_query,
 )
@@ -93,6 +94,37 @@ def parse_search_response(json: dict) -> list[MediaEntry]:
         list[MediaEntry]: Parsed received JSON as a list of ``MediaEntry`` NamedTuples.
 
     """
+    return [_parse_entry(edge["node"]) for edge in json["data"]["popularTitles"]["edges"]]
+
+
+def prepare_popular_request(
+    country: str,
+    language: str,
+    count: int,
+    best_only: bool,
+    offset: int,
+    providers: list[str] | str | None,
+) -> dict:
+    _assert_country_code_is_valid(country)
+    return {
+        "operationName": "GetPopularTitles",
+        "variables": {
+            "first": count,
+            "popularTitlesFilter": {"packages": providers},
+            "language": language,
+            "country": country.upper(),
+            "formatPoster": "JPG",
+            "formatOfferIcon": "PNG",
+            "profile": "S718",
+            "backdropProfile": "S1920",
+            "filter": {"bestOnly": best_only},
+            "offset": offset or None,
+        },
+        "query": graphql_popular_query(),
+    }
+
+
+def parse_popular_response(json: dict) -> list[MediaEntry]:
     return [_parse_entry(edge["node"]) for edge in json["data"]["popularTitles"]["edges"]]
 
 

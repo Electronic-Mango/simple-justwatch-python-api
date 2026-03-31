@@ -44,6 +44,39 @@ query GetSearchTitles(
 }
 """
 
+_GRAPHQL_POPULAR_QUERY = """
+query GetPopularTitles(
+  $popularTitlesFilter: TitleFilter
+  $country: Country!
+  $language: Language!
+  $first: Int! = 70
+  $formatPoster: ImageFormat,
+  $formatOfferIcon: ImageFormat,
+  $profile: PosterProfile
+  $backdropProfile: BackdropProfile,
+  $filter: OfferFilter!,
+  $offset: Int = 0
+) {
+  popularTitles(
+    country: $country
+    filter: $popularTitlesFilter
+    first: $first
+    sortBy: POPULAR
+    sortRandomSeed: 0
+    offset: $offset
+  ) {
+    __typename
+    edges {
+      node {
+        ...TitleDetails
+        __typename
+      }
+      __typename
+    }
+  }
+}
+"""
+
 _GRAPHQL_DETAILS_QUERY = """
 query GetTitleNode(
   $nodeId: ID!,
@@ -272,6 +305,10 @@ def graphql_search_query() -> str:
 
     """
     return _GRAPHQL_SEARCH_QUERY + _GRAPHQL_DETAILS_FRAGMENT + _GRAPHQL_OFFER_FRAGMENT
+
+
+def graphql_popular_query() -> str:
+    return _GRAPHQL_POPULAR_QUERY + _GRAPHQL_DETAILS_FRAGMENT + _GRAPHQL_OFFER_FRAGMENT
 
 
 def graphql_details_query() -> str:

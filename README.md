@@ -16,14 +16,24 @@ This project is managed by [uv](https://docs.astral.sh/uv/).
 
 ## Table of contents
 
-* [Installation](#installation)
-* [Usage](#usage)
-  * [Search](#search)
-  * [Details](#details)
-  * [Offers for countries](#offers-for-countries)
-* [Return data structures](#return-data-structures)
-* [Locale, language, country](#locale-language-country)
-* [Disclaimer](#disclaimer)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Search](#search)
+  - [Popular](#popular)
+  - [Details](#details)
+  - [Seasons](#seasons)
+  - [Episodes](#episodes)
+  - [Offers for countries](#offers-for-countries)
+  - [Providers](#providers)
+- [Data structures](#data-structures)
+- [Locale, language, country](#locale-language-country)
+- [Request complexity](#request-complexity)
+- [Maximum number of entries](#maximum-number-of-entries)
+- [Provider codes](#provider-codes)
+  - [`providers` function](#providers-function)
+  - [Query parameters from JustWatch](#query-parameters-from-justwatch)
+  - [Stored output from other functions with offers](#stored-output-from-other-functions-with-offers)
+- [Disclaimer](#disclaimer)
 
 
 ## Installation

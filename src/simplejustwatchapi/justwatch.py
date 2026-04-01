@@ -287,12 +287,12 @@ def offers_for_countries(
     return parse_offers_for_countries_response(response.json(), countries)
 
 
-def providers(country: str) -> list[OfferPackage]:
+def providers(country: str = "US") -> list[OfferPackage]:
     """
     Look up all providers for the given country code.
 
     Args:
-        country (str): 2-letter country code.
+        country (str): 2-letter country code, ``US`` by default.
 
     Returns:
         list[OfferPackage]: List of all found providers. ``OfferPackage`` tuple matches

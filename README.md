@@ -53,20 +53,24 @@ Example outputs from all functions are in [`examples/`](examples/) directory.
 Search functions allows for searching entries based on a given title.
 
 ```python
-from simplejustwatchapi.justwatch import search
+from simplejustwatchapi import search
 
-results = search("title", "US", "en", 5, True)
+results = search("title", "US", "en", 5, True, 0, {"nfx", "apv"})
 ```
 
 Only the first argument is required, it specifies a title to search.
 
-|   | Argument    | Type   | Required | Default value | Description                                            |
-|---|-------------|--------|----------|---------------|--------------------------------------------------------|
-| 1 | `title`     | `str`  | **YES**  | -             | Title to look up                                       |
-| 2 | `country`   | `str`  | NO       | `"US"`        | Country to search for offers                           |
-| 3 | `language`  | `str`  | NO       | `"en"`        | Language of responses                                  |
-| 4 | `count`     | `int`  | NO       | `4`           | Up to how many entries should be returned              |
-| 5 | `best_only` | `bool` | NO       | `True`        | Determines whether only best offers should be returned |
+|   | Argument    | Type   | Required | Default value       | Description                                            |
+|---|-------------|--------|----------|---------------------|--------------------------------------------------------|
+| 1 | `title`     | `str`  | **YES**  | -                   | Title to look up                                       |
+| 2 | `country`   | `str`  | NO       | `"US"`              | Country to search for offers                           |
+| 3 | `language`  | `str`  | NO       | `"en"`              | Language of responses                                  |
+| 4 | `count`     | `int`  | NO       | `4`                 | Up to how many entries should be returned              |
+| 5 | `best_only` | `bool` | NO       | `True`              | Determines whether only best offers should be returned |
+| 6 | `offset`    | `int`  | NO       | `0`                 | How many titles should be skipped from the output      |
+| 7 | `providers` | `list[str] \| str \| None`| NO | `None` | Determines whether only best offers should be returned |
+
+`title` is just a string to look up.
 
 `country` must be **ISO 3166-1 alpha-2** 2-letter code , e.g. `US`, `GB`, `FR`.
 It should be uppercase, however lowercase codes are automatically converted to uppercase.
@@ -79,12 +83,76 @@ If JustWatch GraphQL API returns fewer entries, then this function will also ret
 `best_only` determines whether similar offers, but lower quality should be included in response.
 If a platform offers streaming for a given entry in 4K, HD and SD, then `best_only = True` will return only the 4K offer, `best_only = False` will return all three.
 
+`offset` allows for very basic pagination, letting you get more data without running into [request complexity](#request-complexity).
+It simply skips `offset` number of first entries (on the API side, nothing is done inside the library).
+Since there is no session there's no guarantee of results "stability" - if JustWatch decides to
+shuffle returned values (I'm not sure what would be the reason, but in theory it's possible)
+you might get repeats, or missing entries. It's also not possible to get **all** the data,
+only up to 1999, check [Maximum number of entries](#maximum-number-of-entries) for details.
+
+`providers` is a selection of (usually) **3-letter** identifiers for a service provider ("Netflix", "Amazon Prime Video", etc.).
+It can be either a list, or (for single providers) a string.
+`None` (used as default) turns off any filtering based on providers.
+You can get the possible values through [`providers`](#providers) function and `short_name` field from returned `OfferPackage` NamedTuples,
+or check [Provider codes](#provider-codes) for more details.
+
 Returned value is a list of [`MediaEntry`](#return-data-structures) objects.
 
 For very large searches (high `count` value) I recommend using default `best_only=True` to avoid issues with [request complexity](#request-complexity).
 
 Example function call and its output is in [`examples/search_output.py`](examples/search_output.py).
 
+
+### Popular
+Look up all currently popular titles.
+The usage and output will be similar to [`search`](#search), function without any titles specified.
+
+```python
+from simplejustwatchapi import popular
+
+results = popular("US", "en", 5, True, 0, {"nfx", "apv"})
+```
+
+No arguments are required.
+
+|   | Argument    | Type   | Required | Default value       | Description                                            |
+|---|-------------|--------|----------|---------------------|--------------------------------------------------------|
+| 1 | `country`   | `str`  | NO       | `"US"`              | Country to search for titles                           |
+| 2 | `language`  | `str`  | NO       | `"en"`              | Language of responses                                  |
+| 3 | `count`     | `int`  | NO       | `4`                 | Up to how many entries should be returned              |
+| 4 | `best_only` | `bool` | NO       | `True`              | Determines whether only best offers should be returned |
+| 5 | `offset`    | `int`  | NO       | `0`                 | How many titles should be skipped from the output      |
+| 6 | `providers` | `list[str] \| str \| None`| NO | `None` | Determines whether only best offers should be returned |
+
+`country` must be **ISO 3166-1 alpha-2** 2-letter code , e.g. `US`, `GB`, `FR`.
+It should be uppercase, however lowercase codes are automatically converted to uppercase.
+
+`language` is a **ISO 639-1** (usually) 2-letter code, lowercase, e.g. `en`, `fr`.
+
+`count` determines **up to** how many entries should be returned.
+If JustWatch GraphQL API returns fewer entries, then this function will also return fewer values.
+
+`best_only` determines whether similar offers, but lower quality should be included in response.
+If a platform offers streaming for a given entry in 4K, HD and SD, then `best_only = True` will return only the 4K offer, `best_only = False` will return all three.
+
+`offset` allows for very basic pagination letting you get more data without running into [request complexity](#request-complexity).
+It simply skips first entries (on the API side, nothing is done inside the library).
+Since there is no session there's no guarantee of results "stability" - if JustWatch decides to
+shuffle returned values (I'm not sure what would be the reason, but in theory it's possible)
+you might get repeats, or missing entries. It's also not possible to get **all** the data,
+only up to 2000, check [Maximum number of entries](#maximum-number-of-entries) for details.
+
+`providers` is a selection of (usually) **3-letter** identifiers for a service provider ("Netflix", "Amazon Prime Video", etc.).
+It can be either a list, or (for single providers) a string.
+`None` (used as default) turns off any filtering based on providers.
+You can get the possible values through [`providers`](#providers) function and `short_name` field from returned `OfferPackage` NamedTuples,
+or check [Provider codes](#provider-codes) for more details.
+
+Returned value is a list of [`MediaEntry`](#return-data-structures) objects.
+
+For very large searches (high `count` value) I recommend using default `best_only=True` to avoid issues with [request complexity](#request-complexity).
+
+Example function call and its output is in [`examples/popular_output.py`](examples/popular_output.py).
 
 ### Details
 
@@ -99,7 +167,7 @@ If you want to get seasons/episodes you can use the ID from [`search`](#search) 
 
 Usage is similar to [`search`](#search) function, just without `count` argument:
 ```python
-from simplejustwatchapi.justwatch import details
+from simplejustwatchapi import details
 
 results = details("nodeID", "US", "en", False)
 ```
@@ -140,7 +208,7 @@ Each season contains similar data to the [`details`](#details) function, with ad
 
 Usage also matches [`details`](#details) function:
 ```python
-from simplejustwatchapi.justwatch import seasons
+from simplejustwatchapi import seasons
 
 results = seasons("nodeID", "US", "en", False)
 ```
@@ -164,7 +232,7 @@ Node/season ID can be taken from output of the [`seasons`](#seasons) function.
 
 Usage matches [`details`](#details) function:
 ```python
-from simplejustwatchapi.justwatch import seasons
+from simplejustwatchapi import seasons
 
 results = seasons("nodeID", "US", "en", False)
 ```
@@ -190,7 +258,7 @@ It allows specifying a set of countries, instead of a single one.
 This way you can simultaneously look up offers for multiple countries.
 
 ```python
-from simplejustwatchapi.justwatch import offers_for_countries
+from simplejustwatchapi import offers_for_countries
 
 results = offers_for_countries("nodeID", {"US", "UK", "CA"}, "en", True)
 ```
@@ -211,8 +279,35 @@ Returned value `dict[str, list[Offer]]`, where key is country given as argument 
 Example function call and its output is in [`examples/offers_for_countries_output.py`](examples/offers_for_countries_output.py).
 
 
+### Providers
 
-## Return data structures
+Get all available service providers ("Netflix", "Amazon Prime Video, etc.) for a given country.
+
+```python
+from simplejustwatchapi import providers
+
+results = providers("US")
+```
+
+|   | Argument    | Type   | Required | Default value | Description                     |
+|---|-------------|--------|----------|---------------|---------------------------------|
+| 1 | `country`   | `str`  | NO       | `"US"`        | Country to search for providers |
+
+`country` must be **ISO 3166-1 alpha-2** 2-letter code , e.g. `US`, `GB`, `FR`.
+It should be uppercase, however lowercase codes are automatically converted to uppercase.
+
+Returned value is a list of `OfferPackage` tuples.
+Initially they were meant to be used for `Offer` in `MediaEntry`/`Episode`, however the data structure
+matches output here, so it's reused.
+
+You can use this function to get values for providers for [`search`](#search) and [`popular`](#popular) functions,
+the `short_name` field in returned `OfferPackage` tuples is the exact 3-letter code needed there.
+
+Example function call and its output is in [`examples/providers_output.py`](examples/providers_output.py).
+
+
+
+## Data structures
 
 Detailed descriptions of all used data structures are available in the [documentation](https://electronic-mango.github.io/simple-justwatch-python-api/simplejustwatchapi.html#module-simplejustwatchapi.query).
 
@@ -256,6 +351,112 @@ In my tests the limit is around 100 (in the worst case with `best_only=False`).
 It's a lot, but keep it in mind.
 
 Using `best_only=True` should alleviate the issue somewhat, so for very large requests I recommend using its default `True` value.
+
+
+
+## Maximum number of entries
+
+The JustWatch API itself won't allow for getting more than 1999 entries, through `count` and `offset`, regardless of request complexity.
+If you try to get the 2000th entry the API (and functions in this libary) will return an empty list.
+
+**If you try to access over the 1999th entry you won't get *up to* 1999 entries, you'll get an empty list.**
+
+For example, this will get you entries 1990 - 1999 - a 9 element list of `MediaEntry`, as expected:
+
+```python
+from simplejustwatchapi import search
+
+results = search("title", count=9, offset=1990)
+# len(results) == 9, as expected
+```
+
+But trying to get 1990 - 2000 will result in an empty list:
+
+```python
+from simplejustwatchapi import search
+
+results = search("title", count=10, offset=1990)
+# len(results) == 0, API responded with empty list
+```
+
+Overshooting will also result in an empty list:
+
+```python
+from simplejustwatchapi import search
+
+results = search("title", count=100, offset=1950)
+# len(results) == 0, API responded with empty list
+```
+
+Interestingly, you'll still hit [too high request complexity](#request-complexity)
+for too high values of `count`, even though you'd get an empty list anyway:
+
+```python
+from simplejustwatchapi import search
+
+results = search("title", count=200, offset=1950)
+# Errors out due to complexity
+```
+
+
+
+## Provider codes
+
+One note to keep in mind - the codes can be different for different countries.
+
+
+### [`providers`](#providers) function
+
+The easiest way of getting all provider codes for filtering in [`search`](#search) and [`popular`](#popular) functions
+is through [`providers`](#providers) function, for example:
+
+```python
+from simplejustwatchapi import popular, providers
+
+codes = [
+    package.short_name
+    for package
+    in providers("GB")  # Look up all providers in the UK.
+    if package.name in ("Netflix", "Amazon Prime Video")  # Only get codes for specific providers
+]
+
+# codes == ["nfx", "amp"]
+
+# Get popular titles only for selected providers:
+popular_netflix_amazon = popular(providers=codes)
+```
+
+
+### Query parameters from JustWatch
+
+You can also get them by going to [JustWatch main page](https://www.justwatch.com/)
+and selecting **at least 2** of available services.
+**You need 2**, for 1 you'll get its full name.
+Only for multiple you'll get the needed codes as `?providers=<code1>+<code2>+...` query parameter,
+for example on US version the URL when selecting "Netflix" and "Amazon Prime Video" is:
+
+```url
+https://www.justwatch.com/us?providers=nfx,prv
+```
+
+So the codes for them are `nfx` and `prv` for the US.
+
+
+### Stored output from other commands with offers
+
+The codes are also returned when looking up offers (through pretty much any function aside from `providers`) through `OfferPackage` and its `short_name` field.
+For example, to get a `dict` "**full name**": "**code**" you can:
+
+```python
+from simplejustwatchapi import search
+
+results = search("title", "US", "en", 5, True)
+name_to_code_dict = {
+    offer.package.name: offer.package.short_name  # Get name and short_name/code from packages
+    for entry in results  # Iterate all entries
+    for offer in entry.offers  # Iterate all offers per entry
+}
+```
 
 
 

@@ -4,6 +4,7 @@ from simplejustwatchapi.query import (
     parse_details_response,
     parse_episodes_response,
     parse_offers_for_countries_response,
+    parse_popular_response,
     parse_search_response,
     parse_seasons_response,
 )
@@ -532,6 +533,18 @@ API_EPISODES_RESPONSE_NO_DATA = {"data": {"node": {"episodes": []}}}
 )
 def test_parse_search_response(response_json: dict, expected_output: list[MediaEntry]):
     parsed_entries = parse_search_response(response_json)
+    assert parsed_entries == expected_output
+
+
+@mark.parametrize(
+    argnames=("response_json", "expected_output"),
+    argvalues=[
+        (API_SEARCH_RESPONSE_JSON, [PARSED_NODE_1, PARSED_NODE_2, PARSED_NODE_3]),
+        (API_SEARCH_RESPONSE_NO_DATA, []),
+    ],
+)
+def test_parse_popular_response(response_json: dict, expected_output: list[MediaEntry]):
+    parsed_entries = parse_popular_response(response_json)
     assert parsed_entries == expected_output
 
 

@@ -7,15 +7,19 @@ from simplejustwatchapi.query import (
     prepare_details_request,
     prepare_episodes_request,
     prepare_offers_for_countries_request,
+    prepare_popular_request,
+    prepare_providers_request,
     prepare_search_request,
     prepare_seasons_request,
 )
 
 DUMMY_SEARCH_QUERY = "A DUMMY SEARCH QUERY"
+DUMMY_POPULAR_QUERY = "A DUMMY POPULAR QUERY"
 DUMMY_DETAILS_QUERY = "A DUMMY DETAILS QUERY"
 DUMMY_SEASONS_QUERY = "A DUMMY SEASONS QUERY"
 DUMMY_EPISODES_QUERY = "A DUMMY EPISODES QUERY"
 DUMMY_OFFERS_FOR_COUNTRIES_QUERY = "A DUMMY OFFERS FOR COUNTRIES QUERY"
+DUMMY_PROVIDERS_QUERY = "A DUMMY PROVIDERS QUERY"
 
 
 @patch("simplejustwatchapi.query.graphql_search_query", return_value=DUMMY_SEARCH_QUERY)
@@ -74,6 +78,65 @@ def test_prepare_search_request_asserts_on_invalid_country_code(
     expected_error_message = f"Invalid country code: {invalid_code}, code must be 2 characters long"
     with raises(AssertionError) as error:
         prepare_search_request("", invalid_code, "", 1, True, 2, None)
+    assert str(error.value) == expected_error_message
+    query_mock.assert_not_called()
+
+
+@patch("simplejustwatchapi.query.graphql_popular_query", return_value=DUMMY_POPULAR_QUERY)
+@mark.parametrize(
+    argnames=("country", "language", "count", "best_only", "offset", "providers"),
+    argvalues=[
+        ("US", "language 1", 5, True, 0, ""),
+        ("gb", "language 2", 10, False, 20, ["provider1", "provider2"]),
+        ("fr", "language 3", 20, True, 20, "provider3"),
+        ("it", "language 4", 30, True, 30, []),
+        ("dk", "language 5", 40, True, 40, None),
+    ],
+)
+def test_prepare_popular_request(
+    _,
+    country: str,
+    language: str,
+    count: int,
+    best_only: bool,
+    offset: int,
+    providers: list[str] | str | None,
+):
+    expected_request = {
+        "operationName": "GetPopularTitles",
+        "variables": {
+            "first": count,
+            "popularTitlesFilter": {"packages": providers},
+            "language": language,
+            "country": country.upper(),
+            "formatPoster": "JPG",
+            "formatOfferIcon": "PNG",
+            "profile": "S718",
+            "backdropProfile": "S1920",
+            "filter": {"bestOnly": best_only},
+            "offset": offset or None,
+        },
+        "query": DUMMY_POPULAR_QUERY,
+    }
+    request = prepare_popular_request(country, language, count, best_only, offset, providers)
+    assert expected_request == request
+
+
+@patch("simplejustwatchapi.query.graphql_search_query")
+@mark.parametrize(
+    argnames="invalid_code",
+    argvalues=[
+        "United Stated of America",  # too long
+        "usa",  # too long
+        "u",  # too short
+    ],
+)
+def test_prepare_popular_request_asserts_on_invalid_country_code(
+    query_mock: MagicMock, invalid_code: str
+):
+    expected_error_message = f"Invalid country code: {invalid_code}, code must be 2 characters long"
+    with raises(AssertionError) as error:
+        prepare_popular_request(invalid_code, "", 1, True, 2, None)
     assert str(error.value) == expected_error_message
     query_mock.assert_not_called()
 
@@ -280,5 +343,42 @@ def test_prepare_offers_for_countries_request_asserts_on_empty_countries_set(que
     expected_error_message = "Cannot prepare offers request without specified countries"
     with raises(AssertionError) as error:
         prepare_offers_for_countries_request("", set(), "", True)
+    assert str(error.value) == expected_error_message
+    query_mock.assert_not_called()
+
+
+@patch("simplejustwatchapi.query.graphql_providers_query", return_value=DUMMY_PROVIDERS_QUERY)
+@mark.parametrize(
+    argnames=("country"),
+    argvalues=["US", "gb", "fR", "It"],
+)
+def test_prepare_providers_request(_, country: str):
+    expected_request = {
+        "operationName": "GetProviders",
+        "variables": {
+            "country": country.upper(),
+            "formatOfferIcon": "PNG",
+        },
+        "query": DUMMY_PROVIDERS_QUERY,
+    }
+    request = prepare_providers_request(country)
+    assert expected_request == request
+
+
+@patch("simplejustwatchapi.query.graphql_search_query")
+@mark.parametrize(
+    argnames="invalid_code",
+    argvalues=[
+        "United Stated of America",  # too long
+        "usa",  # too long
+        "u",  # too short
+    ],
+)
+def test_prepare_providers_request_asserts_on_invalid_country_code(
+    query_mock: MagicMock, invalid_code: str
+):
+    expected_error_message = f"Invalid country code: {invalid_code}, code must be 2 characters long"
+    with raises(AssertionError) as error:
+        prepare_providers_request(invalid_code)
     assert str(error.value) == expected_error_message
     query_mock.assert_not_called()

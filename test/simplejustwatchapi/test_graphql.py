@@ -4,6 +4,8 @@ from simplejustwatchapi.graphql import (
     graphql_details_query,
     graphql_episodes_query,
     graphql_offers_for_countries_query,
+    graphql_popular_query,
+    graphql_providers_query,
     graphql_search_query,
     graphql_seasons_query,
 )
@@ -37,6 +39,39 @@ query GetSearchTitles(
       __typename
     }
     __typename
+  }
+}
+"""
+
+GRAPHQL_POPULAR_QUERY = """
+query GetPopularTitles(
+  $popularTitlesFilter: TitleFilter
+  $country: Country!
+  $language: Language!
+  $first: Int! = 70
+  $formatPoster: ImageFormat,
+  $formatOfferIcon: ImageFormat,
+  $profile: PosterProfile
+  $backdropProfile: BackdropProfile,
+  $filter: OfferFilter!,
+  $offset: Int = 0
+) {
+  popularTitles(
+    country: $country
+    filter: $popularTitlesFilter
+    first: $first
+    sortBy: POPULAR
+    sortRandomSeed: 0
+    offset: $offset
+  ) {
+    __typename
+    edges {
+      node {
+        ...TitleDetails
+        __typename
+      }
+      __typename
+    }
   }
 }
 """
@@ -101,6 +136,22 @@ query GetTitleNode(
       }
     }
     __typename
+  }
+  __typename
+}
+"""
+
+GRAPHQL_PROVIDERS_QUERY = """
+query GetProviders(
+  $country: Country!,
+  $formatOfferIcon: ImageFormat
+) {
+  packages(
+    country: $country
+    platform: WEB
+    includeAddons: true
+  ) {
+    ... PackageDetails
   }
   __typename
 }
@@ -274,6 +325,23 @@ def test_graphql_search_query():
         + GRAPHQL_PACKAGE_FRAGMENT
     )
     query = graphql_search_query()
+    assert expected_query == query
+
+
+def test_graphql_popular_query():
+    expected_query = (
+        GRAPHQL_POPULAR_QUERY
+        + GRAPHQL_DETAILS_FRAGMENT
+        + GRAPHQL_OFFER_FRAGMENT
+        + GRAPHQL_PACKAGE_FRAGMENT
+    )
+    query = graphql_popular_query()
+    assert expected_query == query
+
+
+def test_graphql_providers_query():
+    expected_query = GRAPHQL_PROVIDERS_QUERY + GRAPHQL_PACKAGE_FRAGMENT
+    query = graphql_providers_query()
     assert expected_query == query
 
 

@@ -2,14 +2,24 @@ from unittest.mock import MagicMock, patch
 
 from pytest import fixture, mark
 
-from simplejustwatchapi.justwatch import details, episodes, offers_for_countries, search, seasons
+from simplejustwatchapi.justwatch import (
+    details,
+    episodes,
+    offers_for_countries,
+    popular,
+    providers,
+    search,
+    seasons,
+)
 
 JUSTWATCH_GRAPHQL_URL = "https://apis.justwatch.com/graphql"
 
 SEARCH_INPUT = ("TITLE", "COUNTRY", "LANGUAGE", 5, True, 10, ["prov1", "prov2"])
+POPULAR_INPUT = ("COUNTRY", "LANGUAGE", 5, True, 10, ["prov1", "prov2"])
 DETAILS_INPUT = ("NODE ID", "COUNTRY", "LANGUAGE", False)
 OFFERS_COUNTRIES_INPUT = {"COUNTRY1", "COUNTRY2", "COUNTRY3"}
 OFFERS_INPUT = ("NODE ID", OFFERS_COUNTRIES_INPUT, "LANGUAGE", True)
+PROVIDERS_INPUT = "US"
 
 DUMMY_REQUEST = {"dummy": "request"}
 DUMMY_RESPONSE = {"dummy": "response"}
@@ -30,6 +40,15 @@ def httpx_post_mock(mocker):
 def test_search(requests_mock, parser_mock, httpx_post_mock):
     results = search(*SEARCH_INPUT)
     requests_mock.assert_called_with(*SEARCH_INPUT)
+    parser_mock.assert_called_with(DUMMY_RESPONSE)
+    assert results == DUMMY_ENTRIES
+
+
+@patch("simplejustwatchapi.justwatch.parse_popular_response", return_value=DUMMY_ENTRIES)
+@patch("simplejustwatchapi.justwatch.prepare_popular_request", return_value=DUMMY_REQUEST)
+def test_popular(requests_mock, parser_mock, httpx_post_mock):
+    results = popular(*POPULAR_INPUT)
+    requests_mock.assert_called_with(*POPULAR_INPUT)
     parser_mock.assert_called_with(DUMMY_RESPONSE)
     assert results == DUMMY_ENTRIES
 
@@ -91,3 +110,12 @@ def test_offers_for_countries_returns_empty_dict_for_empty_countries_set(
     requests_mock.assert_not_called()
     parser_mock.assert_not_called()
     httpx_post_mock.assert_not_called()
+
+
+@patch("simplejustwatchapi.justwatch.parse_providers_response", return_value=DUMMY_ENTRIES)
+@patch("simplejustwatchapi.justwatch.prepare_providers_request", return_value=DUMMY_REQUEST)
+def test_providers(requests_mock, parser_mock, httpx_post_mock):
+    results = providers(PROVIDERS_INPUT)
+    requests_mock.assert_called_with(PROVIDERS_INPUT)
+    parser_mock.assert_called_with(DUMMY_RESPONSE)
+    assert results == DUMMY_ENTRIES

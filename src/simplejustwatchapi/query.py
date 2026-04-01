@@ -11,6 +11,7 @@ from simplejustwatchapi.graphql import (
     graphql_episodes_query,
     graphql_offers_for_countries_query,
     graphql_popular_query,
+    graphql_providers_query,
     graphql_search_query,
     graphql_seasons_query,
 )
@@ -388,6 +389,23 @@ def parse_offers_for_countries_response(json: dict, countries: set[str]) -> dict
     }
 
 
+def prepare_providers_request(country: str) -> dict:
+    _assert_country_code_is_valid(country)
+    return {
+        "operationName": "GetProviders",
+        "variables": {
+            "country": country.upper(),
+            "formatOfferIcon": "PNG",
+            "fullPath": "/us/tv-show/the-madison",
+        },
+        "query": graphql_providers_query(),
+    }
+
+
+def parse_providers_response(json: dict) -> list[OfferPackage]:
+    return [_parse_package(package) for package in json["data"]["packages"]]
+
+
 def _assert_country_code_is_valid(code: str) -> None:
     # TODO: Convert assert to regular exception
     code_has_valid_length = len(code) == _COUNTRY_CODE_LENGTH
@@ -583,5 +601,6 @@ def _parse_package(json: Any) -> OfferPackage:
     package_id = json.get("packageId")
     name = json.get("clearName")
     technical_name = json.get("technicalName")
+    short_name = json.get("shortName")
     icon = _IMAGES_URL + json.get("icon")
-    return OfferPackage(platform_id, package_id, name, technical_name, icon)
+    return OfferPackage(platform_id, package_id, name, technical_name, short_name, icon)

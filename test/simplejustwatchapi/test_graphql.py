@@ -231,12 +231,7 @@ fragment TitleOffer on Offer {
   lastChangeRetailPriceValue
   type
   package {
-    id
-    packageId
-    clearName
-    technicalName
-    icon(profile: S100, format: $formatOfferIcon)
-    __typename
+    ... PackageDetails
   }
   standardWebURL
   elementCount
@@ -250,6 +245,19 @@ fragment TitleOffer on Offer {
 }
 """
 
+GRAPHQL_PACKAGE_FRAGMENT = """
+fragment PackageDetails on Package {
+  id
+  packageId
+  clearName
+  technicalName
+  shortName
+  slug
+  icon(profile: S100, format: $formatOfferIcon)
+  __typename
+}
+"""
+
 GRAPHQL_COUNTRY_OFFERS_ENTRY = """
       {country_code}: offers(country: {country_code}, platform: WEB, filter: $filter) {{
         ...TitleOffer
@@ -259,25 +267,45 @@ GRAPHQL_COUNTRY_OFFERS_ENTRY = """
 
 
 def test_graphql_search_query():
-    expected_query = GRAPHQL_SEARCH_QUERY + GRAPHQL_DETAILS_FRAGMENT + GRAPHQL_OFFER_FRAGMENT
+    expected_query = (
+        GRAPHQL_SEARCH_QUERY
+        + GRAPHQL_DETAILS_FRAGMENT
+        + GRAPHQL_OFFER_FRAGMENT
+        + GRAPHQL_PACKAGE_FRAGMENT
+    )
     query = graphql_search_query()
     assert expected_query == query
 
 
 def test_graphql_details_query():
-    expected_query = GRAPHQL_DETAILS_QUERY + GRAPHQL_DETAILS_FRAGMENT + GRAPHQL_OFFER_FRAGMENT
+    expected_query = (
+        GRAPHQL_DETAILS_QUERY
+        + GRAPHQL_DETAILS_FRAGMENT
+        + GRAPHQL_OFFER_FRAGMENT
+        + GRAPHQL_PACKAGE_FRAGMENT
+    )
     query = graphql_details_query()
     assert expected_query == query
 
 
 def test_graphql_seasons_query():
-    expected_query = GRAPHQL_SEASONS_QUERY + GRAPHQL_DETAILS_FRAGMENT + GRAPHQL_OFFER_FRAGMENT
+    expected_query = (
+        GRAPHQL_SEASONS_QUERY
+        + GRAPHQL_DETAILS_FRAGMENT
+        + GRAPHQL_OFFER_FRAGMENT
+        + GRAPHQL_PACKAGE_FRAGMENT
+    )
     query = graphql_seasons_query()
     assert expected_query == query
 
 
 def test_graphql_episodes_query():
-    expected_query = GRAPHQL_EPISODES_QUERY + GRAPHQL_DETAILS_FRAGMENT + GRAPHQL_OFFER_FRAGMENT
+    expected_query = (
+        GRAPHQL_EPISODES_QUERY
+        + GRAPHQL_DETAILS_FRAGMENT
+        + GRAPHQL_OFFER_FRAGMENT
+        + GRAPHQL_PACKAGE_FRAGMENT
+    )
     query = graphql_episodes_query()
     assert expected_query == query
 
@@ -289,6 +317,6 @@ def test_graphql_offers_for_countries_query(country_codes):
         for country_code in country_codes
     ]
     main_body = GRAPHQL_OFFERS_BY_COUNTRY_QUERY.format(country_entries="\n".join(offer_requests))
-    expected_query = main_body + GRAPHQL_OFFER_FRAGMENT
+    expected_query = main_body + GRAPHQL_OFFER_FRAGMENT + GRAPHQL_PACKAGE_FRAGMENT
     query = graphql_offers_for_countries_query(country_codes)
     assert expected_query == query

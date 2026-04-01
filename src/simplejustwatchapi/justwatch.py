@@ -7,16 +7,18 @@ from simplejustwatchapi.query import (
     parse_episodes_response,
     parse_offers_for_countries_response,
     parse_popular_response,
+    parse_providers_response,
     parse_search_response,
     parse_seasons_response,
     prepare_details_request,
     prepare_episodes_request,
     prepare_offers_for_countries_request,
     prepare_popular_request,
+    prepare_providers_request,
     prepare_search_request,
     prepare_seasons_request,
 )
-from simplejustwatchapi.tuples import Episode, MediaEntry, Offer
+from simplejustwatchapi.tuples import Episode, MediaEntry, Offer, OfferPackage
 
 _GRAPHQL_API_URL = "https://apis.justwatch.com/graphql"
 
@@ -233,3 +235,10 @@ def offers_for_countries(
     response = post(_GRAPHQL_API_URL, json=request)
     response.raise_for_status()
     return parse_offers_for_countries_response(response.json(), countries)
+
+
+def providers(country: str) -> list[OfferPackage]:
+    request = prepare_providers_request(country)
+    response = post(_GRAPHQL_API_URL, json=request)
+    response.raise_for_status()
+    return parse_providers_response(response.json())

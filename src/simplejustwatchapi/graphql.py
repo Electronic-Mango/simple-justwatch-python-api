@@ -142,6 +142,22 @@ query GetTitleNode(
 }
 """
 
+_GRAPHQL_PROVIDERS_QUERY = """
+query GetProviders(
+  $country: Country!,
+  $formatOfferIcon: ImageFormat
+) {
+  packages(
+    country: $country
+    platform: WEB
+    includeAddons: true
+  ) {
+    ... PackageDetails
+  }
+  __typename
+}
+"""
+
 _GRAPHQL_OFFERS_BY_COUNTRY_QUERY = """
 query GetTitleOffers(
   $nodeId: ID!,
@@ -267,12 +283,7 @@ fragment TitleOffer on Offer {
   lastChangeRetailPriceValue
   type
   package {
-    id
-    packageId
-    clearName
-    technicalName
-    icon(profile: S100, format: $formatOfferIcon)
-    __typename
+    ... PackageDetails
   }
   standardWebURL
   elementCount
@@ -282,6 +293,19 @@ fragment TitleOffer on Offer {
   videoTechnology
   audioTechnology
   audioLanguages
+  __typename
+}
+"""
+
+_GRAPHQL_PACKAGE_FRAGMENT = """
+fragment PackageDetails on Package {
+  id
+  packageId
+  clearName
+  technicalName
+  shortName
+  slug
+  icon(profile: S100, format: $formatOfferIcon)
   __typename
 }
 """
@@ -304,11 +328,25 @@ def graphql_search_query() -> str:
         str: Full GraphQL "search" query.
 
     """
-    return _GRAPHQL_SEARCH_QUERY + _GRAPHQL_DETAILS_FRAGMENT + _GRAPHQL_OFFER_FRAGMENT
+    return (
+        _GRAPHQL_SEARCH_QUERY
+        + _GRAPHQL_DETAILS_FRAGMENT
+        + _GRAPHQL_OFFER_FRAGMENT
+        + _GRAPHQL_PACKAGE_FRAGMENT
+    )
 
 
 def graphql_popular_query() -> str:
-    return _GRAPHQL_POPULAR_QUERY + _GRAPHQL_DETAILS_FRAGMENT + _GRAPHQL_OFFER_FRAGMENT
+    return (
+        _GRAPHQL_POPULAR_QUERY
+        + _GRAPHQL_DETAILS_FRAGMENT
+        + _GRAPHQL_OFFER_FRAGMENT
+        + _GRAPHQL_PACKAGE_FRAGMENT
+    )
+
+
+def graphql_providers_query() -> str:
+    return _GRAPHQL_PROVIDERS_QUERY + _GRAPHQL_PACKAGE_FRAGMENT
 
 
 def graphql_details_query() -> str:
@@ -323,7 +361,12 @@ def graphql_details_query() -> str:
         str: Full GraphQL "get details" query.
 
     """
-    return _GRAPHQL_DETAILS_QUERY + _GRAPHQL_DETAILS_FRAGMENT + _GRAPHQL_OFFER_FRAGMENT
+    return (
+        _GRAPHQL_DETAILS_QUERY
+        + _GRAPHQL_DETAILS_FRAGMENT
+        + _GRAPHQL_OFFER_FRAGMENT
+        + _GRAPHQL_PACKAGE_FRAGMENT
+    )
 
 
 def graphql_seasons_query() -> str:
@@ -339,7 +382,12 @@ def graphql_seasons_query() -> str:
         str: Full GraphQL "get seasons" query.
 
     """
-    return _GRAPHQL_SEASONS_QUERY + _GRAPHQL_DETAILS_FRAGMENT + _GRAPHQL_OFFER_FRAGMENT
+    return (
+        _GRAPHQL_SEASONS_QUERY
+        + _GRAPHQL_DETAILS_FRAGMENT
+        + _GRAPHQL_OFFER_FRAGMENT
+        + _GRAPHQL_PACKAGE_FRAGMENT
+    )
 
 
 def graphql_episodes_query() -> str:
@@ -355,7 +403,12 @@ def graphql_episodes_query() -> str:
         str: Full GraphQL "get episodes" query.
 
     """
-    return _GRAPHQL_EPISODES_QUERY + _GRAPHQL_DETAILS_FRAGMENT + _GRAPHQL_OFFER_FRAGMENT
+    return (
+        _GRAPHQL_EPISODES_QUERY
+        + _GRAPHQL_DETAILS_FRAGMENT
+        + _GRAPHQL_OFFER_FRAGMENT
+        + _GRAPHQL_PACKAGE_FRAGMENT
+    )
 
 
 def graphql_offers_for_countries_query(countries: set[str]) -> str:
@@ -381,4 +434,4 @@ def graphql_offers_for_countries_query(countries: set[str]) -> str:
         for country_code in countries
     ]
     main_query = _GRAPHQL_OFFERS_BY_COUNTRY_QUERY.format(country_entries="\n".join(offer_requests))
-    return main_query + _GRAPHQL_OFFER_FRAGMENT
+    return main_query + _GRAPHQL_OFFER_FRAGMENT + _GRAPHQL_PACKAGE_FRAGMENT

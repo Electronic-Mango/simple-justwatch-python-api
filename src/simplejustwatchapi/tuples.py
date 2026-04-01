@@ -24,6 +24,7 @@ class OfferPackage(NamedTuple):
     package_id: int
     name: str
     technical_name: str
+    short_name: str
     icon: str
 
 

@@ -4,6 +4,7 @@ from simplejustwatchapi.justwatch import details as details
 from simplejustwatchapi.justwatch import episodes as episodes
 from simplejustwatchapi.justwatch import offers_for_countries as offers_for_countries
 from simplejustwatchapi.justwatch import popular as popular
+from simplejustwatchapi.justwatch import providers as providers
 from simplejustwatchapi.justwatch import search as search
 from simplejustwatchapi.justwatch import seasons as seasons
 from simplejustwatchapi.tuples import Episode as Episode
@@ -26,6 +27,7 @@ __all__ = [
     "episodes",
     "offers_for_countries",
     "popular",
+    "providers",
     "search",
     "seasons",
 ]

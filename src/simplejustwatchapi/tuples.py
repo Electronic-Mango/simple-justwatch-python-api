@@ -16,6 +16,7 @@ class OfferPackage(NamedTuple):
         name (str): Name of the platform in format suited to display for users.
         technical_name (str): Technical name of the platform,
             usually all lowercase with no whitespaces.
+        short_name (str): 3-letter provider name.
         icon (str): Platform icon URL.
 
     """

@@ -50,6 +50,13 @@ def search(
     in 4K, HD and SD, using ``best_only = True`` returns only 4K option, ``best_only = False``
     returns all three.
 
+    ``providers`` is a list of (usually) 3-letter service identifiers (e.g, ``nfx`` for "Netflix).
+    Only entries which are available for given providers will be returned.
+    For single provider you can either pass a single string, or a list of one string.
+    For ``None`` (also a default value) entries for all providers will be looked up.
+    Invalid names will be ignored, however if all are invalid, then no filtering will be done.
+    You can look up values through ``providers`` function.
+
     Args:
         title (str): Title to search.
         country (str): Country to search for offers, ``US`` by default.
@@ -57,6 +64,8 @@ def search(
         count (int): How many responses should be returned.
         best_only (bool): Return only best offers if ``True``, return all offers if ``False``.
         offset (int): Search results offset.
+        providers (list[str] | str | None): 3-letter service identifier(s),
+            or ``None`` for all providers.
 
     Returns:
         list[MediaEntry]: List of ``MediaEntry`` NamedTuples parsed from JustWatch response.
@@ -79,6 +88,47 @@ def popular(
     offset: int = 0,
     providers: list[str] | str | None = None,
 ) -> list[MediaEntry]:
+    """
+    Look up all currently popular titles on JustWatch.
+
+    Returns a list of entries up to ``count``.
+
+    ``offset`` specifies how many first entries should be skipped. This is done on API side,
+    not the library side; the returned list is still directly parsed from API response.
+    I'm not sure if it guarantees stability of results - whether repeated calls to this function
+    with increasing offset will guarantee that you won't get repeats.
+
+    JustWatch API won't allow for getting more than 2000 responses, either through ``count``, or
+    when ``count + offset`` is equal or greater than 2000 - it will return an empty list instead
+    (ALWAYS an empty list, if ``offset`` is lower than 2000 it won't include entries up to 2000).
+
+    ``best_only`` allows filtering out redundant offers, e.g. when service provides offers
+    in 4K, HD and SD, using ``best_only = True`` returns only 4K option, ``best_only = False``
+    returns all three.
+
+    ``providers`` is a list of (usually) 3-letter service identifiers (e.g, ``nfx`` for "Netflix).
+    Only entries which are available for given providers will be returned.
+    For single provider you can either pass a single string, or a list of one string.
+    For ``None`` (also a default value) entries for all providers will be looked up.
+    Invalid names will be ignored, however if all are invalid, then no filtering will be done.
+    You can look up values through ``providers`` function.
+
+    Args:
+        country (str): Country to search for offers, ``US`` by default.
+        language (str): Language of responses, ``en`` by default.
+        count (int): How many responses should be returned.
+        best_only (bool): Return only best offers if ``True``, return all offers if ``False``.
+        offset (int): Search results offset.
+        providers (list[str] | str | None): 3-letter service identifier(s),
+            or ``None`` for all providers.
+
+    Returns:
+        list[MediaEntry]: List of ``MediaEntry`` NamedTuples parsed from JustWatch response.
+
+    Raises:
+        httpx.HTTPStatusError: If JustWatch API doesn't respond with success code.
+
+    """
     request = prepare_popular_request(country, language, count, best_only, offset, providers)
     response = post(_GRAPHQL_API_URL, json=request)
     response.raise_for_status()
@@ -238,6 +288,18 @@ def offers_for_countries(
 
 
 def providers(country: str) -> list[OfferPackage]:
+    """
+    Look up all providers for the given country code.
+
+    Args:
+        country (str): 2-letter country code.
+
+    Returns:
+        list[OfferPackage]: List of all found providers. ``OfferPackage`` tuple matches
+            values in ``Offer`` (and thus in ``MediaEntry``), but the data structure is the same,
+            so the same tuple is reused.
+
+    """
     request = prepare_providers_request(country)
     response = post(_GRAPHQL_API_URL, json=request)
     response.raise_for_status()

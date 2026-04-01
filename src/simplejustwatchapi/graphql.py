@@ -322,7 +322,7 @@ def graphql_search_query() -> str:
     """
     Prepare GraphQL query used for searching for entries.
 
-    The query is GetSearchTitles query + details fragment + offers fragment.
+    The query is GetSearchTitles query + details fragment + offers fragment + package fragment.
 
     Returns:
         str: Full GraphQL "search" query.
@@ -337,6 +337,15 @@ def graphql_search_query() -> str:
 
 
 def graphql_popular_query() -> str:
+    """
+    Prepare GraphQL query used for looking up currently popular titles.
+
+    The query is GetPopularTitles query + details fragment + offers fragment + package fragment.
+
+    Returns:
+        str: Full GraphQL "popular" query.
+
+    """
     return (
         _GRAPHQL_POPULAR_QUERY
         + _GRAPHQL_DETAILS_FRAGMENT
@@ -346,6 +355,15 @@ def graphql_popular_query() -> str:
 
 
 def graphql_providers_query() -> str:
+    """
+    Prepare GraphQL query used for looking up all providers for a given country.
+
+    The query is GetProviders query + package fragment.
+
+    Returns:
+      str: Full GraphQL "providers" query.
+
+    """
     return _GRAPHQL_PROVIDERS_QUERY + _GRAPHQL_PACKAGE_FRAGMENT
 
 
@@ -353,7 +371,7 @@ def graphql_details_query() -> str:
     """
     Prepare GraphQL query used for getting details regarding a single entry.
 
-    The full query is GetTitleNode query + details fragment + offers fragment.
+    The full query is GetTitleNode query + details fragment + offers fragment  + package fragment.
     It is meant for movies and shows, but can be used for seasons and episodes as well,
     it just won't return full season/episodes list.
 
@@ -373,7 +391,8 @@ def graphql_seasons_query() -> str:
     """
     Prepare GraphQL query used for getting a list of seasons for a single show.
 
-    The full query is GetTitleNode query (with seasons list) + details fragment + offers fragment.
+    The full query is GetTitleNode query (with seasons list) + details fragment + offers fragment
+    + package fragment.
     It will only return data for shows with a list of all available seasons, ascending.
     Details query itself matches :func:`graphql_details_query`, its conditions will return all
     relevant data for seasons.
@@ -394,7 +413,8 @@ def graphql_episodes_query() -> str:
     """
     Prepare GraphQL query used for getting a list of episodes for a single show season.
 
-    The full query is GetTitleNode query (with episodes list) + details fragment + offers fragment.
+    The full query is GetTitleNode query (with episodes list) + details fragment + offers fragment
+    + package fragment.
     It will only return data for show seasons with a list of all available episodes, ascending.
     Details query itself matches :func:`graphql_details_query`, its conditions will return all
     relevant data for episodes.

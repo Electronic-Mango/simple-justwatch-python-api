@@ -55,6 +55,8 @@ def prepare_search_request(
         count (int): How many responses should be returned.
         best_only (bool): Return only best offers if ``True``, return all offers if ``False``.
         offset (int): Search results offset.
+        providers (list[str] | str | None): 3-letter service identifier(s),
+            or ``None`` for all providers.
 
     Returns:
         dict: JSON/dict with GraphQL POST body.
@@ -107,6 +109,28 @@ def prepare_popular_request(
     offset: int,
     providers: list[str] | str | None,
 ) -> dict:
+    """
+    Prepare "get popular" request for JustWatch GraphQL API.
+
+    Creates a ``GetPopularTitles`` GraphQL query.
+
+    Country code should be two uppercase letters, however it will be auto-converted to uppercase.
+
+    Meant to be used together with :func:`parse_popular_response`.
+
+    Args:
+        country (str): Country to search for offers.
+        language (str): Language of responses.
+        count (int): How many responses should be returned.
+        best_only (bool): Return only best offers if ``True``, return all offers if ``False``.
+        offset (int): Search results offset.
+        providers (list[str] | str | None): 3-letter service identifier(s),
+            or ``None`` for all providers.
+
+    Returns:
+        dict: JSON/dict with GraphQL POST body.
+
+    """
     _assert_country_code_is_valid(country)
     return {
         "operationName": "GetPopularTitles",
@@ -127,6 +151,22 @@ def prepare_popular_request(
 
 
 def parse_popular_response(json: dict) -> list[MediaEntry]:
+    """
+    Parse response from the "get popular" query from JustWatch GraphQL API.
+
+    Parses response for ``GetPopularTitles`` query.
+
+    If API didn't return any data, then an empty list is returned.
+
+    Meant to be used together with :func:`prepare_popular_request`.
+
+    Args:
+        json (dict): JSON returned by JustWatch GraphQL API.
+
+    Returns:
+        list[MediaEntry]: Parsed received JSON as a list of ``MediaEntry`` NamedTuples.
+
+    """
     return [_parse_entry(edge["node"]) for edge in json["data"]["popularTitles"]["edges"]]
 
 
@@ -390,19 +430,50 @@ def parse_offers_for_countries_response(json: dict, countries: set[str]) -> dict
 
 
 def prepare_providers_request(country: str) -> dict:
+    """
+    Prepare "get all providers" request for JustWatch GraphQL API.
+
+    Creates a ``GetProviders`` GraphQL query.
+
+    Country code should be two uppercase letters, however it will be auto-converted to uppercase.
+
+    Meant to be used together with :func:`parse_providers_response`.
+
+    Args:
+        country (str): 2-letter country code for which providers should be looked up.
+
+    Returns:
+        dict: JSON/dict with GraphQL POST body.
+
+    """
     _assert_country_code_is_valid(country)
     return {
         "operationName": "GetProviders",
         "variables": {
             "country": country.upper(),
             "formatOfferIcon": "PNG",
-            "fullPath": "/us/tv-show/the-madison",
         },
         "query": graphql_providers_query(),
     }
 
 
 def parse_providers_response(json: dict) -> list[OfferPackage]:
+    """
+    Parse response from "get all providers" query from JustWatch GraphQL API.
+
+    Parses response for ``GetProviders`` query.
+
+    If API didn't return any data, then an empty list is returned.
+
+    Meant to be used together with :func:`prepare_providers_request`.
+
+    Args:
+        json (dict): JSON returned by JustWatch GraphQL API.
+
+    Returns:
+        list[MediaEntry]: Parsed received JSON as a list of ``OfferPackage`` NamedTuples.
+
+    """
     return [_parse_package(package) for package in json["data"]["packages"]]
 
 

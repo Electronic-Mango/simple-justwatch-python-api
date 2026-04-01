@@ -24,7 +24,7 @@ _GRAPHQL_API_URL = "https://apis.justwatch.com/graphql"
 
 
 def search(
-    title: str,
+    title: str = "",
     country: str = "US",
     language: str = "en",
     count: int = 4,
@@ -34,6 +34,11 @@ def search(
 ) -> list[MediaEntry]:
     """
     Search JustWatch for given title.
+
+    If no ``title`` is provided (or an empty string, as per default value) you'll get a
+    selection of "popular" titles. Without ``title`` the output is very similar to ``popular``
+    function. This argument isn't stripped, so passing string with only spaces will
+    look for those spaces.
 
     Returns a list of entries up to ``count``.
 
@@ -58,7 +63,7 @@ def search(
     You can look up values through ``providers`` function.
 
     Args:
-        title (str): Title to search.
+        title (str): Title to search, empty string by default.
         country (str): Country to search for offers, ``US`` by default.
         language (str): Language of responses, ``en`` by default.
         count (int): How many responses should be returned.
@@ -90,6 +95,8 @@ def popular(
 ) -> list[MediaEntry]:
     """
     Look up all currently popular titles on JustWatch.
+
+    This function returns similar values as ``search`` with no ``title`` provided.
 
     Returns a list of entries up to ``count``.
 

@@ -58,11 +58,11 @@ from simplejustwatchapi import search
 results = search("title", "US", "en", 5, True, 0, {"nfx", "apv"})
 ```
 
-Only the first argument is required, it specifies a title to search.
+No arguments are required.
 
 |   | Argument    | Type   | Required | Default value       | Description                                            |
 |---|-------------|--------|----------|---------------------|--------------------------------------------------------|
-| 1 | `title`     | `str`  | **YES**  | -                   | Title to look up                                       |
+| 1 | `title`     | `str`  | NO       | -                   | Title to look up                                       |
 | 2 | `country`   | `str`  | NO       | `"US"`              | Country to search for offers                           |
 | 3 | `language`  | `str`  | NO       | `"en"`              | Language of responses                                  |
 | 4 | `count`     | `int`  | NO       | `4`                 | Up to how many entries should be returned              |
@@ -70,7 +70,11 @@ Only the first argument is required, it specifies a title to search.
 | 6 | `offset`    | `int`  | NO       | `0`                 | How many titles should be skipped from the output      |
 | 7 | `providers` | `list[str] \| str \| None`| NO | `None` | Determines whether only best offers should be returned |
 
-`title` is just a string to look up.
+`title` is just a string to look up. If empty, or not provided, you'll get a selection of popular titles,
+similar to [`popular`](#popular) function.
+
+> **Note**: value of `title` isn't stripped, so passing a string
+with multiple spaces will look them up. For more than 1 space it will (probably) always return an empty list.
 
 `country` must be **ISO 3166-1 alpha-2** 2-letter code , e.g. `US`, `GB`, `FR`.
 It should be uppercase, however lowercase codes are automatically converted to uppercase.
@@ -442,7 +446,7 @@ https://www.justwatch.com/us?providers=nfx,prv
 So the codes for them are `nfx` and `prv` for the US.
 
 
-### Stored output from other commands with offers
+### Stored output from other functions with offers
 
 The codes are also returned when looking up offers (through pretty much any function aside from `providers`) through `OfferPackage` and its `short_name` field.
 For example, to get a `dict` "**full name**": "**code**" you can:

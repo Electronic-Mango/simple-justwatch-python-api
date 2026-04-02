@@ -520,7 +520,7 @@ def _raise_for_invalid_country_code(code: str) -> None:
 
 def _raise_for_errors_in_response(json: dict) -> None:
     if "errors" in json:
-        raise JustWatchApiError
+        raise JustWatchApiError(json["errors"])
 
 
 def _parse_entry(json: Any) -> MediaEntry:

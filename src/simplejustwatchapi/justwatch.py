@@ -330,4 +330,4 @@ def providers(country: str = "US") -> list[OfferPackage]:
 
 def _raise_for_status(response: Response) -> None:
     if not response.is_success:
-        raise JustWatchHttpError
+        raise JustWatchHttpError(response.status_code, response.text)

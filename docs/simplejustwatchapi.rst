@@ -43,3 +43,11 @@ simplejustwatchapi.query module
    :members:
    :undoc-members:
    :show-inheritance:
+
+simplejustwatchapi.exceptions module
+-------------------------------
+
+.. automodule:: simplejustwatchapi.exceptions
+   :members:
+   :undoc-members:
+   :show-inheritance:

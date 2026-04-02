@@ -5,6 +5,7 @@ from simplejustwatchapi.query import (
     parse_episodes_response,
     parse_offers_for_countries_response,
     parse_popular_response,
+    parse_providers_response,
     parse_search_response,
     parse_seasons_response,
 )
@@ -21,6 +22,57 @@ from simplejustwatchapi.tuples import (
 DETAILS_URL = "https://justwatch.com"
 IMAGES_URL = "https://images.justwatch.com"
 
+RESPONSE_PACKAGE_1 = {
+    "id": "id1",
+    "packageId": 1,
+    "clearName": "Service 1",
+    "technicalName": "service1",
+    "shortName": "sr1",
+    "icon": "/icon/url/service1",
+}
+PARSED_PACKAGE_1 = OfferPackage(
+    "id1",
+    1,
+    "Service 1",
+    "service1",
+    "sr1",
+    IMAGES_URL + "/icon/url/service1",
+)
+
+RESPONSE_PACKAGE_2 = {
+    "id": "id2",
+    "packageId": 2,
+    "clearName": "Service 2",
+    "technicalName": "service2",
+    "shortName": "sr2",
+    "icon": "/icon/url/service2",
+}
+PARSED_PACKAGE_2 = OfferPackage(
+    "id2",
+    2,
+    "Service 2",
+    "service2",
+    "sr2",
+    IMAGES_URL + "/icon/url/service2",
+)
+
+RESPONSE_PACKAGE_3 = {
+    "id": "id3",
+    "packageId": 3,
+    "clearName": "Service 3",
+    "technicalName": "service3",
+    "shortName": "sr3",
+    "icon": "/icon/url/service3",
+}
+PARSED_PACKAGE_3 = OfferPackage(
+    "id3",
+    3,
+    "Service 3",
+    "service3",
+    "sr3",
+    IMAGES_URL + "/icon/url/service3",
+)
+
 RESPONSE_OFFERS_1 = [
     {
         "id": "OFFER ID 1",
@@ -31,14 +83,7 @@ RESPONSE_OFFERS_1 = [
         "currency": "USD",
         "lastChangeRetailPriceValue": 9.99,
         "type": "SOME_TYPE_1",
-        "package": {
-            "id": "id1",
-            "packageId": 1,
-            "clearName": "Service 1",
-            "technicalName": "service1",
-            "shortName": "sr1",
-            "icon": "/icon/url/service1",
-        },
+        "package": RESPONSE_PACKAGE_1,
         "standardWebURL": "www.service1.com/offer/url/1/",
         "elementCount": 123,
         "availableTo": "2100-07-15",
@@ -57,14 +102,7 @@ RESPONSE_OFFERS_1 = [
         "currency": "USD",
         "lastChangeRetailPriceValue": 4.99,
         "type": "SOME_TYPE_2",
-        "package": {
-            "id": "id2",
-            "packageId": 2,
-            "clearName": "Service 2",
-            "technicalName": "service2",
-            "shortName": "sr2",
-            "icon": "/icon/url/service2",
-        },
+        "package": RESPONSE_PACKAGE_2,
         "standardWebURL": "www.service1.com/offer/url/2/",
         "elementCount": 456,
         "availableTo": "2100-04-12",
@@ -85,14 +123,7 @@ PARSED_OFFERS_1 = [
         "USD",
         9.99,
         "SOME_TYPE_1",
-        OfferPackage(
-            "id1",
-            1,
-            "Service 1",
-            "service1",
-            "sr1",
-            IMAGES_URL + "/icon/url/service1",
-        ),
+        PARSED_PACKAGE_1,
         "www.service1.com/offer/url/1/",
         123,
         "2100-07-15",
@@ -111,14 +142,7 @@ PARSED_OFFERS_1 = [
         "USD",
         4.99,
         "SOME_TYPE_2",
-        OfferPackage(
-            "id2",
-            2,
-            "Service 2",
-            "service2",
-            "sr2",
-            IMAGES_URL + "/icon/url/service2",
-        ),
+        PARSED_PACKAGE_2,
         "www.service1.com/offer/url/2/",
         456,
         "2100-04-12",
@@ -140,14 +164,7 @@ RESPONSE_OFFERS_2 = [
         "currency": "GBP",
         "lastChangeRetailPriceValue": 399.99,
         "type": "SOME_TYPE_3",
-        "package": {
-            "id": "id3",
-            "packageId": 3,
-            "clearName": "Service 3",
-            "technicalName": "service3",
-            "shortName": "sr3",
-            "icon": "/icon/url/service3",
-        },
+        "package": RESPONSE_PACKAGE_3,
         "standardWebURL": "www.service3.com/offer/url/1/",
         "elementCount": 0,
         "availableTo": None,
@@ -168,14 +185,7 @@ PARSED_OFFERS_2 = [
         "GBP",
         399.99,
         "SOME_TYPE_3",
-        OfferPackage(
-            "id3",
-            3,
-            "Service 3",
-            "service3",
-            "sr3",
-            IMAGES_URL + "/icon/url/service3",
-        ),
+        PARSED_PACKAGE_3,
         "www.service3.com/offer/url/1/",
         0,
         None,
@@ -624,3 +634,19 @@ def test_parse_offers_for_countries_response(
 ):
     parsed_entries = parse_offers_for_countries_response(response_json, countries)
     assert parsed_entries == expected_output
+
+
+@mark.parametrize(
+    argnames=("response_json", "expected_output"),
+    argvalues=[
+        (
+            {"data": {"packages": [RESPONSE_PACKAGE_1, RESPONSE_PACKAGE_2, RESPONSE_PACKAGE_3]}},
+            [PARSED_PACKAGE_1, PARSED_PACKAGE_2, PARSED_PACKAGE_3],
+        ),
+        ({"data": {"packages": [RESPONSE_PACKAGE_1]}}, [PARSED_PACKAGE_1]),
+        ({"data": {"packages": []}}, []),
+    ],
+)
+def test_parse_providers_response(response_json: dict, expected_output: list[OfferPackage]):
+    parsed_packages = parse_providers_response(response_json)
+    assert parsed_packages == expected_output

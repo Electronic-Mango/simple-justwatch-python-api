@@ -1,7 +1,8 @@
 """Main module orchestrating requests to JustWatch GraphQL API."""
 
-from httpx import post
+from httpx import Response, post
 
+from simplejustwatchapi.exceptions import JustWatchHttpError
 from simplejustwatchapi.query import (
     parse_details_response,
     parse_episodes_response,
@@ -81,7 +82,7 @@ def search(
     """
     request = prepare_search_request(title, country, language, count, best_only, offset, providers)
     response = post(_GRAPHQL_API_URL, json=request)
-    response.raise_for_status()
+    _raise_for_status(response)
     return parse_search_response(response.json())
 
 
@@ -138,7 +139,7 @@ def popular(
     """
     request = prepare_popular_request(country, language, count, best_only, offset, providers)
     response = post(_GRAPHQL_API_URL, json=request)
-    response.raise_for_status()
+    _raise_for_status(response)
     return parse_popular_response(response.json())
 
 
@@ -147,7 +148,7 @@ def details(
     country: str = "US",
     language: str = "en",
     best_only: bool = True,
-) -> MediaEntry | None:
+) -> MediaEntry:
     """
     Get details of entry for a given ID.
 
@@ -162,8 +163,7 @@ def details(
         best_only (bool): Return only best offers if ``True``, return all offers if ``False``.
 
     Returns:
-        MediaEntry | None: ``MediaEntry`` NamedTuple with data about requested entry,
-        or None in case data for a given node ID was not found
+        MediaEntry: ``MediaEntry`` NamedTuple with data about requested entry.
 
     Raises:
         httpx.HTTPStatusError: If JustWatch API doesn't respond with success code.
@@ -171,13 +171,13 @@ def details(
     """
     request = prepare_details_request(node_id, country, language, best_only)
     response = post(_GRAPHQL_API_URL, json=request)
-    response.raise_for_status()
+    _raise_for_status(response)
     return parse_details_response(response.json())
 
 
 def seasons(
     show_id: str, country: str = "US", language: str = "en", best_only: bool = True
-) -> list[MediaEntry] | None:
+) -> list[MediaEntry]:
     """
     Get details of all seasons available for a given show ID.
 
@@ -192,8 +192,7 @@ def seasons(
         best_only (bool): Return only best offers if ``True``, return all offers if ``False``.
 
     Returns:
-        list[MediaEntry] | None: List of ``MediaEntry`` NamedTuples with data about requested entry,
-        or None in case data for a given node ID was not found
+        list[MediaEntry]: List of ``MediaEntry`` NamedTuples with data about requested entry.
 
     Raises:
         httpx.HTTPStatusError: If JustWatch API doesn't respond with success code.
@@ -201,13 +200,13 @@ def seasons(
     """
     request = prepare_seasons_request(show_id, country, language, best_only)
     response = post(_GRAPHQL_API_URL, json=request)
-    response.raise_for_status()
+    _raise_for_status(response)
     return parse_seasons_response(response.json())
 
 
 def episodes(
     season_id: str, country: str = "US", language: str = "en", best_only: bool = True
-) -> list[Episode] | None:
+) -> list[Episode]:
     """
     Get details of all episodes available for a given season ID.
 
@@ -222,8 +221,7 @@ def episodes(
         best_only (bool): Return only best offers if ``True``, return all offers if ``False``.
 
     Returns:
-        list[Episode] | None: List of ``Episode`` NamedTuples with data about requested entry,
-        or None in case data for a given node ID was not found.
+        list[Episode]: List of ``Episode`` NamedTuples with data about requested entry.
 
     Raises:
         httpx.HTTPStatusError: If JustWatch API doesn't respond with success code.
@@ -231,7 +229,7 @@ def episodes(
     """
     request = prepare_episodes_request(season_id, country, language, best_only)
     response = post(_GRAPHQL_API_URL, json=request)
-    response.raise_for_status()
+    _raise_for_status(response)
     return parse_episodes_response(response.json())
 
 
@@ -290,7 +288,7 @@ def offers_for_countries(
         return {}
     request = prepare_offers_for_countries_request(node_id, countries, language, best_only)
     response = post(_GRAPHQL_API_URL, json=request)
-    response.raise_for_status()
+    _raise_for_status(response)
     return parse_offers_for_countries_response(response.json(), countries)
 
 
@@ -309,5 +307,10 @@ def providers(country: str = "US") -> list[OfferPackage]:
     """
     request = prepare_providers_request(country)
     response = post(_GRAPHQL_API_URL, json=request)
-    response.raise_for_status()
+    _raise_for_status(response)
     return parse_providers_response(response.json())
+
+
+def _raise_for_status(response: Response) -> None:
+    if not response.is_success:
+        raise JustWatchHttpError

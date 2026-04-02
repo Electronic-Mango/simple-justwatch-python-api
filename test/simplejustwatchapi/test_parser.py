@@ -1,5 +1,6 @@
-from pytest import mark
+from pytest import mark, raises
 
+from simplejustwatchapi.exceptions import JustWatchApiError
 from simplejustwatchapi.query import (
     parse_details_response,
     parse_episodes_response,
@@ -533,6 +534,8 @@ API_EPISODES_RESPONSE_JSON = {
 }
 API_EPISODES_RESPONSE_NO_DATA = {"data": {"node": {"episodes": []}}}
 
+API_ERROR_RESPONSE = {"errors": []}
+
 
 @mark.parametrize(
     argnames=("response_json", "expected_output"),
@@ -564,7 +567,6 @@ def test_parse_popular_response(response_json: dict, expected_output: list[Media
         ({"data": {"node": RESPONSE_NODE_1}}, PARSED_NODE_1),
         ({"data": {"node": RESPONSE_NODE_2}}, PARSED_NODE_2),
         ({"data": {"node": RESPONSE_NODE_3}}, PARSED_NODE_3),
-        ({"errors": [], "data": {"node": None}}, None),
     ],
 )
 def test_parse_details_response(response_json: dict, expected_output: MediaEntry):
@@ -577,7 +579,6 @@ def test_parse_details_response(response_json: dict, expected_output: MediaEntry
     argvalues=[
         (API_SEASONS_RESPONSE_JSON, [PARSED_NODE_1, PARSED_NODE_2, PARSED_NODE_3]),
         (API_SEASONS_RESPONSE_NO_DATA, []),
-        ({"errors": [], "data": {"node": None}}, None),
     ],
 )
 def test_parse_seasons_response(response_json: dict, expected_output: MediaEntry):
@@ -590,7 +591,6 @@ def test_parse_seasons_response(response_json: dict, expected_output: MediaEntry
     argvalues=[
         (API_EPISODES_RESPONSE_JSON, [PARSED_EPISODE_1, PARSED_EPISODE_2, PARSED_EPISODE_3]),
         (API_EPISODES_RESPONSE_NO_DATA, []),
-        ({"errors": [], "data": {"node": None}}, None),
     ],
 )
 def test_parse_episodes_response(response_json: dict, expected_output: MediaEntry):
@@ -650,3 +650,24 @@ def test_parse_offers_for_countries_response(
 def test_parse_providers_response(response_json: dict, expected_output: list[OfferPackage]):
     parsed_packages = parse_providers_response(response_json)
     assert parsed_packages == expected_output
+
+
+@mark.parametrize(
+    argnames="parse_function",
+    argvalues=[
+        parse_search_response,
+        parse_popular_response,
+        parse_details_response,
+        parse_seasons_response,
+        parse_episodes_response,
+        parse_providers_response,
+    ],
+)
+def test_raises_on_internal_api_errors(parse_function):
+    with raises(JustWatchApiError):
+        parse_function(API_ERROR_RESPONSE)
+
+
+def test_parse_offers_for_countries_response_raises_on_internal_api_error():
+    with raises(JustWatchApiError):
+        parse_offers_for_countries_response(API_ERROR_RESPONSE, set())

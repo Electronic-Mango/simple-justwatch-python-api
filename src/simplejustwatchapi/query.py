@@ -6,6 +6,11 @@ Parsed responses are returned as Python NamedTuples for easier access.
 
 from typing import Any
 
+from simplejustwatchapi.exceptions import (
+    JustWatchApiError,
+    JustWatchCountryCodeError,
+    JustWatchError,
+)
 from simplejustwatchapi.graphql import (
     graphql_details_query,
     graphql_episodes_query,
@@ -62,7 +67,7 @@ def prepare_search_request(
         dict: JSON/dict with GraphQL POST body.
 
     """
-    _assert_country_code_is_valid(country)
+    _raise_for_invalid_country_code(country)
     return {
         "operationName": "GetSearchTitles",
         "variables": {
@@ -98,6 +103,7 @@ def parse_search_response(json: dict) -> list[MediaEntry]:
         list[MediaEntry]: Parsed received JSON as a list of ``MediaEntry`` NamedTuples.
 
     """
+    _raise_for_errors_in_response(json)
     return [_parse_entry(edge["node"]) for edge in json["data"]["popularTitles"]["edges"]]
 
 
@@ -131,7 +137,7 @@ def prepare_popular_request(
         dict: JSON/dict with GraphQL POST body.
 
     """
-    _assert_country_code_is_valid(country)
+    _raise_for_invalid_country_code(country)
     return {
         "operationName": "GetPopularTitles",
         "variables": {
@@ -167,6 +173,7 @@ def parse_popular_response(json: dict) -> list[MediaEntry]:
         list[MediaEntry]: Parsed received JSON as a list of ``MediaEntry`` NamedTuples.
 
     """
+    _raise_for_errors_in_response(json)
     return [_parse_entry(edge["node"]) for edge in json["data"]["popularTitles"]["edges"]]
 
 
@@ -190,7 +197,7 @@ def prepare_details_request(node_id: str, country: str, language: str, best_only
         dict: JSON/dict with GraphQL POST body.
 
     """
-    _assert_country_code_is_valid(country)
+    _raise_for_invalid_country_code(country)
     return {
         "operationName": "GetTitleNode",
         "variables": {
@@ -207,7 +214,7 @@ def prepare_details_request(node_id: str, country: str, language: str, best_only
     }
 
 
-def parse_details_response(json: dict) -> MediaEntry | None:
+def parse_details_response(json: dict) -> MediaEntry:
     """
     Parse response from details query from JustWatch GraphQL API.
 
@@ -222,11 +229,11 @@ def parse_details_response(json: dict) -> MediaEntry | None:
         json (dict): JSON returned by JustWatch GraphQL API.
 
     Returns:
-        MediaEntry | None: Parsed received JSON as a ``MediaEntry`` NamedTuple,
-        or ``None`` in case data for a given node ID was not found.
+        MediaEntry | None: Parsed received JSON as a ``MediaEntry`` NamedTuple.
 
     """
-    return _parse_entry(json["data"]["node"]) if "errors" not in json else None
+    _raise_for_errors_in_response(json)
+    return _parse_entry(json["data"]["node"])
 
 
 def prepare_seasons_request(show_id: str, country: str, language: str, best_only: bool) -> dict:
@@ -249,7 +256,7 @@ def prepare_seasons_request(show_id: str, country: str, language: str, best_only
         dict: JSON/dict with GraphQL POST body.
 
     """
-    _assert_country_code_is_valid(country)
+    _raise_for_invalid_country_code(country)
     return {
         "operationName": "GetTitleNode",
         "variables": {
@@ -266,7 +273,7 @@ def prepare_seasons_request(show_id: str, country: str, language: str, best_only
     }
 
 
-def parse_seasons_response(json: dict) -> list[MediaEntry] | None:
+def parse_seasons_response(json: dict) -> list[MediaEntry]:
     """
     Parse response from seasons details query from JustWatch GraphQL API.
 
@@ -281,15 +288,11 @@ def parse_seasons_response(json: dict) -> list[MediaEntry] | None:
         json (dict): JSON returned by JustWatch GraphQL API.
 
     Returns:
-        list[MediaEntry] | None: Parsed received JSON as a ``MediaEntry`` NamedTuple list,
-        or ``None`` in case data for a given node ID was not found.
+        list[MediaEntry]: Parsed received JSON as a ``MediaEntry`` NamedTuple list.
 
     """
-    return (
-        [_parse_entry(season) for season in json["data"]["node"].get("seasons", [])]
-        if "errors" not in json
-        else None
-    )
+    _raise_for_errors_in_response(json)
+    return [_parse_entry(season) for season in json["data"]["node"].get("seasons", [])]
 
 
 def prepare_episodes_request(episode_id: str, country: str, language: str, best_only: bool) -> dict:
@@ -312,7 +315,7 @@ def prepare_episodes_request(episode_id: str, country: str, language: str, best_
         dict: JSON/dict with GraphQL POST body.
 
     """
-    _assert_country_code_is_valid(country)
+    _raise_for_invalid_country_code(country)
     return {
         "operationName": "GetTitleNode",
         "variables": {
@@ -329,7 +332,7 @@ def prepare_episodes_request(episode_id: str, country: str, language: str, best_
     }
 
 
-def parse_episodes_response(json: dict) -> list[Episode] | None:
+def parse_episodes_response(json: dict) -> list[Episode]:
     """
     Parse response from episodes details query from JustWatch GraphQL API.
 
@@ -344,15 +347,11 @@ def parse_episodes_response(json: dict) -> list[Episode] | None:
         json (dict): JSON returned by JustWatch GraphQL API.
 
     Returns:
-        list[Episode] | None: Parsed received JSON as a ``Episode`` NamedTuple list,
-        or ``None`` in case data for a given node ID was not found.
+        list[Episode]: Parsed received JSON as a ``Episode`` NamedTuple list.
 
     """
-    return (
-        [_parse_episode(episode) for episode in json["data"]["node"].get("episodes", [])]
-        if "errors" not in json
-        else None
-    )
+    _raise_for_errors_in_response(json)
+    return [_parse_episode(episode) for episode in json["data"]["node"].get("episodes", [])]
 
 
 def prepare_offers_for_countries_request(
@@ -381,10 +380,13 @@ def prepare_offers_for_countries_request(
         dict: JSON/dict with GraphQL POST body.
 
     """
-    # TODO: Convert assert to regular exception
-    assert countries, "Cannot prepare offers request without specified countries"
+    if not countries:
+        # This should never happen, justwatch.py should take care of this.
+        # If it will happen API will respond with an error due to unused variables.
+        error_msg = "No country codes, should not happen!"
+        raise JustWatchError(error_msg)
     for country in countries:
-        _assert_country_code_is_valid(country)
+        _raise_for_invalid_country_code(country)
     return {
         "operationName": "GetTitleOffers",
         "variables": {
@@ -422,9 +424,9 @@ def parse_offers_for_countries_response(json: dict, countries: set[str]) -> dict
         are offers for a given country parsed from JSON response.
 
     """
-    offers_node = json["data"]["node"]
+    _raise_for_errors_in_response(json)
     return {
-        country: list(map(_parse_offer, offers_node.get(country.upper(), [])))
+        country: list(map(_parse_offer, json["data"]["node"].get(country.upper(), [])))
         for country in countries
     }
 
@@ -446,7 +448,7 @@ def prepare_providers_request(country: str) -> dict:
         dict: JSON/dict with GraphQL POST body.
 
     """
-    _assert_country_code_is_valid(country)
+    _raise_for_invalid_country_code(country)
     return {
         "operationName": "GetProviders",
         "variables": {
@@ -474,13 +476,18 @@ def parse_providers_response(json: dict) -> list[OfferPackage]:
         list[MediaEntry]: Parsed received JSON as a list of ``OfferPackage`` NamedTuples.
 
     """
+    _raise_for_errors_in_response(json)
     return [_parse_package(package) for package in json["data"]["packages"]]
 
 
-def _assert_country_code_is_valid(code: str) -> None:
-    # TODO: Convert assert to regular exception
-    code_has_valid_length = len(code) == _COUNTRY_CODE_LENGTH
-    assert code_has_valid_length, f"Invalid country code: {code}, code must be 2 characters long"
+def _raise_for_invalid_country_code(code: str) -> None:
+    if len(code) != _COUNTRY_CODE_LENGTH:
+        raise JustWatchCountryCodeError(code)
+
+
+def _raise_for_errors_in_response(json: dict) -> None:
+    if "errors" in json:
+        raise JustWatchApiError
 
 
 def _parse_entry(json: Any) -> MediaEntry:

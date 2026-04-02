@@ -3,6 +3,10 @@ from unittest.mock import MagicMock, patch
 
 from pytest import mark, raises
 
+from simplejustwatchapi.exceptions import (
+    JustWatchCountryCodeError,
+    JustWatchError,
+)
 from simplejustwatchapi.query import (
     prepare_details_request,
     prepare_episodes_request,
@@ -75,8 +79,8 @@ def test_prepare_search_request(
 def test_prepare_search_request_asserts_on_invalid_country_code(
     query_mock: MagicMock, invalid_code: str
 ):
-    expected_error_message = f"Invalid country code: {invalid_code}, code must be 2 characters long"
-    with raises(AssertionError) as error:
+    expected_error_message = f"Invalid country code: {invalid_code}, it must be 2 characters long!"
+    with raises(JustWatchCountryCodeError) as error:
         prepare_search_request("", invalid_code, "", 1, True, 2, None)
     assert str(error.value) == expected_error_message
     query_mock.assert_not_called()
@@ -134,8 +138,8 @@ def test_prepare_popular_request(
 def test_prepare_popular_request_asserts_on_invalid_country_code(
     query_mock: MagicMock, invalid_code: str
 ):
-    expected_error_message = f"Invalid country code: {invalid_code}, code must be 2 characters long"
-    with raises(AssertionError) as error:
+    expected_error_message = f"Invalid country code: {invalid_code}, it must be 2 characters long!"
+    with raises(JustWatchCountryCodeError) as error:
         prepare_popular_request(invalid_code, "", 1, True, 2, None)
     assert str(error.value) == expected_error_message
     query_mock.assert_not_called()
@@ -180,8 +184,8 @@ def test_prepare_details_request(_, node_id: str, country: str, language: str, b
 def test_prepare_details_request_asserts_on_invalid_country_code(
     query_mock: MagicMock, invalid_code: str
 ):
-    expected_error_message = f"Invalid country code: {invalid_code}, code must be 2 characters long"
-    with raises(AssertionError) as error:
+    expected_error_message = f"Invalid country code: {invalid_code}, it must be 2 characters long!"
+    with raises(JustWatchCountryCodeError) as error:
         prepare_details_request("", invalid_code, "", True)
     assert str(error.value) == expected_error_message
     query_mock.assert_not_called()
@@ -226,8 +230,8 @@ def test_prepare_seasons_request(_, node_id: str, country: str, language: str, b
 def test_prepare_seasons_request_asserts_on_invalid_country_code(
     query_mock: MagicMock, invalid_code: str
 ):
-    expected_error_message = f"Invalid country code: {invalid_code}, code must be 2 characters long"
-    with raises(AssertionError) as error:
+    expected_error_message = f"Invalid country code: {invalid_code}, it must be 2 characters long!"
+    with raises(JustWatchCountryCodeError) as error:
         prepare_seasons_request("", invalid_code, "", True)
     assert str(error.value) == expected_error_message
     query_mock.assert_not_called()
@@ -272,8 +276,8 @@ def test_prepare_episodes_request(_, node_id: str, country: str, language: str, 
 def test_prepare_episodes_request_asserts_on_invalid_country_code(
     query_mock: MagicMock, invalid_code: str
 ):
-    expected_error_message = f"Invalid country code: {invalid_code}, code must be 2 characters long"
-    with raises(AssertionError) as error:
+    expected_error_message = f"Invalid country code: {invalid_code}, it must be 2 characters long!"
+    with raises(JustWatchCountryCodeError) as error:
         prepare_episodes_request("", invalid_code, "", True)
     assert str(error.value) == expected_error_message
     query_mock.assert_not_called()
@@ -328,9 +332,9 @@ def test_prepare_offers_for_countries_request_asserts_on_invalid_country_codes(
     query_mock: MagicMock, codes: set[str], invalid_code_regex: set[str]
 ):
     expected_error_message = (
-        rf"Invalid country code: ({invalid_code_regex}), code must be 2 characters long"
+        rf"Invalid country code: ({invalid_code_regex}), it must be 2 characters long!"
     )
-    with raises(AssertionError) as error:
+    with raises(JustWatchCountryCodeError) as error:
         prepare_offers_for_countries_request("", codes, "", True)
     # Regex here is required, as sets are unordered,
     # so we have no guarantee which code will fail first.
@@ -340,8 +344,8 @@ def test_prepare_offers_for_countries_request_asserts_on_invalid_country_codes(
 
 @patch("simplejustwatchapi.query.graphql_offers_for_countries_query")
 def test_prepare_offers_for_countries_request_asserts_on_empty_countries_set(query_mock: MagicMock):
-    expected_error_message = "Cannot prepare offers request without specified countries"
-    with raises(AssertionError) as error:
+    expected_error_message = "No country codes, should not happen!"
+    with raises(JustWatchError) as error:
         prepare_offers_for_countries_request("", set(), "", True)
     assert str(error.value) == expected_error_message
     query_mock.assert_not_called()
@@ -377,8 +381,8 @@ def test_prepare_providers_request(_, country: str):
 def test_prepare_providers_request_asserts_on_invalid_country_code(
     query_mock: MagicMock, invalid_code: str
 ):
-    expected_error_message = f"Invalid country code: {invalid_code}, code must be 2 characters long"
-    with raises(AssertionError) as error:
+    expected_error_message = f"Invalid country code: {invalid_code}, it must be 2 characters long!"
+    with raises(JustWatchCountryCodeError) as error:
         prepare_providers_request(invalid_code)
     assert str(error.value) == expected_error_message
     query_mock.assert_not_called()

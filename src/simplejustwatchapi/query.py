@@ -66,6 +66,9 @@ def prepare_search_request(
     Returns:
         dict: JSON/dict with GraphQL POST body.
 
+    Raises:
+        JustWatchCountryCodeError: Provided ``country`` is not a 2-letter code.
+
     """
     _raise_for_invalid_country_code(country)
     return {
@@ -102,6 +105,9 @@ def parse_search_response(json: dict) -> list[MediaEntry]:
     Returns:
         list[MediaEntry]: Parsed received JSON as a list of ``MediaEntry`` NamedTuples.
 
+    Raises:
+        JustWatchApiError: Response from API has internal errors.
+
     """
     _raise_for_errors_in_response(json)
     return [_parse_entry(edge["node"]) for edge in json["data"]["popularTitles"]["edges"]]
@@ -135,6 +141,9 @@ def prepare_popular_request(
 
     Returns:
         dict: JSON/dict with GraphQL POST body.
+
+    Raises:
+        JustWatchCountryCodeError: Provided ``country`` is not a 2-letter code.
 
     """
     _raise_for_invalid_country_code(country)
@@ -172,6 +181,9 @@ def parse_popular_response(json: dict) -> list[MediaEntry]:
     Returns:
         list[MediaEntry]: Parsed received JSON as a list of ``MediaEntry`` NamedTuples.
 
+    Raises:
+        JustWatchApiError: Response from API has internal errors.
+
     """
     _raise_for_errors_in_response(json)
     return [_parse_entry(edge["node"]) for edge in json["data"]["popularTitles"]["edges"]]
@@ -195,6 +207,9 @@ def prepare_details_request(node_id: str, country: str, language: str, best_only
 
     Returns:
         dict: JSON/dict with GraphQL POST body.
+
+    Raises:
+        JustWatchCountryCodeError: Provided ``country`` is not a 2-letter code.
 
     """
     _raise_for_invalid_country_code(country)
@@ -220,16 +235,16 @@ def parse_details_response(json: dict) -> MediaEntry:
 
     Parses response for ``GetTitleNode`` query.
 
-    If API responded with an internal error (mostly due to not found node ID),
-    then ``None`` will be returned instead.
-
     Meant to be used together with :func:`prepare_details_request`.
 
     Args:
         json (dict): JSON returned by JustWatch GraphQL API.
 
     Returns:
-        MediaEntry | None: Parsed received JSON as a ``MediaEntry`` NamedTuple.
+        MediaEntry: Parsed received JSON as a ``MediaEntry`` NamedTuple.
+
+    Raises:
+        JustWatchApiError: Response from API has internal errors.
 
     """
     _raise_for_errors_in_response(json)
@@ -255,6 +270,9 @@ def prepare_seasons_request(show_id: str, country: str, language: str, best_only
     Returns:
         dict: JSON/dict with GraphQL POST body.
 
+    Raises:
+        JustWatchCountryCodeError: Provided ``country`` is not a 2-letter code.
+
     """
     _raise_for_invalid_country_code(country)
     return {
@@ -279,9 +297,6 @@ def parse_seasons_response(json: dict) -> list[MediaEntry]:
 
     Parses response for ``GetTitleNode`` query.
 
-    If API responded with an internal error (mostly due to not found node ID),
-    then ``None`` will be returned instead.
-
     Meant to be used together with :func:`prepare_seasons_request`.
 
     Args:
@@ -289,6 +304,9 @@ def parse_seasons_response(json: dict) -> list[MediaEntry]:
 
     Returns:
         list[MediaEntry]: Parsed received JSON as a ``MediaEntry`` NamedTuple list.
+
+    Raises:
+        JustWatchApiError: Response from API has internal errors.
 
     """
     _raise_for_errors_in_response(json)
@@ -314,6 +332,9 @@ def prepare_episodes_request(episode_id: str, country: str, language: str, best_
     Returns:
         dict: JSON/dict with GraphQL POST body.
 
+    Raises:
+        JustWatchCountryCodeError: Provided ``country`` is not a 2-letter code.
+
     """
     _raise_for_invalid_country_code(country)
     return {
@@ -338,9 +359,6 @@ def parse_episodes_response(json: dict) -> list[Episode]:
 
     Parses response for ``GetTitleNode`` query.
 
-    If API responded with an internal error (mostly due to not found node ID),
-    then ``None`` will be returned instead.
-
     Meant to be used together with :func:`prepare_episodes_request`.
 
     Args:
@@ -348,6 +366,9 @@ def parse_episodes_response(json: dict) -> list[Episode]:
 
     Returns:
         list[Episode]: Parsed received JSON as a ``Episode`` NamedTuple list.
+
+    Raises:
+        JustWatchApiError: Response from API has internal errors.
 
     """
     _raise_for_errors_in_response(json)
@@ -378,6 +399,9 @@ def prepare_offers_for_countries_request(
 
     Returns:
         dict: JSON/dict with GraphQL POST body.
+
+    Raises:
+        JustWatchCountryCodeError: Provided ``countries`` contain invalid country code.
 
     """
     if not countries:
@@ -423,6 +447,9 @@ def parse_offers_for_countries_response(json: dict, countries: set[str]) -> dict
         dict[str, list[Offer]]: A dict, where keys are matching ``countries`` argument and values
         are offers for a given country parsed from JSON response.
 
+    Raises:
+        JustWatchApiError: Response from API has internal errors.
+
     """
     _raise_for_errors_in_response(json)
     return {
@@ -446,6 +473,9 @@ def prepare_providers_request(country: str) -> dict:
 
     Returns:
         dict: JSON/dict with GraphQL POST body.
+
+    Raises:
+        JustWatchCountryCodeError: Provided ``country`` is not a 2-letter code.
 
     """
     _raise_for_invalid_country_code(country)
@@ -474,6 +504,9 @@ def parse_providers_response(json: dict) -> list[OfferPackage]:
 
     Returns:
         list[MediaEntry]: Parsed received JSON as a list of ``OfferPackage`` NamedTuples.
+
+    Raises:
+        JustWatchApiError: Response from API has internal errors.
 
     """
     _raise_for_errors_in_response(json)

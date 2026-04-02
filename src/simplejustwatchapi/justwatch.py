@@ -77,7 +77,9 @@ def search(
         list[MediaEntry]: List of ``MediaEntry`` NamedTuples parsed from JustWatch response.
 
     Raises:
-        httpx.HTTPStatusError: If JustWatch API doesn't respond with success code.
+        JustWatchHttpError: If JustWatch API doesn't respond with 2xx success code.
+        JustWatchCountryCodeError: Provided ``country`` is not a 2-letter code.
+        JustWatchApiError: Response from API has internal errors.
 
     """
     request = prepare_search_request(title, country, language, count, best_only, offset, providers)
@@ -134,7 +136,9 @@ def popular(
         list[MediaEntry]: List of ``MediaEntry`` NamedTuples parsed from JustWatch response.
 
     Raises:
-        httpx.HTTPStatusError: If JustWatch API doesn't respond with success code.
+        JustWatchHttpError: If JustWatch API doesn't respond with 2xx success code.
+        JustWatchCountryCodeError: Provided ``country`` is not a 2-letter code.
+        JustWatchApiError: Response from API has internal errors.
 
     """
     request = prepare_popular_request(country, language, count, best_only, offset, providers)
@@ -166,7 +170,9 @@ def details(
         MediaEntry: ``MediaEntry`` NamedTuple with data about requested entry.
 
     Raises:
-        httpx.HTTPStatusError: If JustWatch API doesn't respond with success code.
+        JustWatchHttpError: If JustWatch API doesn't respond with 2xx success code.
+        JustWatchCountryCodeError: Provided ``country`` is not a 2-letter code.
+        JustWatchApiError: Response from API has internal errors.
 
     """
     request = prepare_details_request(node_id, country, language, best_only)
@@ -195,7 +201,9 @@ def seasons(
         list[MediaEntry]: List of ``MediaEntry`` NamedTuples with data about requested entry.
 
     Raises:
-        httpx.HTTPStatusError: If JustWatch API doesn't respond with success code.
+        JustWatchHttpError: If JustWatch API doesn't respond with 2xx success code.
+        JustWatchCountryCodeError: Provided ``country`` is not a 2-letter code.
+        JustWatchApiError: Response from API has internal errors.
 
     """
     request = prepare_seasons_request(show_id, country, language, best_only)
@@ -224,7 +232,9 @@ def episodes(
         list[Episode]: List of ``Episode`` NamedTuples with data about requested entry.
 
     Raises:
-        httpx.HTTPStatusError: If JustWatch API doesn't respond with success code.
+        JustWatchHttpError: If JustWatch API doesn't respond with 2xx success code.
+        JustWatchCountryCodeError: Provided ``country`` is not a 2-letter code.
+        JustWatchApiError: Response from API has internal errors.
 
     """
     request = prepare_episodes_request(season_id, country, language, best_only)
@@ -281,7 +291,9 @@ def offers_for_countries(
         and keys are all found offers for their respective countries.
 
     Raises:
-        httpx.HTTPStatusError: If JustWatch API doesn't respond with success code.
+        JustWatchHttpError: If JustWatch API doesn't respond with 2xx success code.
+        JustWatchCountryCodeError: Provided ``countries`` contain invalid county code.
+        JustWatchApiError: Response from API has internal errors.
 
     """
     if not countries:
@@ -303,6 +315,11 @@ def providers(country: str = "US") -> list[OfferPackage]:
         list[OfferPackage]: List of all found providers. ``OfferPackage`` tuple matches
             values in ``Offer`` (and thus in ``MediaEntry``), but the data structure is the same,
             so the same tuple is reused.
+
+    Raises:
+        JustWatchHttpError: If JustWatch API doesn't respond with 2xx success code.
+        JustWatchCountryCodeError: Provided ``country`` is not a 2-letter code.
+        JustWatchApiError: Response from API has internal errors.
 
     """
     request = prepare_providers_request(country)

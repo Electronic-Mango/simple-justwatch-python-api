@@ -1,5 +1,5 @@
 """
-Module responsible for creating GraphQL queries and parsing responses from JustWatch GraphQL API.
+Module responsible for creating GraphQL queries and parsing responses from JustWatch.
 
 Parsed responses are returned as Python NamedTuples for easier access.
 """
@@ -49,7 +49,8 @@ def prepare_search_request(
 
     Creates a ``GetSearchTitles`` GraphQL query.
 
-    Country code should be two uppercase letters, however it will be auto-converted to uppercase.
+    Country code should be two uppercase letters, however it will be auto-converted to
+    uppercase.
 
     Meant to be used together with :func:`parse_search_response`.
 
@@ -58,16 +59,17 @@ def prepare_search_request(
         country (str): Country to search for offers.
         language (str): Language of responses.
         count (int): How many responses should be returned.
-        best_only (bool): Return only best offers if ``True``, return all offers if ``False``.
+        best_only (bool): Return only best offers if `True`,
+            return all offers if `False`.
         offset (int): Search results offset.
         providers (list[str] | str | None): 3-letter service identifier(s),
-            or ``None`` for all providers.
+            or `None` for all providers.
 
     Returns:
-        dict: JSON/dict with GraphQL POST body.
+        (dict): JSON/`dict` with GraphQL POST body.
 
     Raises:
-        JustWatchCountryCodeError: Provided ``country`` is not a 2-letter code.
+        exceptions.JustWatchCountryCodeError: Provided `country` is not a 2-letter code.
 
     """
     _raise_for_invalid_country_code(country)
@@ -93,24 +95,27 @@ def parse_search_response(json: dict) -> list[MediaEntry]:
     """
     Parse response from search query from JustWatch GraphQL API.
 
-    Parses response for ``GetSearchTitles`` query.
+    Parses response for `GetSearchTitles` query.
 
     If API didn't return any data, then an empty list is returned.
 
-    Meant to be used together with :func:`prepare_search_request`.
+    Meant to be used together with [`prepare_search_request`]
+    [simplejustwatchapi.query.prepare_search_request].
 
     Args:
         json (dict): JSON returned by JustWatch GraphQL API.
 
     Returns:
-        list[MediaEntry]: Parsed received JSON as a list of ``MediaEntry`` NamedTuples.
+        (list[MediaEntry)]: Parsed received JSON as a list of `MediaEntry` NamedTuples.
 
     Raises:
-        JustWatchApiError: Response from API has internal errors.
+        exceptions.JustWatchApiError: Response from API has internal errors.
 
     """
     _raise_for_errors_in_response(json)
-    return [_parse_entry(edge["node"]) for edge in json["data"]["popularTitles"]["edges"]]
+    return [
+        _parse_entry(edge["node"]) for edge in json["data"]["popularTitles"]["edges"]
+    ]
 
 
 def prepare_popular_request(
@@ -126,24 +131,27 @@ def prepare_popular_request(
 
     Creates a ``GetPopularTitles`` GraphQL query.
 
-    Country code should be two uppercase letters, however it will be auto-converted to uppercase.
+    Country code should be two uppercase letters, however it will be auto-converted to
+    uppercase.
 
-    Meant to be used together with :func:`parse_popular_response`.
+    Meant to be used together with [`parse_popular_response`]
+    [simplejustwatchapi.query.parse_popular_response].
 
     Args:
         country (str): Country to search for offers.
         language (str): Language of responses.
         count (int): How many responses should be returned.
-        best_only (bool): Return only best offers if ``True``, return all offers if ``False``.
+        best_only (bool): Return only best offers if `True`,
+            return all offers if `False`.
         offset (int): Search results offset.
         providers (list[str] | str | None): 3-letter service identifier(s),
-            or ``None`` for all providers.
+            or `None` for all providers.
 
     Returns:
-        dict: JSON/dict with GraphQL POST body.
+        (dict): JSON/`dict` with GraphQL POST body.
 
     Raises:
-        JustWatchCountryCodeError: Provided ``country`` is not a 2-letter code.
+        exceptions.JustWatchCountryCodeError: Provided `country` is not a 2-letter code.
 
     """
     _raise_for_invalid_country_code(country)
@@ -169,47 +177,55 @@ def parse_popular_response(json: dict) -> list[MediaEntry]:
     """
     Parse response from the "get popular" query from JustWatch GraphQL API.
 
-    Parses response for ``GetPopularTitles`` query.
+    Parses response for `GetPopularTitles` query.
 
     If API didn't return any data, then an empty list is returned.
 
-    Meant to be used together with :func:`prepare_popular_request`.
+    Meant to be used together with [`prepare_popular_request`]
+    [simplejustwatchapi.query.prepare_popular_request].
 
     Args:
         json (dict): JSON returned by JustWatch GraphQL API.
 
     Returns:
-        list[MediaEntry]: Parsed received JSON as a list of ``MediaEntry`` NamedTuples.
+        (list[MediaEntry]): Parsed received JSON as a list of `MediaEntry` NamedTuples.
 
     Raises:
-        JustWatchApiError: Response from API has internal errors.
+        exceptions.JustWatchApiError: Response from API has internal errors.
 
     """
     _raise_for_errors_in_response(json)
-    return [_parse_entry(edge["node"]) for edge in json["data"]["popularTitles"]["edges"]]
+    return [
+        _parse_entry(edge["node"]) for edge in json["data"]["popularTitles"]["edges"]
+    ]
 
 
-def prepare_details_request(node_id: str, country: str, language: str, best_only: bool) -> dict:
+def prepare_details_request(
+    node_id: str, country: str, language: str, best_only: bool
+) -> dict:
     """
     Prepare a details request for specified node ID to JustWatch GraphQL API.
 
-    Creates a ``GetTitleNode`` GraphQL query.
+    Creates a `GetTitleNode` GraphQL query.
 
-    Country code should be two uppercase letters, however it will be auto-converted to uppercase.
+    Country code should be two uppercase letters, however it will be auto-converted to
+    uppercase.
 
-    Meant to be used together with :func:`parse_details_response`.
+    Meant to be used together with [`parse_details_response`]
+    [simplejustwatchapi.query.parse_details_response].
 
     Args:
         node_id (str): Node ID of entry to get details for.
         country (str): Country to search for offers.
         language (str): Language of responses.
-        best_only (bool): Return only best offers if ``True``, return all offers if ``False``.
+        best_only (bool): Return only best offers if `True`,
+            return all offers if `False`.
 
     Returns:
-        dict: JSON/dict with GraphQL POST body.
+        (dict): JSON/`dict` with GraphQL POST body.
 
     Raises:
-        JustWatchCountryCodeError: Provided ``country`` is not a 2-letter code.
+        exceptions.JustWatchCountryCodeError: Provided `country` is not a 2-letter code.
 
     """
     _raise_for_invalid_country_code(country)
@@ -233,45 +249,51 @@ def parse_details_response(json: dict) -> MediaEntry:
     """
     Parse response from details query from JustWatch GraphQL API.
 
-    Parses response for ``GetTitleNode`` query.
+    Parses response for `GetTitleNode` query.
 
-    Meant to be used together with :func:`prepare_details_request`.
+    Meant to be used together with [`prepare_details_request`]
+    [simplejustwatchapi.query.prepare_details_request].
 
     Args:
         json (dict): JSON returned by JustWatch GraphQL API.
 
     Returns:
-        MediaEntry: Parsed received JSON as a ``MediaEntry`` NamedTuple.
+        (MediaEntry): Parsed received JSON as a `MediaEntry` NamedTuple.
 
     Raises:
-        JustWatchApiError: Response from API has internal errors.
+        exceptions.JustWatchApiError: Response from API has internal errors.
 
     """
     _raise_for_errors_in_response(json)
     return _parse_entry(json["data"]["node"])
 
 
-def prepare_seasons_request(show_id: str, country: str, language: str, best_only: bool) -> dict:
+def prepare_seasons_request(
+    show_id: str, country: str, language: str, best_only: bool
+) -> dict:
     """
     Prepare a seasons details request for specified show ID to JustWatch GraphQL API.
 
-    Creates a ``GetTitleNode`` GraphQL query.
+    Creates a `GetTitleNode` GraphQL query.
 
-    Country code should be two uppercase letters, however it will be auto-converted to uppercase.
+    Country code should be two uppercase letters, however it will be auto-converted to
+    uppercase.
 
-    Meant to be used together with :func:`parse_seasons_response`.
+    Meant to be used together with [`parse_seasons_response`]
+    [simplejustwatchapi.query.parse_seasons_response].
 
     Args:
         show_id (str): Show ID of entry to get details for.
         country (str): Country to search for offers.
         language (str): Language of responses.
-        best_only (bool): Return only best offers if ``True``, return all offers if ``False``.
+        best_only (bool): Return only best offers if `True`,
+            return all offers if `False`.
 
     Returns:
-        dict: JSON/dict with GraphQL POST body.
+        (dict): JSON/`dict` with GraphQL POST body.
 
     Raises:
-        JustWatchCountryCodeError: Provided ``country`` is not a 2-letter code.
+        exceptions.JustWatchCountryCodeError: Provided `country` is not a 2-letter code.
 
     """
     _raise_for_invalid_country_code(country)
@@ -295,45 +317,51 @@ def parse_seasons_response(json: dict) -> list[MediaEntry]:
     """
     Parse response from seasons details query from JustWatch GraphQL API.
 
-    Parses response for ``GetTitleNode`` query.
+    Parses response for `GetTitleNode` query.
 
-    Meant to be used together with :func:`prepare_seasons_request`.
+    Meant to be used together with [`prepare_seasons_request`]
+    [simplejustwatchapi.query.prepare_seasons_request].
 
     Args:
         json (dict): JSON returned by JustWatch GraphQL API.
 
     Returns:
-        list[MediaEntry]: Parsed received JSON as a ``MediaEntry`` NamedTuple list.
+        (list[MediaEntry]): Parsed received JSON as a `MediaEntry` NamedTuple list.
 
     Raises:
-        JustWatchApiError: Response from API has internal errors.
+        exceptions.JustWatchApiError: Response from API has internal errors.
 
     """
     _raise_for_errors_in_response(json)
     return [_parse_entry(season) for season in json["data"]["node"].get("seasons", [])]
 
 
-def prepare_episodes_request(episode_id: str, country: str, language: str, best_only: bool) -> dict:
+def prepare_episodes_request(
+    episode_id: str, country: str, language: str, best_only: bool
+) -> dict:
     """
     Prepare a episodes details request for specified node ID to JustWatch GraphQL API.
 
-    Creates a ``GetTitleNode`` GraphQL query.
+    Creates a `GetTitleNode` GraphQL query.
 
-    Country code should be two uppercase letters, however it will be auto-converted to uppercase.
+    Country code should be two uppercase letters, however it will be auto-converted to
+    uppercase.
 
-    Meant to be used together with :func:`parse_episodes_response`.
+    Meant to be used together with [`parse_episodes_response`]
+    [simplejustwatchapi.query.parse_episodes_response].
 
     Args:
         episode_id (str): Episode ID of entry to get details for.
         country (str): Country to search for offers.
         language (str): Language of responses.
-        best_only (bool): Return only best offers if ``True``, return all offers if ``False``.
+        best_only (bool): Return only best offers if `True`,
+            return all offers if `False`.
 
     Returns:
-        dict: JSON/dict with GraphQL POST body.
+        (dict): JSON/`dict` with GraphQL POST body.
 
     Raises:
-        JustWatchCountryCodeError: Provided ``country`` is not a 2-letter code.
+        exceptions.JustWatchCountryCodeError: Provided `country` is not a 2-letter code.
 
     """
     _raise_for_invalid_country_code(country)
@@ -357,22 +385,25 @@ def parse_episodes_response(json: dict) -> list[Episode]:
     """
     Parse response from episodes details query from JustWatch GraphQL API.
 
-    Parses response for ``GetTitleNode`` query.
+    Parses response for `GetTitleNode` query.
 
-    Meant to be used together with :func:`prepare_episodes_request`.
+    Meant to be used together with [`prepare_episodes_request`]
+    [simplejustwatchapi.query.prepare_episodes_request].
 
     Args:
         json (dict): JSON returned by JustWatch GraphQL API.
 
     Returns:
-        list[Episode]: Parsed received JSON as a ``Episode`` NamedTuple list.
+        (list[Episode]): Parsed received JSON as a `Episode` NamedTuple list.
 
     Raises:
-        JustWatchApiError: Response from API has internal errors.
+        exceptions.JustWatchApiError: Response from API has internal errors.
 
     """
     _raise_for_errors_in_response(json)
-    return [_parse_episode(episode) for episode in json["data"]["node"].get("episodes", [])]
+    return [
+        _parse_episode(episode) for episode in json["data"]["node"].get("episodes", [])
+    ]
 
 
 def prepare_offers_for_countries_request(
@@ -382,26 +413,29 @@ def prepare_offers_for_countries_request(
     best_only: bool,
 ) -> dict:
     """
-    Prepare an offers request for the node ID and for all given countries to JustWatch GraphQL API.
+    Prepare an offers request for the node ID and for all given countries.
 
-    Creates a ``GetTitleOffers`` GraphQL query.
+    Creates a `GetTitleOffers` GraphQL query.
 
-    Country codes should be two uppercase letters, however they will be auto-converted to uppercase.
-    ``countries`` argument mustn't be empty.
+    Country codes should be two uppercase letters, however they will be auto-converted
+    to uppercase. `countries` argument must not be empty.
 
-    Meant to be used together with :func:`parse_offers_for_countries_response`.
+    Meant to be used together with [`parse_offers_for_countries_response`]
+    [simplejustwatchapi.query.parse_offers_for_countries_response].
 
     Args:
         node_id (str): Node ID of entry to get details for.
         countries (set[str]): Set of country codes to search for offers.
         language (str): Language of responses.
-        best_only (bool): Return only best offers if ``True``, return all offers if ``False``.
+        best_only (bool): Return only best offers if `True`,
+            return all offers if `False`.
 
     Returns:
-        dict: JSON/dict with GraphQL POST body.
+        (dict): JSON/`dict` with GraphQL POST body.
 
     Raises:
-        JustWatchCountryCodeError: Provided ``countries`` contain invalid country code.
+        exceptions.JustWatchCountryCodeError: Provided `countries` contain invalid
+            country code.
 
     """
     if not countries:
@@ -426,29 +460,32 @@ def prepare_offers_for_countries_request(
     }
 
 
-def parse_offers_for_countries_response(json: dict, countries: set[str]) -> dict[str, list[Offer]]:
+def parse_offers_for_countries_response(
+    json: dict, countries: set[str]
+) -> dict[str, list[Offer]]:
     """
     Parse response from offers query from JustWatch GraphQL API.
 
-    Parses response for ``GetTitleOffers`` query.
+    Parses response for `GetTitleOffers` query.
 
-    Response if searched for country codes passed as ``countries`` argument.
-    Countries in JSON response which are not present in ``countries`` set will be ignored.
-    If response doesn't have offers for a country, then that country still will be present
-    in returned dict, just with an empty list as value.
+    Response if searched for country codes passed as `countries` argument.
+    Countries in JSON response which are not present in `countries` set will be ignored.
+    If response doesn't have offers for a country, then that country still will be
+    present in returned dict, just with an empty list as value.
 
-    Meant to be used together with :func:`prepare_offers_for_countries_request`.
+    Meant to be used together with [`prepare_offers_for_countries_request`]
+    [simplejustwatchapi.query.prepare_offers_for_countries_request].
 
     Args:
         json (dict): JSON returned by JustWatch GraphQL API.
         countries (set[str]): Set of country codes to look for in API response.
 
     Returns:
-        dict[str, list[Offer]]: A dict, where keys are matching ``countries`` argument and values
-        are offers for a given country parsed from JSON response.
+        (dict[str, list[Offer]]): A `dict`, where keys are matching `countries` argument
+            and values are offers for a given country parsed from JSON response.
 
     Raises:
-        JustWatchApiError: Response from API has internal errors.
+        exceptions.JustWatchApiError: Response from API has internal errors.
 
     """
     _raise_for_errors_in_response(json)
@@ -462,20 +499,22 @@ def prepare_providers_request(country: str) -> dict:
     """
     Prepare "get all providers" request for JustWatch GraphQL API.
 
-    Creates a ``GetProviders`` GraphQL query.
+    Creates a `GetProviders` GraphQL query.
 
-    Country code should be two uppercase letters, however it will be auto-converted to uppercase.
+    Country code should be two uppercase letters, however it will be auto-converted to
+    uppercase.
 
-    Meant to be used together with :func:`parse_providers_response`.
+    Meant to be used together with [`parse_providers_response`]
+    [simplejustwatchapi.query.parse_providers_response].
 
     Args:
         country (str): 2-letter country code for which providers should be looked up.
 
     Returns:
-        dict: JSON/dict with GraphQL POST body.
+        (dict): JSON/`dict` with GraphQL POST body.
 
     Raises:
-        JustWatchCountryCodeError: Provided ``country`` is not a 2-letter code.
+        exceptions.JustWatchCountryCodeError: Provided `country` is not a 2-letter code.
 
     """
     _raise_for_invalid_country_code(country)
@@ -493,20 +532,21 @@ def parse_providers_response(json: dict) -> list[OfferPackage]:
     """
     Parse response from "get all providers" query from JustWatch GraphQL API.
 
-    Parses response for ``GetProviders`` query.
+    Parses response for `GetProviders` query.
 
     If API didn't return any data, then an empty list is returned.
 
-    Meant to be used together with :func:`prepare_providers_request`.
+    Meant to be used together with [`prepare_providers_request`]
+    [simplejustwatchapi.query.prepare_providers_request].
 
     Args:
         json (dict): JSON returned by JustWatch GraphQL API.
 
     Returns:
-        list[MediaEntry]: Parsed received JSON as a list of ``OfferPackage`` NamedTuples.
+        (list[OfferPackage]): Parsed received JSON as a list of `OfferPackage`.
 
     Raises:
-        JustWatchApiError: Response from API has internal errors.
+        exceptions.JustWatchApiError: Response from API has internal errors.
 
     """
     _raise_for_errors_in_response(json)
@@ -546,7 +586,11 @@ def _parse_entry(json: Any) -> MediaEntry:
     tmdb_id = external_ids.get("tmdbId") if external_ids else None
     poster_url_field = content.get("posterUrl")
     poster = _IMAGES_URL + poster_url_field if poster_url_field else None
-    backdrops = [_IMAGES_URL + bd.get("backdropUrl") for bd in content.get("backdrops", []) if bd]
+    backdrops = [
+        _IMAGES_URL + backdrop.get("backdropUrl")
+        for backdrop in content.get("backdrops", [])
+        if backdrop
+    ]
     age_certification = content.get("ageCertification")
     scoring = _parse_scores(content.get("scoring"))
     interactions = _parse_interactions(content.get("interactions"))
@@ -639,22 +683,22 @@ def _parse_interactions(json: Any) -> Interactions | None:
 
 def _parse_streaming_charts(json: Any) -> StreamingCharts | None:
     if (
-        not (streaming_chart_info := json.get("streamingCharts", {}).get("edges"))
-        or not (streaming_chart_info := streaming_chart_info[0].get("streamingChartInfo"))
-        # Getting final info is awkward, I think this in general can return a list when searching
-        # for ranks for multiple entries. In this case, to unify searching and displaying details,
-        # it's always getting single element in a list.
+        not (chart_info := json.get("streamingCharts", {}).get("edges"))
+        or not (chart_info := chart_info[0].get("streamingChartInfo"))
+        # Getting final info is awkward, I think this in general can return a list when
+        # searching for ranks for multiple entries. In this case, to unify searching
+        # and displaying details, it's always getting single element in a list.
     ):
         return None
-    rank = streaming_chart_info.get("rank")
-    trend = streaming_chart_info.get("trend")
-    trend_difference = streaming_chart_info.get("trendDifference")
-    top_rank = streaming_chart_info.get("topRank")
-    days_in_top_3 = streaming_chart_info.get("daysInTop3")
-    days_in_top_10 = streaming_chart_info.get("daysInTop10")
-    days_in_top_100 = streaming_chart_info.get("daysInTop100")
-    days_in_top_1000 = streaming_chart_info.get("daysInTop1000")
-    updated = streaming_chart_info.get("updatedAt")
+    rank = chart_info.get("rank")
+    trend = chart_info.get("trend")
+    trend_difference = chart_info.get("trendDifference")
+    top_rank = chart_info.get("topRank")
+    days_in_top_3 = chart_info.get("daysInTop3")
+    days_in_top_10 = chart_info.get("daysInTop10")
+    days_in_top_100 = chart_info.get("daysInTop100")
+    days_in_top_1000 = chart_info.get("daysInTop1000")
+    updated = chart_info.get("updatedAt")
     return StreamingCharts(
         rank,
         trend,

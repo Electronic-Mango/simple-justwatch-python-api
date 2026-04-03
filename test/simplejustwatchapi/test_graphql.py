@@ -384,7 +384,9 @@ def test_graphql_offers_for_countries_query(country_codes):
         GRAPHQL_COUNTRY_OFFERS_ENTRY.format(country_code=country_code.upper())
         for country_code in country_codes
     ]
-    main_body = GRAPHQL_OFFERS_BY_COUNTRY_QUERY.format(country_entries="\n".join(offer_requests))
+    main_body = GRAPHQL_OFFERS_BY_COUNTRY_QUERY.format(
+        country_entries="\n".join(offer_requests)
+    )
     expected_query = main_body + GRAPHQL_OFFER_FRAGMENT + GRAPHQL_PACKAGE_FRAGMENT
     query = graphql_offers_for_countries_query(country_codes)
     assert expected_query == query

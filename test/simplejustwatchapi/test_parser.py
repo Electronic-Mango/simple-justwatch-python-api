@@ -544,7 +544,7 @@ API_ERROR_RESPONSE = {"errors": []}
         (API_SEARCH_RESPONSE_NO_DATA, []),
     ],
 )
-def test_parse_search_response(response_json: dict, expected_output: list[MediaEntry]):
+def test_parse_search_response(response_json, expected_output):
     parsed_entries = parse_search_response(response_json)
     assert parsed_entries == expected_output
 
@@ -556,7 +556,7 @@ def test_parse_search_response(response_json: dict, expected_output: list[MediaE
         (API_SEARCH_RESPONSE_NO_DATA, []),
     ],
 )
-def test_parse_popular_response(response_json: dict, expected_output: list[MediaEntry]):
+def test_parse_popular_response(response_json, expected_output):
     parsed_entries = parse_popular_response(response_json)
     assert parsed_entries == expected_output
 
@@ -569,7 +569,7 @@ def test_parse_popular_response(response_json: dict, expected_output: list[Media
         ({"data": {"node": RESPONSE_NODE_3}}, PARSED_NODE_3),
     ],
 )
-def test_parse_details_response(response_json: dict, expected_output: MediaEntry):
+def test_parse_details_response(response_json, expected_output):
     parsed_entries = parse_details_response(response_json)
     assert parsed_entries == expected_output
 
@@ -581,7 +581,7 @@ def test_parse_details_response(response_json: dict, expected_output: MediaEntry
         (API_SEASONS_RESPONSE_NO_DATA, []),
     ],
 )
-def test_parse_seasons_response(response_json: dict, expected_output: MediaEntry):
+def test_parse_seasons_response(response_json, expected_output):
     parsed_entries = parse_seasons_response(response_json)
     assert parsed_entries == expected_output
 
@@ -589,11 +589,14 @@ def test_parse_seasons_response(response_json: dict, expected_output: MediaEntry
 @mark.parametrize(
     argnames=("response_json", "expected_output"),
     argvalues=[
-        (API_EPISODES_RESPONSE_JSON, [PARSED_EPISODE_1, PARSED_EPISODE_2, PARSED_EPISODE_3]),
+        (
+            API_EPISODES_RESPONSE_JSON,
+            [PARSED_EPISODE_1, PARSED_EPISODE_2, PARSED_EPISODE_3],
+        ),
         (API_EPISODES_RESPONSE_NO_DATA, []),
     ],
 )
-def test_parse_episodes_response(response_json: dict, expected_output: MediaEntry):
+def test_parse_episodes_response(response_json, expected_output):
     parsed_entries = parse_episodes_response(response_json)
     assert parsed_entries == expected_output
 
@@ -607,17 +610,38 @@ def test_parse_episodes_response(response_json: dict, expected_output: MediaEntr
             {"US": PARSED_NODE_1.offers},
         ),
         (
-            {"data": {"node": {"US": RESPONSE_NODE_1["offers"], "GB": RESPONSE_NODE_2["offers"]}}},
+            {
+                "data": {
+                    "node": {
+                        "US": RESPONSE_NODE_1["offers"],
+                        "GB": RESPONSE_NODE_2["offers"],
+                    }
+                }
+            },
             {"US", "GB"},
             {"US": PARSED_NODE_1.offers, "GB": PARSED_NODE_2.offers},
         ),
         (
-            {"data": {"node": {"US": RESPONSE_NODE_1["offers"], "GB": RESPONSE_NODE_2["offers"]}}},
+            {
+                "data": {
+                    "node": {
+                        "US": RESPONSE_NODE_1["offers"],
+                        "GB": RESPONSE_NODE_2["offers"],
+                    }
+                }
+            },
             {"US"},
             {"US": PARSED_NODE_1.offers},
         ),
         (
-            {"data": {"node": {"US": RESPONSE_NODE_1["offers"], "GB": RESPONSE_NODE_2["offers"]}}},
+            {
+                "data": {
+                    "node": {
+                        "US": RESPONSE_NODE_1["offers"],
+                        "GB": RESPONSE_NODE_2["offers"],
+                    }
+                }
+            },
             {"GB"},
             {"GB": PARSED_NODE_2.offers},
         ),
@@ -629,9 +653,7 @@ def test_parse_episodes_response(response_json: dict, expected_output: MediaEntr
         ({"data": {"node": {"US": []}}}, {"US"}, {"US": []}),
     ],
 )
-def test_parse_offers_for_countries_response(
-    response_json: dict, countries: set[str], expected_output: dict[str, list[Offer]]
-):
+def test_parse_offers_for_countries_response(response_json, countries, expected_output):
     parsed_entries = parse_offers_for_countries_response(response_json, countries)
     assert parsed_entries == expected_output
 
@@ -640,14 +662,22 @@ def test_parse_offers_for_countries_response(
     argnames=("response_json", "expected_output"),
     argvalues=[
         (
-            {"data": {"packages": [RESPONSE_PACKAGE_1, RESPONSE_PACKAGE_2, RESPONSE_PACKAGE_3]}},
+            {
+                "data": {
+                    "packages": [
+                        RESPONSE_PACKAGE_1,
+                        RESPONSE_PACKAGE_2,
+                        RESPONSE_PACKAGE_3,
+                    ]
+                }
+            },
             [PARSED_PACKAGE_1, PARSED_PACKAGE_2, PARSED_PACKAGE_3],
         ),
         ({"data": {"packages": [RESPONSE_PACKAGE_1]}}, [PARSED_PACKAGE_1]),
         ({"data": {"packages": []}}, []),
     ],
 )
-def test_parse_providers_response(response_json: dict, expected_output: list[OfferPackage]):
+def test_parse_providers_response(response_json, expected_output):
     parsed_packages = parse_providers_response(response_json)
     assert parsed_packages == expected_output
 

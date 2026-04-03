@@ -25,7 +25,9 @@ result = [
         imdb_id="tt33204276",
         tmdb_id="225891",
         poster="https://images.justwatch.com/poster/343091680/s718/the-madison.jpg",
-        backdrops=["https://images.justwatch.com/backdrop/343091687/s1920/the-madison.jpg"],
+        backdrops=[
+            "https://images.justwatch.com/backdrop/343091687/s1920/the-madison.jpg"
+        ],
         age_certification="TV-MA",
         scoring=Scoring(
             imdb_score=7.9,
@@ -173,7 +175,9 @@ result = [
         imdb_id="tt27444205",
         tmdb_id="245927",
         poster="https://images.justwatch.com/poster/340670483/s718/paradise-2025.jpg",
-        backdrops=["https://images.justwatch.com/backdrop/322220275/s1920/paradise-2025.jpg"],
+        backdrops=[
+            "https://images.justwatch.com/backdrop/322220275/s1920/paradise-2025.jpg"
+        ],
         age_certification="TV-MA",
         scoring=Scoring(
             imdb_score=7.9,
@@ -269,7 +273,9 @@ result = [
         imdb_id="tt31938062",
         tmdb_id="250307",
         poster="https://images.justwatch.com/poster/341619847/s718/the-pitt.jpg",
-        backdrops=["https://images.justwatch.com/backdrop/322035531/s1920/the-pitt.jpg"],
+        backdrops=[
+            "https://images.justwatch.com/backdrop/322035531/s1920/the-pitt.jpg"
+        ],
         age_certification="TV-MA",
         scoring=Scoring(
             imdb_score=8.9,
@@ -466,7 +472,9 @@ result = [
         imdb_id="tt14786934",
         tmdb_id="240740",
         poster="https://images.justwatch.com/poster/339047049/s718/scarpetta.jpg",
-        backdrops=["https://images.justwatch.com/backdrop/338999353/s1920/scarpetta.jpg"],
+        backdrops=[
+            "https://images.justwatch.com/backdrop/338999353/s1920/scarpetta.jpg"
+        ],
         age_certification="TV-MA",
         scoring=Scoring(
             imdb_score=5.9,
@@ -747,7 +755,9 @@ result = [
         imdb_id="tt21375452",
         tmdb_id="206828",
         poster="https://images.justwatch.com/poster/342980288/s718/dtf-st-louis.jpg",
-        backdrops=["https://images.justwatch.com/backdrop/341387043/s1920/dtf-st-louis.jpg"],
+        backdrops=[
+            "https://images.justwatch.com/backdrop/341387043/s1920/dtf-st-louis.jpg"
+        ],
         age_certification="TV-MA",
         scoring=Scoring(
             imdb_score=6.9,
@@ -1263,7 +1273,9 @@ result = [
         imdb_id="tt8599532",
         tmdb_id="255661",
         poster="https://images.justwatch.com/poster/342837915/s718/young-sherlock-0.jpg",
-        backdrops=["https://images.justwatch.com/backdrop/340253214/s1920/young-sherlock-0.jpg"],
+        backdrops=[
+            "https://images.justwatch.com/backdrop/340253214/s1920/young-sherlock-0.jpg"
+        ],
         age_certification="TV-14",
         scoring=Scoring(
             imdb_score=7.6,

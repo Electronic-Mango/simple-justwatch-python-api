@@ -1,5 +1,5 @@
 ---
-icon: fontawesome/solid/warning
+icon: lucide/alert-octagon
 ---
 
 # Exceptions

@@ -32,14 +32,7 @@ class JustWatchHttpError(JustWatchError):
     """
 
     def __init__(self, code: int, message: str) -> None:
-        """
-        Init JustWatchHttpError with status code and message from response.
-
-        Args:
-            code (int): HTTP status code returned by the API.
-            message (str): HTTP message response from the JustWatch API.
-
-        """
+        """Init JustWatchHttpError with status code and message from response."""
         super().__init__(f"HTTP code {code}: {message}")
         self.code = code
         self.message = message
@@ -62,15 +55,7 @@ class JustWatchApiError(JustWatchError):
     """
 
     def __init__(self, errors: list[dict]) -> None:
-        """
-        Init JustWatchApiError with internal errors from JSON response.
-
-        Args:
-            errors (list[dict]): List of all errors in the JSON response from the API.
-                The `dict` elements are themselves basic JSONs, each with at least two
-                keys - `message` and `code`.
-
-        """
+        """Init JustWatchApiError with internal errors from JSON response."""
         super().__init__(f"Errors in JSON response: {errors}")
         self.errors = errors
 
@@ -99,13 +84,7 @@ class JustWatchCountryCodeError(JustWatchLocaleError):
     """
 
     def __init__(self, code: str) -> None:
-        """
-        Init JustWatchCountryCodeError with invalid country code.
-
-        Args:
-            code(str): Invalid country code which caused this exception.
-
-        """
+        """Init JustWatchCountryCodeError with invalid country code."""
         super().__init__(f"Invalid country code: {code}!")
         self.code = code
 
@@ -132,12 +111,6 @@ class JustWatchLanguageCodeError(JustWatchLocaleError):
     """
 
     def __init__(self, code: str) -> None:
-        """
-        Init JustWatchLanguageError with invalid language code.
-
-        Args:
-            code(str): Invalid language code which caused this exception.
-
-        """
+        """Init JustWatchLanguageError with invalid language code."""
         super().__init__(f"Invalid language code: {code}!")
         self.code = code

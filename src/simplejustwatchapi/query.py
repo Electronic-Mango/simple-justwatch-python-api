@@ -43,11 +43,11 @@ def prepare_search_request(
     best_only: bool,
     offset: int,
     providers: list[str] | str | None,
-) -> dict:
+) -> dict[str, Any]:
     """
     Prepare search request for JustWatch GraphQL API.
 
-    Creates a ``GetSearchTitles`` GraphQL query.
+    Creates a `GetSearchTitles` GraphQL query.
 
     Country code should be two uppercase letters, however it will be auto-converted to
     uppercase.
@@ -66,7 +66,7 @@ def prepare_search_request(
             or `None` for all providers.
 
     Returns:
-        (dict): JSON/`dict` with GraphQL POST body.
+        (dict[str, Any]): JSON with GraphQL POST body.
 
     Raises:
         exceptions.JustWatchCountryCodeError: Provided `country` is not a valid code.
@@ -86,7 +86,7 @@ def prepare_search_request(
     }
 
 
-def parse_search_response(json: dict) -> list[MediaEntry]:
+def parse_search_response(json: dict[str, Any]) -> list[MediaEntry]:
     """
     Parse response from search query from JustWatch GraphQL API.
 
@@ -98,7 +98,7 @@ def parse_search_response(json: dict) -> list[MediaEntry]:
     [simplejustwatchapi.query.prepare_search_request].
 
     Args:
-        json (dict): JSON returned by JustWatch GraphQL API.
+        json (dict[str, Any]): JSON returned by JustWatch GraphQL API.
 
     Returns:
         (list[MediaEntry]): Parsed received JSON as a list of `MediaEntry` NamedTuples.
@@ -120,11 +120,11 @@ def prepare_popular_request(
     best_only: bool,
     offset: int,
     providers: list[str] | str | None,
-) -> dict:
+) -> dict[str, Any]:
     """
     Prepare "get popular" request for JustWatch GraphQL API.
 
-    Creates a ``GetPopularTitles`` GraphQL query.
+    Creates a `GetPopularTitles` GraphQL query.
 
     Country code should be two uppercase letters, however it will be auto-converted to
     uppercase.
@@ -143,7 +143,7 @@ def prepare_popular_request(
             or `None` for all providers.
 
     Returns:
-        (dict): JSON/`dict` with GraphQL POST body.
+        (dict[str, Any]): JSON with GraphQL POST body.
 
     Raises:
         exceptions.JustWatchCountryCodeError: Provided `country` is not a valid code.
@@ -163,7 +163,7 @@ def prepare_popular_request(
     }
 
 
-def parse_popular_response(json: dict) -> list[MediaEntry]:
+def parse_popular_response(json: dict[str, Any]) -> list[MediaEntry]:
     """
     Parse response from the "get popular" query from JustWatch GraphQL API.
 
@@ -175,7 +175,7 @@ def parse_popular_response(json: dict) -> list[MediaEntry]:
     [simplejustwatchapi.query.prepare_popular_request].
 
     Args:
-        json (dict): JSON returned by JustWatch GraphQL API.
+        json (dict[str, Any]): JSON returned by JustWatch GraphQL API.
 
     Returns:
         (list[MediaEntry]): Parsed received JSON as a list of `MediaEntry` NamedTuples.
@@ -192,7 +192,7 @@ def parse_popular_response(json: dict) -> list[MediaEntry]:
 
 def prepare_details_request(
     node_id: str, country: str, language: str, best_only: bool
-) -> dict:
+) -> dict[str, Any]:
     """
     Prepare a details request for specified node ID to JustWatch GraphQL API.
 
@@ -212,7 +212,7 @@ def prepare_details_request(
             return all offers if `False`.
 
     Returns:
-        (dict): JSON/`dict` with GraphQL POST body.
+        (dict[str, Any]): JSON with GraphQL POST body.
 
     Raises:
         exceptions.JustWatchCountryCodeError: Provided `country` is not a valid code.
@@ -230,7 +230,7 @@ def prepare_details_request(
     }
 
 
-def parse_details_response(json: dict) -> MediaEntry:
+def parse_details_response(json: dict[str, Any]) -> MediaEntry:
     """
     Parse response from details query from JustWatch GraphQL API.
 
@@ -240,7 +240,7 @@ def parse_details_response(json: dict) -> MediaEntry:
     [simplejustwatchapi.query.prepare_details_request].
 
     Args:
-        json (dict): JSON returned by JustWatch GraphQL API.
+        json (dict[str, Any]): JSON returned by JustWatch GraphQL API.
 
     Returns:
         (MediaEntry): Parsed received JSON as a `MediaEntry` NamedTuple.
@@ -255,7 +255,7 @@ def parse_details_response(json: dict) -> MediaEntry:
 
 def prepare_seasons_request(
     show_id: str, country: str, language: str, best_only: bool
-) -> dict:
+) -> dict[str, Any]:
     """
     Prepare a seasons details request for specified show ID to JustWatch GraphQL API.
 
@@ -275,7 +275,7 @@ def prepare_seasons_request(
             return all offers if `False`.
 
     Returns:
-        (dict): JSON/`dict` with GraphQL POST body.
+        (dict[str, Any]): JSON with GraphQL POST body.
 
     Raises:
         exceptions.JustWatchCountryCodeError: Provided `country` is not a valid code.
@@ -293,7 +293,7 @@ def prepare_seasons_request(
     }
 
 
-def parse_seasons_response(json: dict) -> list[MediaEntry]:
+def parse_seasons_response(json: dict[str, Any]) -> list[MediaEntry]:
     """
     Parse response from seasons details query from JustWatch GraphQL API.
 
@@ -303,7 +303,7 @@ def parse_seasons_response(json: dict) -> list[MediaEntry]:
     [simplejustwatchapi.query.prepare_seasons_request].
 
     Args:
-        json (dict): JSON returned by JustWatch GraphQL API.
+        json (dict[str, Any]): JSON returned by JustWatch GraphQL API.
 
     Returns:
         (list[MediaEntry]): Parsed received JSON as a `MediaEntry` NamedTuple list.
@@ -318,7 +318,7 @@ def parse_seasons_response(json: dict) -> list[MediaEntry]:
 
 def prepare_episodes_request(
     episode_id: str, country: str, language: str, best_only: bool
-) -> dict:
+) -> dict[str, Any]:
     """
     Prepare a episodes details request for specified node ID to JustWatch GraphQL API.
 
@@ -338,7 +338,7 @@ def prepare_episodes_request(
             return all offers if `False`.
 
     Returns:
-        (dict): JSON/`dict` with GraphQL POST body.
+        (dict[str, Any]): JSON with GraphQL POST body.
 
     Raises:
         exceptions.JustWatchCountryCodeError: Provided `country` is not a valid code.
@@ -356,7 +356,7 @@ def prepare_episodes_request(
     }
 
 
-def parse_episodes_response(json: dict) -> list[Episode]:
+def parse_episodes_response(json: dict[str, Any]) -> list[Episode]:
     """
     Parse response from episodes details query from JustWatch GraphQL API.
 
@@ -366,7 +366,7 @@ def parse_episodes_response(json: dict) -> list[Episode]:
     [simplejustwatchapi.query.prepare_episodes_request].
 
     Args:
-        json (dict): JSON returned by JustWatch GraphQL API.
+        json (dict[str, Any]): JSON returned by JustWatch GraphQL API.
 
     Returns:
         (list[Episode]): Parsed received JSON as a `Episode` NamedTuple list.
@@ -386,7 +386,7 @@ def prepare_offers_for_countries_request(
     countries: set[str],
     language: str,
     best_only: bool,
-) -> dict:
+) -> dict[str, Any]:
     """
     Prepare an offers request for the node ID and for all given countries.
 
@@ -406,7 +406,7 @@ def prepare_offers_for_countries_request(
             return all offers if `False`.
 
     Returns:
-        (dict): JSON/`dict` with GraphQL POST body.
+        (dict[str, Any]): JSON with GraphQL POST body.
 
     Raises:
         exceptions.JustWatchCountryCodeError: Provided `countries` contain invalid
@@ -435,7 +435,7 @@ def prepare_offers_for_countries_request(
 
 
 def parse_offers_for_countries_response(
-    json: dict, countries: set[str]
+    json: dict[str, Any], countries: set[str]
 ) -> dict[str, list[Offer]]:
     """
     Parse response from offers query from JustWatch GraphQL API.
@@ -445,13 +445,13 @@ def parse_offers_for_countries_response(
     Response if searched for country codes passed as `countries` argument.
     Countries in JSON response which are not present in `countries` set will be ignored.
     If response doesn't have offers for a country, then that country still will be
-    present in returned dict, just with an empty list as value.
+    present in returned `dict`, just with an empty list as value.
 
     Meant to be used together with [`prepare_offers_for_countries_request`]
     [simplejustwatchapi.query.prepare_offers_for_countries_request].
 
     Args:
-        json (dict): JSON returned by JustWatch GraphQL API.
+        json (dict[str, Any]): JSON returned by JustWatch GraphQL API.
         countries (set[str]): Set of country codes to look for in API response.
 
     Returns:
@@ -469,7 +469,7 @@ def parse_offers_for_countries_response(
     }
 
 
-def prepare_providers_request(country: str) -> dict:
+def prepare_providers_request(country: str) -> dict[str, Any]:
     """
     Prepare "get all providers" request for JustWatch GraphQL API.
 
@@ -485,7 +485,7 @@ def prepare_providers_request(country: str) -> dict:
         country (str): 2-letter country code for which providers should be looked up.
 
     Returns:
-        (dict): JSON/`dict` with GraphQL POST body.
+        (dict[str, Any]): JSON with GraphQL POST body.
 
     Raises:
         exceptions.JustWatchCountryCodeError: Provided `country` is not a valid code.
@@ -503,7 +503,7 @@ def prepare_providers_request(country: str) -> dict:
     }
 
 
-def parse_providers_response(json: dict) -> list[OfferPackage]:
+def parse_providers_response(json: dict[str, Any]) -> list[OfferPackage]:
     """
     Parse response from "get all providers" query from JustWatch GraphQL API.
 
@@ -515,7 +515,7 @@ def parse_providers_response(json: dict) -> list[OfferPackage]:
     [simplejustwatchapi.query.prepare_providers_request].
 
     Args:
-        json (dict): JSON returned by JustWatch GraphQL API.
+        json (dict[str, Any]): JSON returned by JustWatch GraphQL API.
 
     Returns:
         (list[OfferPackage]): Parsed received JSON as a list of `OfferPackage`.
@@ -528,7 +528,7 @@ def parse_providers_response(json: dict) -> list[OfferPackage]:
     return [_parse_package(package) for package in json["data"]["packages"]]
 
 
-def _common_variables(best_only: bool) -> dict:
+def _common_variables(best_only: bool) -> dict[str, Any]:
     """Return dict with variables common for queries."""
     return {
         "formatPoster": "JPG",
@@ -539,7 +539,7 @@ def _common_variables(best_only: bool) -> dict:
     }
 
 
-def _locale_variables(country: str, language: str) -> dict:
+def _locale_variables(country: str, language: str) -> dict[str, str]:
     """Return dict with variables related to locale, raise for invalid codes."""
     country = country.upper()
     _raise_for_invalid_country(country)
@@ -559,7 +559,7 @@ def _raise_for_invalid_language(language: str) -> None:
         raise JustWatchLanguageCodeError(language)
 
 
-def _raise_for_errors_in_response(json: dict) -> None:
+def _raise_for_errors_in_response(json: dict[str, Any]) -> None:
     """Raise JustWatchApiError if given JSON contains `errors` key."""
     if "errors" in json:
         raise JustWatchApiError(json["errors"])

@@ -1,15 +1,13 @@
-"""
-Module responsible for creating GraphQL queries and parsing responses from JustWatch.
+"""Module responsible for creating requests to and parsing responses from JustWatch."""
 
-Parsed responses are returned as Python NamedTuples for easier access.
-"""
-
+from re import match
 from typing import Any
 
 from simplejustwatchapi.exceptions import (
     JustWatchApiError,
     JustWatchCountryCodeError,
     JustWatchError,
+    JustWatchLanguageCodeError,
 )
 from simplejustwatchapi.graphql import (
     graphql_details_query,
@@ -32,7 +30,9 @@ from simplejustwatchapi.tuples import (
 
 _DETAILS_URL = "https://justwatch.com"
 _IMAGES_URL = "https://images.justwatch.com"
-_COUNTRY_CODE_LENGTH = 2
+
+_COUNTRY_CODE_REGEX = r"^[A-Z]{2}$"
+_LANGUAGE_CODE_REGEX = r"^[a-z]{2}(-[0-9A-Z]+)?$"
 
 
 def prepare_search_request(
@@ -69,22 +69,17 @@ def prepare_search_request(
         (dict): JSON/`dict` with GraphQL POST body.
 
     Raises:
-        exceptions.JustWatchCountryCodeError: Provided `country` is not a 2-letter code.
+        exceptions.JustWatchCountryCodeError: Provided `country` is not a valid code.
+        exceptions.JustWatchLanguageCodeError: Provided `language` is not a valid code.
 
     """
-    _raise_for_invalid_country_code(country)
     return {
         "operationName": "GetSearchTitles",
         "variables": {
             "first": count,
             "searchTitlesFilter": {"searchQuery": title, "packages": providers},
-            "language": language,
-            "country": country.upper(),
-            "formatPoster": "JPG",
-            "formatOfferIcon": "PNG",
-            "profile": "S718",
-            "backdropProfile": "S1920",
-            "filter": {"bestOnly": best_only},
+            **_common_variables(best_only),
+            **_locale_variables(country, language),
             "offset": offset or None,
         },
         "query": graphql_search_query(),
@@ -106,7 +101,7 @@ def parse_search_response(json: dict) -> list[MediaEntry]:
         json (dict): JSON returned by JustWatch GraphQL API.
 
     Returns:
-        (list[MediaEntry)]: Parsed received JSON as a list of `MediaEntry` NamedTuples.
+        (list[MediaEntry]): Parsed received JSON as a list of `MediaEntry` NamedTuples.
 
     Raises:
         exceptions.JustWatchApiError: JSON response from API has internal errors.
@@ -151,22 +146,17 @@ def prepare_popular_request(
         (dict): JSON/`dict` with GraphQL POST body.
 
     Raises:
-        exceptions.JustWatchCountryCodeError: Provided `country` is not a 2-letter code.
+        exceptions.JustWatchCountryCodeError: Provided `country` is not a valid code.
+        exceptions.JustWatchLanguageCodeError: Provided `language` is not a valid code.
 
     """
-    _raise_for_invalid_country_code(country)
     return {
         "operationName": "GetPopularTitles",
         "variables": {
             "first": count,
             "popularTitlesFilter": {"packages": providers},
-            "language": language,
-            "country": country.upper(),
-            "formatPoster": "JPG",
-            "formatOfferIcon": "PNG",
-            "profile": "S718",
-            "backdropProfile": "S1920",
-            "filter": {"bestOnly": best_only},
+            **_common_variables(best_only),
+            **_locale_variables(country, language),
             "offset": offset or None,
         },
         "query": graphql_popular_query(),
@@ -225,21 +215,16 @@ def prepare_details_request(
         (dict): JSON/`dict` with GraphQL POST body.
 
     Raises:
-        exceptions.JustWatchCountryCodeError: Provided `country` is not a 2-letter code.
+        exceptions.JustWatchCountryCodeError: Provided `country` is not a valid code.
+        exceptions.JustWatchLanguageCodeError: Provided `language` is not a valid code.
 
     """
-    _raise_for_invalid_country_code(country)
     return {
         "operationName": "GetTitleNode",
         "variables": {
             "nodeId": node_id,
-            "language": language,
-            "country": country.upper(),
-            "formatPoster": "JPG",
-            "formatOfferIcon": "PNG",
-            "profile": "S718",
-            "backdropProfile": "S1920",
-            "filter": {"bestOnly": best_only},
+            **_common_variables(best_only),
+            **_locale_variables(country, language),
         },
         "query": graphql_details_query(),
     }
@@ -293,21 +278,16 @@ def prepare_seasons_request(
         (dict): JSON/`dict` with GraphQL POST body.
 
     Raises:
-        exceptions.JustWatchCountryCodeError: Provided `country` is not a 2-letter code.
+        exceptions.JustWatchCountryCodeError: Provided `country` is not a valid code.
+        exceptions.JustWatchLanguageCodeError: Provided `language` is not a valid code.
 
     """
-    _raise_for_invalid_country_code(country)
     return {
         "operationName": "GetTitleNode",
         "variables": {
             "nodeId": show_id,
-            "language": language,
-            "country": country.upper(),
-            "formatPoster": "JPG",
-            "formatOfferIcon": "PNG",
-            "profile": "S718",
-            "backdropProfile": "S1920",
-            "filter": {"bestOnly": best_only},
+            **_common_variables(best_only),
+            **_locale_variables(country, language),
         },
         "query": graphql_seasons_query(),
     }
@@ -361,21 +341,16 @@ def prepare_episodes_request(
         (dict): JSON/`dict` with GraphQL POST body.
 
     Raises:
-        exceptions.JustWatchCountryCodeError: Provided `country` is not a 2-letter code.
+        exceptions.JustWatchCountryCodeError: Provided `country` is not a valid code.
+        exceptions.JustWatchLanguageCodeError: Provided `language` is not a valid code.
 
     """
-    _raise_for_invalid_country_code(country)
     return {
         "operationName": "GetTitleNode",
         "variables": {
             "nodeId": episode_id,
-            "language": language,
-            "country": country.upper(),
-            "formatPoster": "JPG",
-            "formatOfferIcon": "PNG",
-            "profile": "S718",
-            "backdropProfile": "S1920",
-            "filter": {"bestOnly": best_only},
+            **_common_variables(best_only),
+            **_locale_variables(country, language),
         },
         "query": graphql_episodes_query(),
     }
@@ -436,6 +411,7 @@ def prepare_offers_for_countries_request(
     Raises:
         exceptions.JustWatchCountryCodeError: Provided `countries` contain invalid
             country code.
+        exceptions.JustWatchLanguageCodeError: Provided `language` is not a valid code.
 
     """
     if not countries:
@@ -443,18 +419,16 @@ def prepare_offers_for_countries_request(
         # If it will happen API will respond with an error due to unused variables.
         error_msg = "No country codes, should not happen!"
         raise JustWatchError(error_msg)
+    _raise_for_invalid_language(language)
+    countries = {country.upper() for country in countries}
     for country in countries:
-        _raise_for_invalid_country_code(country)
+        _raise_for_invalid_country(country)
     return {
         "operationName": "GetTitleOffers",
         "variables": {
             "nodeId": node_id,
             "language": language,
-            "formatPoster": "JPG",
-            "formatOfferIcon": "PNG",
-            "profile": "S718",
-            "backdropProfile": "S1920",
-            "filter": {"bestOnly": best_only},
+            **_common_variables(best_only),
         },
         "query": graphql_offers_for_countries_query(countries),
     }
@@ -514,14 +488,15 @@ def prepare_providers_request(country: str) -> dict:
         (dict): JSON/`dict` with GraphQL POST body.
 
     Raises:
-        exceptions.JustWatchCountryCodeError: Provided `country` is not a 2-letter code.
+        exceptions.JustWatchCountryCodeError: Provided `country` is not a valid code.
 
     """
-    _raise_for_invalid_country_code(country)
+    country = country.upper()
+    _raise_for_invalid_country(country)
     return {
         "operationName": "GetProviders",
         "variables": {
-            "country": country.upper(),
+            "country": country,
             "formatOfferIcon": "PNG",
         },
         "query": graphql_providers_query(),
@@ -553,10 +528,35 @@ def parse_providers_response(json: dict) -> list[OfferPackage]:
     return [_parse_package(package) for package in json["data"]["packages"]]
 
 
-def _raise_for_invalid_country_code(code: str) -> None:
-    """Raise JustWatchCountryCodeError if given code is not 2-characters long."""
-    if len(code) != _COUNTRY_CODE_LENGTH:
-        raise JustWatchCountryCodeError(code)
+def _common_variables(best_only: bool) -> dict:
+    """Return dict with variables common for queries."""
+    return {
+        "formatPoster": "JPG",
+        "formatOfferIcon": "PNG",
+        "profile": "S718",
+        "backdropProfile": "S1920",
+        "filter": {"bestOnly": best_only},
+    }
+
+
+def _locale_variables(country: str, language: str) -> dict:
+    """Return dict with variables related to locale, raise for invalid codes."""
+    country = country.upper()
+    _raise_for_invalid_country(country)
+    _raise_for_invalid_language(language)
+    return {"country": country, "language": language}
+
+
+def _raise_for_invalid_country(country: str) -> None:
+    """Raise JustWatchCountryCodeError if country doesn't match expected format."""
+    if not match(_COUNTRY_CODE_REGEX, country.upper()):
+        raise JustWatchCountryCodeError(country)
+
+
+def _raise_for_invalid_language(language: str) -> None:
+    """Raise JustWatchLanguageCodeError if language doesn't match expected format."""
+    if not match(_LANGUAGE_CODE_REGEX, language):
+        raise JustWatchLanguageCodeError(language)
 
 
 def _raise_for_errors_in_response(json: dict) -> None:

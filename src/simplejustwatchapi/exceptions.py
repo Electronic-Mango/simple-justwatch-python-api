@@ -4,49 +4,19 @@ Exception definitions raised by this library.
 All exceptions inherit from [`JustWatchError`]
 [simplejustwatchapi.exceptions.JustWatchError] for easier catching.
 
-Specific exceptions are raised for invalid country codes, non-`2xx` HTTP status codes,
-GraphQL API response errors.
+Specific exceptions are raised for invalid country codes, invalid language codes,
+non-`2xx` HTTP status codes, GraphQL API response errors.
 
 Each exception includes relevant information for why it was raised, but not always in
-any particular parsed format.
-For example, [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError]
-includes the list of errors from the API response, but stored as a `dict`/JSON, as it
-was received from the API.
+any particular parsed format. For example, [`JustWatchApiError`]
+[simplejustwatchapi.exceptions.JustWatchApiError] includes the list of errors from the
+API response, but stored as a `dict`/JSON, as it was received from the API.
 
 """
 
 
 class JustWatchError(Exception):
     """Common parent for all exceptions raised by this library."""
-
-
-class JustWatchCountryCodeError(JustWatchError):
-    """
-    Raised when user provided invalid country code.
-
-    Each country code must be exactly 2 characters long, e.g. `US`, `DE`, `GB`.
-
-    JustWatch doesn't report exact standard, or format, other thay 2 characters.
-    It seems to match ISO 3166-1 alpha-2 format, but the only verification done by this
-    library is length check If the code is 2 characters long, but doesn't match any
-    codes JustWatch expected, the [`JustWatchApiError`]
-    [simplejustwatchapi.exceptions.JustWatchApiError] will be raised instead.
-
-    Attributes:
-        code (str): Invalid country code which caused this exception.
-
-    """
-
-    def __init__(self, code: str) -> None:
-        """
-        Init JustWatchCountryCodeError with invalid country code.
-
-        Args:
-            code(str): Invalid country code which caused this exception.
-
-        """
-        super().__init__(f"Invalid country code: {code}, it must be 2 characters long!")
-        self.code = code
 
 
 class JustWatchHttpError(JustWatchError):
@@ -103,3 +73,71 @@ class JustWatchApiError(JustWatchError):
         """
         super().__init__(f"Errors in JSON response: {errors}")
         self.errors = errors
+
+
+class JustWatchLocaleError(JustWatchError):
+    """Common parent for all locale-related exceptions."""
+
+
+class JustWatchCountryCodeError(JustWatchLocaleError):
+    """
+    Raised when user provided invalid country code.
+
+    Each country code must be exactly 2 letters long, e.g. `US`, `DE`, `GB`. The
+    expected regex reported by JustWatch is `^[A-Z]{2}`, however this library
+    automatically normalizes country codes to uppercase.
+
+    JustWatch doesn't report exact standard, or format, other than expected regex.
+    It seems to match ISO 3166-1 alpha-2 standard, but the only verification done by
+    this library is done based on expected regex. If the code matches the regex,
+    but doesn't match any codes JustWatch expected, the [`JustWatchApiError`]
+    [simplejustwatchapi.exceptions.JustWatchApiError] will be raised instead.
+
+    Attributes:
+        code (str): Invalid country code which caused this exception.
+
+    """
+
+    def __init__(self, code: str) -> None:
+        """
+        Init JustWatchCountryCodeError with invalid country code.
+
+        Args:
+            code(str): Invalid country code which caused this exception.
+
+        """
+        super().__init__(f"Invalid country code: {code}!")
+        self.code = code
+
+
+class JustWatchLanguageCodeError(JustWatchLocaleError):
+    """
+    Raised when user provided invalid language code.
+
+    Language codes are usually 2 letters long, e.g. `en`, `de`, `fr`, with optional
+    suffix. The expected regex reported by JustWatch is `^[a-z]{2}(-[0-9A-Z]+)?$`.
+    Unlike [`JustWatchCountryCodeError`]
+    [simplejustwatchapi.exceptions.JustWatchCountryCodeError] the language code is not
+    normalized by this library, and must be provided in the expected format.
+
+    JustWatch doesn't report exact standard, or format, other than expected regex.
+    It seems to match ISO 639-1/IETF BCP 47 standard, but the only verification done by
+    this library is done based on expected regex. If the code matches the regex,
+    but doesn't match any codes JustWatch expected, the [`JustWatchApiError`]
+    [simplejustwatchapi.exceptions.JustWatchApiError] will be raised instead.
+
+    Attributes:
+        code (str): Invalid language code which caused this exception.
+
+    """
+
+    def __init__(self, code: str) -> None:
+        """
+        Init JustWatchLanguageError with invalid language code.
+
+        Args:
+            code(str): Invalid language code which caused this exception.
+
+        """
+        super().__init__(f"Invalid language code: {code}!")
+        self.code = code

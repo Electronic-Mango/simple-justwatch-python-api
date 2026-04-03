@@ -759,5 +759,5 @@ def _parse_package(json: Any) -> OfferPackage:
     name = json.get("clearName")
     technical_name = json.get("technicalName")
     short_name = json.get("shortName")
-    icon = _IMAGES_URL + json.get("icon")
+    icon = _IMAGES_URL + icon if (icon := json.get("icon")) else ""
     return OfferPackage(platform_id, package_id, name, technical_name, short_name, icon)

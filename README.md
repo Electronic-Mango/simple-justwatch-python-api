@@ -33,6 +33,7 @@ This project is managed by [uv](https://docs.astral.sh/uv/).
   - [`providers` function](#providers-function)
   - [Query parameters from JustWatch](#query-parameters-from-justwatch)
   - [Stored output from other functions with offers](#stored-output-from-other-functions-with-offers)
+- [TODO](#todo)
 - [Disclaimer](#disclaimer)
 
 
@@ -475,6 +476,16 @@ name_to_code_dict = {
     for offer in entry.offers  # Iterate all offers per entry
 }
 ```
+
+
+
+# TODO
+
+ - [ ] Add another custom exception for invalid language code.
+JustWatch reports expected regex: `^[a-z]{2}(-[0-9A-Z]+)?$`.
+It seems to be a combination of ISO 639-1 and BCP 47 subtags.
+ - [ ] Improve checking for country code validity - JustWatch rports expected regex: `^[A-Z]{2}$` - better than just length.
+ - [ ] Should exceptions be raised in `justwatch.py`, or in `query.py`?
 
 
 

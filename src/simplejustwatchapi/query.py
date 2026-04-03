@@ -109,7 +109,7 @@ def parse_search_response(json: dict) -> list[MediaEntry]:
         (list[MediaEntry)]: Parsed received JSON as a list of `MediaEntry` NamedTuples.
 
     Raises:
-        exceptions.JustWatchApiError: Response from API has internal errors.
+        exceptions.JustWatchApiError: JSON response from API has internal errors.
 
     """
     _raise_for_errors_in_response(json)
@@ -191,7 +191,7 @@ def parse_popular_response(json: dict) -> list[MediaEntry]:
         (list[MediaEntry]): Parsed received JSON as a list of `MediaEntry` NamedTuples.
 
     Raises:
-        exceptions.JustWatchApiError: Response from API has internal errors.
+        exceptions.JustWatchApiError: JSON response from API has internal errors.
 
     """
     _raise_for_errors_in_response(json)
@@ -261,7 +261,7 @@ def parse_details_response(json: dict) -> MediaEntry:
         (MediaEntry): Parsed received JSON as a `MediaEntry` NamedTuple.
 
     Raises:
-        exceptions.JustWatchApiError: Response from API has internal errors.
+        exceptions.JustWatchApiError: JSON response from API has internal errors.
 
     """
     _raise_for_errors_in_response(json)
@@ -329,7 +329,7 @@ def parse_seasons_response(json: dict) -> list[MediaEntry]:
         (list[MediaEntry]): Parsed received JSON as a `MediaEntry` NamedTuple list.
 
     Raises:
-        exceptions.JustWatchApiError: Response from API has internal errors.
+        exceptions.JustWatchApiError: JSON response from API has internal errors.
 
     """
     _raise_for_errors_in_response(json)
@@ -397,7 +397,7 @@ def parse_episodes_response(json: dict) -> list[Episode]:
         (list[Episode]): Parsed received JSON as a `Episode` NamedTuple list.
 
     Raises:
-        exceptions.JustWatchApiError: Response from API has internal errors.
+        exceptions.JustWatchApiError: JSON response from API has internal errors.
 
     """
     _raise_for_errors_in_response(json)
@@ -485,7 +485,7 @@ def parse_offers_for_countries_response(
             and values are offers for a given country parsed from JSON response.
 
     Raises:
-        exceptions.JustWatchApiError: Response from API has internal errors.
+        exceptions.JustWatchApiError: JSON response from API has internal errors.
 
     """
     _raise_for_errors_in_response(json)
@@ -546,7 +546,7 @@ def parse_providers_response(json: dict) -> list[OfferPackage]:
         (list[OfferPackage]): Parsed received JSON as a list of `OfferPackage`.
 
     Raises:
-        exceptions.JustWatchApiError: Response from API has internal errors.
+        exceptions.JustWatchApiError: JSON response from API has internal errors.
 
     """
     _raise_for_errors_in_response(json)
@@ -554,11 +554,13 @@ def parse_providers_response(json: dict) -> list[OfferPackage]:
 
 
 def _raise_for_invalid_country_code(code: str) -> None:
+    """Raise JustWatchCountryCodeError if given code is not 2-characters long."""
     if len(code) != _COUNTRY_CODE_LENGTH:
         raise JustWatchCountryCodeError(code)
 
 
 def _raise_for_errors_in_response(json: dict) -> None:
+    """Raise JustWatchApiError if given JSON contains `errors` key."""
     if "errors" in json:
         raise JustWatchApiError(json["errors"])
 

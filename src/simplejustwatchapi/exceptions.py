@@ -32,7 +32,7 @@ class JustWatchHttpError(JustWatchError):
 
     def __init__(self, code: int, message: str) -> None:
         """Init JustWatchHttpError with status code and message from response."""
-        super().__init__(f"{code}: {message}")
+        super().__init__(f"HTTP code {code}: {message}")
         self.code = code
         self.message = message
 
@@ -54,5 +54,5 @@ class JustWatchApiError(JustWatchError):
 
     def __init__(self, errors: list[dict]) -> None:
         """Init JustWatchApiError with internal errors from JSON response."""
-        super().__init__(f"Errors from JSON response: {errors}")
+        super().__init__(f"Errors in JSON response: {errors}")
         self.errors = errors

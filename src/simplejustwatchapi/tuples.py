@@ -10,9 +10,10 @@ class OfferPackage(NamedTuple):
     Contains information about platform on which given offer is available.
 
     Attributes:
-        id (str): ID, defines whole platform on which this offer is available, not a single offer.
-        package_id (int): Package ID, defines whole platform on which this offer is available,
+        id (str): ID, defines whole platform on which this offer is available,
             not a single offer.
+        package_id (int): Package ID, defines whole platform on which this offer is
+            available, not a single offer.
         name (str): Name of the platform in format suited to display for users.
         technical_name (str): Technical name of the platform,
             usually all lowercase with no whitespaces.
@@ -33,33 +34,34 @@ class Offer(NamedTuple):
     """
     Parsed single offer from JustWatch GraphQL API for single entry.
 
-    One platform can have multiple offers for one entry available, e.g. renting, buying, etc.
+    One platform can have multiple offers for one entry available, e.g. renting, buying.
 
     Attributes:
         id (str): Offer ID.
         monetization_type (str): Type of monetization of this offer,
-            e.g. ``FLATRATE`` (streaming), ``RENT``, ``BUY``.
-        presentation_type (str): Quality of media in this offer, e.g. ``HD``, ``SD``, ``4K``.
-        price_string (str | None): Current price as a string with currency,
-            suitable for displaying to users. Format can change based on used ``language`` argument.
+            e.g. `FLATRATE` (streaming), `RENT`, `BUY`.
+        presentation_type (str): Quality of media in this offer, e.g. `HD`, `SD`, `4K`.
+        price_string (str | None): Current price as a string with currency, suitable for
+            displaying to users. Format can change based on used `language` argument.
         price_value (float | None): Current price as a numeric value.
         price_currency (str): Represents only currency, without price, or value.
-        last_change_retail_price_value (float | None): Previous available price if change in price
-            was recorded.
+        last_change_retail_price_value (float | None): Previous available price if
+            change in price  was recorded.
         type (str): Type of offer.
-        package (OfferPackage): Information about platform on which this offer is available.
+        package (OfferPackage): Information about platform on which this offer is
+            available.
         url (str): URL to this offer.
-        element_count (int | None): Element count, usually ``0``.
+        element_count (int | None): Element count, usually `0`.
         available_to (str | None): Date until which this offer will be available.
         deeplink_roku (str | None): Deeplink to this offer in Roku.
-        subtitle_languages (list[str]): List of 2-letter language codes of available subtitles,
-            e.g. ``["en", "pt", "de"]``.
-        video_technology (list[str]): List of known video technologies available in this offer,
-            e.g. ``DOLBY_VISION``.
-        audio_technology (list[str]): List of known audio technologies available in this offer,
-            e.g. ``DOLBY_ATMOS``.
-        audio_languages (list[str]): List of 2-letter language codes of available audio tracks,
-            e.g. ``["en", "pt", "de"]``.
+        subtitle_languages (list[str]): List of 2-letter language codes of available
+            subtitles, e.g. `["en", "pt", "de"]`.
+        video_technology (list[str]): List of known video technologies available in this
+            offer, e.g. `DOLBY_VISION`.
+        audio_technology (list[str]): List of known audio technologies available in this
+            offer, e.g. `DOLBY_ATMOS`.
+        audio_languages (list[str]): List of 2-letter language codes of available audio
+            tracks, e.g. `["en", "pt", "de"]`.
 
     """
 
@@ -127,7 +129,7 @@ class StreamingCharts(NamedTuple):
 
     Attributes:
         rank (int): Rank on JustWatch.
-        trend (str): Trend in ranking on JustWatch, ``UP``, ``DOWN``, ``STABLE``.
+        trend (str): Trend in ranking on JustWatch, `UP`, `DOWN`, `STABLE`.
         trend_difference (int): Difference in rank; related to trend.
         top_rank (int): Top rank ever reached.
         days_in_top_3 (int): Number of days in top 3 ranks.
@@ -135,7 +137,7 @@ class StreamingCharts(NamedTuple):
         days_in_top_100 (int): Number of days in top 100 ranks.
         days_in_top_1000 (int): Number of days in top 1000 ranks.
         updated (str): Date when rank data was last updated as a string,
-            e.g.: ``2024-10-06T09:20:36.397Z``.
+            e.g.: `2024-10-06T09:20:36.397Z`.
 
     """
 
@@ -157,10 +159,10 @@ class Episode(NamedTuple):
     Attributes:
         episode_id (str): Episode ID, contains type code and numeric ID.
         object_id (int): Object ID, the numeric part of full episode ID.
-        object_type (str): Type of entry, for episodes should be ``SHOW_EPISODE``.
+        object_type (str): Type of entry, for episodes should be `SHOW_EPISODE`.
         title (str | None): Full title.
         release_year (int | None): Release year as a number.
-        release_date (str | None): Full release date as a string, e.g. ``2013-12-16``.
+        release_date (str | None): Full release date as a string, e.g. `2013-12-16`.
         runtime_minutes (int | None): Runtime in minutes.
         short_description (str | None): Short description of this episode.
         episode_number (int | None): Number of this episode.
@@ -185,35 +187,39 @@ class Episode(NamedTuple):
 
 class MediaEntry(NamedTuple):
     """
-    Parsed response from JustWatch GraphQL API for "GetSearchTitles" query for single entry.
+    Parsed response from JustWatch API for `GetSearchTitles` query for a single entry.
 
     Attributes:
         entry_id (str): Entry ID, contains type code and numeric ID.
         object_id (int): Object ID, the numeric part of full entry ID.
-        object_type (str): Type of entry, e.g. ``MOVIE``, ``SHOW``.
+        object_type (str): Type of entry, e.g. `MOVIE`, `SHOW`.
         title (str): Full title.
         url (str): URL to JustWatch with details for this entry.
         release_year (int): Release year as a number.
-        release_date (str): Full release date as a string, e.g. ``2013-12-16``.
+        release_date (str): Full release date as a string, e.g. `2013-12-16`.
         runtime_minutes (int): Runtime in minutes.
         short_description (str): Short description of this entry.
         genres (list[str]): List of genre codes for this entry,
-            e.g. ``["rly"]``, ``["cmy", "drm", "rma"]``.
+            e.g. `["rly"]`, `["cmy", "drm", "rma"]`.
         imdb_id (str | None): ID of this entry in IMDB.
         tmdb_id (str | None): ID of this entry in TMDB.
         poster (str | None): URL to poster for this ID.
-        backdrops (list[str]): List of URLs for backdrops (full screen images to use as background).
-        age_certification (str | None): Age rating as a string, e.g.: ``R``, ``TV-14``.
+        backdrops (list[str]): List of URLs for backdrops (full screen images to use as
+            background).
+        age_certification (str | None): Age rating as a string, e.g.: `R`, `TV-14`.
         scoring (Scoring | None): Scoring data.
         interactions (Interactions | None): Interactions (likes/dislikes) data.
         streaming_charts (StreamingCharts | None): JustWatch charts/ranks data.
         offers (list[Offer]): List of available offers for this entry,
             empty if there are no available offers.
-        total_season_count (int | None): Total season count, for non-shows it's always ``None``.
+        total_season_count (int | None): Total season count,
+            for non-shows it's always `None`.
         total_episode_count (int | None): Total number of episodes in this season,
-            for non-seasons it's always ``None``.
-        season_number (int | None): Number of this season, for movies it's always ``None``.
-        episode_number (int | None): Number of this episode, for non-episodes it's always ``None``.
+            for non-seasons it's always `None`.
+        season_number (int | None): Number of this season,
+            for movies it's always `None`.
+        episode_number (int | None): Number of this episode,
+            for non-episodes it's always `None`.
 
     """
 

@@ -1,0 +1,3 @@
+# GraphQL
+
+::: simplejustwatchapi.graphql

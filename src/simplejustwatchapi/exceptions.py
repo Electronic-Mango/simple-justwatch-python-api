@@ -22,11 +22,11 @@ class JustWatchCountryCodeError(JustWatchError):
 
 class JustWatchHttpError(JustWatchError):
     """
-    Raise when JustWatch API returned a non-2xx status code.
+    Raise when JustWatch API returned a non-`2xx` status code.
 
     Attributes:
         code (int): HTTP status code received from API.
-        message (str): Message received from API, alongside the non-2xx status code.
+        message (str): Message received from API, alongside the non-`2xx` status code.
 
     """
 
@@ -41,13 +41,14 @@ class JustWatchApiError(JustWatchError):
     """
     Raise when JustWatch API returned errors in JSON response.
 
-    If this error is raised, then API responded with status code 2xx, but there are listed errors
-    in the internal JSON response. It can happen for too high complexity of request, or invalid
-    node ID in functions like :func:`simplejustwatchapi.details`.
+    If this error is raised, then API responded with status code `2xx`, but there are
+    listed errors in the internal JSON response. It can happen for too high complexity
+    of request, or invalid node ID in functions like [`details`]
+    [simplejustwatchapi.justwatch.details].
 
     Attributes:
-        errors (list[dict]): List of errors from JSON response. Each dict contain at least two
-            keys - "message" and "code".
+        errors (list[dict]): List of errors from JSON response. Each dict contain
+            at least two keys - "message" and "code".
 
     """
 

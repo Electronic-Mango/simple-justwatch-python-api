@@ -1,4 +1,4 @@
-"""The simplejustwatchapi package."""
+"""The main simplejustwatchapi package."""
 
 from simplejustwatchapi.justwatch import details as details
 from simplejustwatchapi.justwatch import episodes as episodes

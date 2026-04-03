@@ -1,19 +1,29 @@
-"""Module storing tuples used as responses returned from this library."""
+"""
+Data structures for parsed JustWatch API responses.
+
+Each response is parsed into a [`NamedTuple`][typing.NamedTuple] for easy access to
+each field and type checking. Each function available in this library is returning
+one (or more) of these structures.
+
+Most of returned fields are marked optional (with `| None`), as they might be missing
+from the API response. However, to be safe you might need to treat **all** fields as
+optional, as there is no guarantee that API will always return all of them.
+"""
 
 from typing import NamedTuple
 
 
 class OfferPackage(NamedTuple):
     """
-    Parsed single offer package from JustWatch GraphQL API for single entry.
+    Parsed single offer package from one provider from JustWatch GraphQL API.
 
-    Contains information about platform on which given offer is available.
+    Contains information about **platform** (e.g., Netflix, Hulu) on which given offer
+    is available. Also used by [`providers`][simplejustwatchapi.justwatch.providers]
+    function to return data about all available providers.
 
     Attributes:
-        id (str): ID, defines whole platform on which this offer is available,
-            not a single offer.
-        package_id (int): Package ID, defines whole platform on which this offer is
-            available, not a single offer.
+        id (str): ID of the provider/plaform for this offer.
+        package_id (int): Package ID. I'm not sure how it's different from regular `id`.
         name (str): Name of the platform in format suited to display for users.
         technical_name (str): Technical name of the platform,
             usually all lowercase with no whitespaces.
@@ -32,9 +42,10 @@ class OfferPackage(NamedTuple):
 
 class Offer(NamedTuple):
     """
-    Parsed single offer from JustWatch GraphQL API for single entry.
+    Parsed single offer from JustWatch GraphQL API for a single entry.
 
-    One platform can have multiple offers for one entry available, e.g. renting, buying.
+    One platform can have multiple offers for one entry available, e.g., renting,
+    buying, streaming; each with different prices, etc.
 
     Attributes:
         id (str): Offer ID.
@@ -156,6 +167,10 @@ class Episode(NamedTuple):
     """
     Parsed data related to a single episode.
 
+    It's a subset of fields available in [`MediaEntry`]
+    [simplejustwatchapi.tuples.MediaEntry], but with some episode-specific fields,
+    e.g. `episode_number`, `season_number`, etc.
+
     Attributes:
         episode_id (str): Episode ID, contains type code and numeric ID.
         object_id (int): Object ID, the numeric part of full episode ID.
@@ -187,7 +202,16 @@ class Episode(NamedTuple):
 
 class MediaEntry(NamedTuple):
     """
-    Parsed response from JustWatch API for `GetSearchTitles` query for a single entry.
+    Parsed full details for a single entry.
+
+    Used by multiple functions in this library, e.g.,
+    [`details`][simplejustwatchapi.justwatch.details],
+    [`search`][simplejustwatchapi.justwatch.search],
+    [`seasons`][simplejustwatchapi.justwatch.seasons].
+
+    Some details might be specific for different media types, e.g. `total_episode_count`
+    is only relevant for seasons, `total_season_count` for seasons and shows, etc.
+    For non-relevant fields, the value is always `None`.
 
     Attributes:
         entry_id (str): Entry ID, contains type code and numeric ID.

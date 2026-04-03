@@ -1,23 +1,37 @@
-"""The main simplejustwatchapi package."""
+"""The main simplejustwatchapi package with "public" interface."""
 
-from simplejustwatchapi.justwatch import details as details
-from simplejustwatchapi.justwatch import episodes as episodes
-from simplejustwatchapi.justwatch import offers_for_countries as offers_for_countries
-from simplejustwatchapi.justwatch import popular as popular
-from simplejustwatchapi.justwatch import providers as providers
-from simplejustwatchapi.justwatch import search as search
-from simplejustwatchapi.justwatch import seasons as seasons
-from simplejustwatchapi.tuples import Episode as Episode
-from simplejustwatchapi.tuples import Interactions as Interactions
-from simplejustwatchapi.tuples import MediaEntry as MediaEntry
-from simplejustwatchapi.tuples import Offer as Offer
-from simplejustwatchapi.tuples import OfferPackage as OfferPackage
-from simplejustwatchapi.tuples import Scoring as Scoring
-from simplejustwatchapi.tuples import StreamingCharts as StreamingCharts
+from simplejustwatchapi.exceptions import (
+    JustWatchApiError,
+    JustWatchCountryCodeError,
+    JustWatchError,
+    JustWatchHttpError,
+)
+from simplejustwatchapi.justwatch import (
+    details,
+    episodes,
+    offers_for_countries,
+    popular,
+    providers,
+    search,
+    seasons,
+)
+from simplejustwatchapi.tuples import (
+    Episode,
+    Interactions,
+    MediaEntry,
+    Offer,
+    OfferPackage,
+    Scoring,
+    StreamingCharts,
+)
 
 __all__ = [
     "Episode",
     "Interactions",
+    "JustWatchApiError",
+    "JustWatchCountryCodeError",
+    "JustWatchError",
+    "JustWatchHttpError",
     "MediaEntry",
     "Offer",
     "OfferPackage",

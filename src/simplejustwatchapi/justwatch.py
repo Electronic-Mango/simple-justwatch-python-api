@@ -135,7 +135,7 @@ def popular(
         language (str): Language of responses, `en` by default.
         count (int): How many responses should be returned.
         best_only (bool): Return only best offers if `True`,
-        return all offers if `False`.
+            return all offers if `False`.
         offset (int): Search results offset.
         providers (list[str] | str | None): 3-letter service identifier(s),
             or `None` for all providers.

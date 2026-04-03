@@ -1,6 +1,6 @@
 """Main module orchestrating requests to JustWatch GraphQL API."""
 
-from httpx import Response, post
+from httpx import post
 
 from simplejustwatchapi.exceptions import JustWatchHttpError
 from simplejustwatchapi.query import (
@@ -80,17 +80,16 @@ def search(
         (list[MediaEntry]): List of tuples parsed from JustWatch response.
 
     Raises:
-        exceptions.JustWatchHttpError: If JustWatch API doesn't respond with `2xx` code.
+        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
         exceptions.JustWatchCountryCodeError: Provided `country` is not a 2-letter code.
-        exceptions.JustWatchApiError: Response from API has internal errors.
+        exceptions.JustWatchApiError: JSON response from API has internal errors.
 
     """
     request = prepare_search_request(
         title, country, language, count, best_only, offset, providers
     )
-    response = post(_GRAPHQL_API_URL, json=request)
-    _raise_for_status(response)
-    return parse_search_response(response.json())
+    response = _post_to_jw_graphql_api(request)
+    return parse_search_response(response)
 
 
 def popular(
@@ -145,17 +144,16 @@ def popular(
         (list[MediaEntry]): List of tuples parsed from JustWatch response.
 
     Raises:
-        exceptions.JustWatchHttpError: If JustWatch API doesn't respond with `2xx` code.
+        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
         exceptions.JustWatchCountryCodeError: Provided `country` is not a 2-letter code.
-        exceptions.JustWatchApiError: Response from API has internal errors.
+        exceptions.JustWatchApiError: JSON response from API has internal errors.
 
     """
     request = prepare_popular_request(
         country, language, count, best_only, offset, providers
     )
-    response = post(_GRAPHQL_API_URL, json=request)
-    _raise_for_status(response)
-    return parse_popular_response(response.json())
+    response = _post_to_jw_graphql_api(request)
+    return parse_popular_response(response)
 
 
 def details(
@@ -182,15 +180,14 @@ def details(
         (MediaEntry): Tuple with data about requested entry.
 
     Raises:
-        exceptions.JustWatchHttpError: If JustWatch API doesn't respond with `2xx` code.
+        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
         exceptions.JustWatchCountryCodeError: Provided `country` is not a 2-letter code.
-        exceptions.JustWatchApiError: Response from API has internal errors.
+        exceptions.JustWatchApiError: JSON response from API has internal errors.
 
     """
     request = prepare_details_request(node_id, country, language, best_only)
-    response = post(_GRAPHQL_API_URL, json=request)
-    _raise_for_status(response)
-    return parse_details_response(response.json())
+    response = _post_to_jw_graphql_api(request)
+    return parse_details_response(response)
 
 
 def seasons(
@@ -214,15 +211,14 @@ def seasons(
         (list[MediaEntry]): List of tuples with seasons data about requested entry.
 
     Raises:
-        exceptions.JustWatchHttpError: If JustWatch API doesn't respond with `2xx` code.
+        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
         exceptions.JustWatchCountryCodeError: Provided `country` is not a 2-letter code.
-        exceptions.JustWatchApiError: Response from API has internal errors.
+        exceptions.JustWatchApiError: JSON response from API has internal errors.
 
     """
     request = prepare_seasons_request(show_id, country, language, best_only)
-    response = post(_GRAPHQL_API_URL, json=request)
-    _raise_for_status(response)
-    return parse_seasons_response(response.json())
+    response = _post_to_jw_graphql_api(request)
+    return parse_seasons_response(response)
 
 
 def episodes(
@@ -246,15 +242,14 @@ def episodes(
         (list[Episode]): List of tuples with episode data about requested entry.
 
     Raises:
-        exceptions.JustWatchHttpError: If JustWatch API doesn't respond with `2xx` code.
+        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
         exceptions.JustWatchCountryCodeError: Provided `country` is not a 2-letter code.
-        exceptions.JustWatchApiError: Response from API has internal errors.
+        exceptions.JustWatchApiError: JSON response from API has internal errors.
 
     """
     request = prepare_episodes_request(season_id, country, language, best_only)
-    response = post(_GRAPHQL_API_URL, json=request)
-    _raise_for_status(response)
-    return parse_episodes_response(response.json())
+    response = _post_to_jw_graphql_api(request)
+    return parse_episodes_response(response)
 
 
 def offers_for_countries(
@@ -304,9 +299,9 @@ def offers_for_countries(
             found offers for their respective countries.
 
     Raises:
-        exceptions.JustWatchHttpError: If JustWatch API doesn't respond with `2xx` code.
+        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
         exceptions.JustWatchCountryCodeError: Provided `country` contain invalid code.
-        exceptions.JustWatchApiError: Response from API has internal errors.
+        exceptions.JustWatchApiError: JSON response from API has internal errors.
 
     """
     if not countries:
@@ -314,9 +309,8 @@ def offers_for_countries(
     request = prepare_offers_for_countries_request(
         node_id, countries, language, best_only
     )
-    response = post(_GRAPHQL_API_URL, json=request)
-    _raise_for_status(response)
-    return parse_offers_for_countries_response(response.json(), countries)
+    response = _post_to_jw_graphql_api(request)
+    return parse_offers_for_countries_response(response, countries)
 
 
 def providers(country: str = "US") -> list[OfferPackage]:
@@ -334,17 +328,31 @@ def providers(country: str = "US") -> list[OfferPackage]:
             so the same tuple is reused.
 
     Raises:
-        exceptions.JustWatchHttpError: If JustWatch API doesn't respond with `2xx` code.
+        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
         exceptions.JustWatchCountryCodeError: Provided `country` is not a 2-letter code.
-        exceptions.JustWatchApiError: Response from API has internal errors.
+        exceptions.JustWatchApiError: JSON response from API has internal errors.
 
     """
     request = prepare_providers_request(country)
-    response = post(_GRAPHQL_API_URL, json=request)
-    _raise_for_status(response)
-    return parse_providers_response(response.json())
+    response = _post_to_jw_graphql_api(request)
+    return parse_providers_response(response)
 
 
-def _raise_for_status(response: Response) -> None:
+def _post_to_jw_graphql_api(request_json: dict) -> dict:
+    """
+    Send a GraphQL query, verify HTTP response, return API response JSON as `dict`.
+
+    Args:
+        request_json(dict): JSON with full request - GraphQL query and variables.
+
+    Returns:
+        (dict): JSON response from the API.
+
+    Raises:
+        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
+
+    """
+    response = post(_GRAPHQL_API_URL, json=request_json)
     if not response.is_success:
         raise JustWatchHttpError(response.status_code, response.text)
+    return response.json()

@@ -1,4 +1,19 @@
-"""Module storing all raised exceptions."""
+"""
+Exception definitions raised by this library.
+
+All exceptions inherit from [`JustWatchError`]
+[simplejustwatchapi.exceptions.JustWatchError] for easier catching.
+
+Specific exceptions are raised for invalid country codes, non-`2xx` HTTP status codes,
+GraphQL API response errors.
+
+Each exception includes relevant information for why it was raised, but not always in
+any particular parsed format.
+For example, [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError]
+includes the list of errors from the API response, but stored as a `dict`/JSON, as it
+was received from the API.
+
+"""
 
 
 class JustWatchError(Exception):
@@ -8,6 +23,14 @@ class JustWatchError(Exception):
 class JustWatchCountryCodeError(JustWatchError):
     """
     Raised when user provided invalid country code.
+
+    Each country code must be exactly 2 characters long, e.g. `US`, `DE`, `GB`.
+
+    JustWatch doesn't report exact standard, or format, other thay 2 characters.
+    It seems to match ISO 3166-1 alpha-2 format, but the only verification done by this
+    library is length check If the code is 2 characters long, but doesn't match any
+    codes JustWatch expected, the [`JustWatchApiError`]
+    [simplejustwatchapi.exceptions.JustWatchApiError] will be raised instead.
 
     Attributes:
         code (str): Invalid country code which caused this exception.
@@ -29,6 +52,8 @@ class JustWatchCountryCodeError(JustWatchError):
 class JustWatchHttpError(JustWatchError):
     """
     Raised when JustWatch API returned a non-`2xx` status code.
+
+    Any additional verification is not performed, ony the status code is checked.
 
     Attributes:
         code (int): HTTP status code returned by the API.
@@ -56,8 +81,8 @@ class JustWatchApiError(JustWatchError):
 
     If this error is raised, then API responded with status code `2xx`, but there are
     listed errors in the internal JSON response. It can happen for too high complexity
-    of request, or invalid node ID in functions like [`details`]
-    [simplejustwatchapi.justwatch.details].
+    of request, invalid node ID in functions like [`details`]
+    [simplejustwatchapi.justwatch.details], or unexpected country codes, or languages.
 
     Attributes:
         errors (list[dict]): List of all errors in the JSON response from the API.

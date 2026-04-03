@@ -7,7 +7,7 @@ class JustWatchError(Exception):
 
 class JustWatchCountryCodeError(JustWatchError):
     """
-    Raise when user provided invalid country code.
+    Raised when user provided invalid country code.
 
     Attributes:
         code (str): Invalid country code which caused this exception.
@@ -15,23 +15,36 @@ class JustWatchCountryCodeError(JustWatchError):
     """
 
     def __init__(self, code: str) -> None:
-        """Init JustWatchCountryCodeError with invalid country code."""
+        """
+        Init JustWatchCountryCodeError with invalid country code.
+
+        Args:
+            code(str): Invalid country code which caused this exception.
+
+        """
         super().__init__(f"Invalid country code: {code}, it must be 2 characters long!")
         self.code = code
 
 
 class JustWatchHttpError(JustWatchError):
     """
-    Raise when JustWatch API returned a non-`2xx` status code.
+    Raised when JustWatch API returned a non-`2xx` status code.
 
     Attributes:
-        code (int): HTTP status code received from API.
-        message (str): Message received from API, alongside the non-`2xx` status code.
+        code (int): HTTP status code returned by the API.
+        message (str): HTTP message response from the JustWatch API.
 
     """
 
     def __init__(self, code: int, message: str) -> None:
-        """Init JustWatchHttpError with status code and message from response."""
+        """
+        Init JustWatchHttpError with status code and message from response.
+
+        Args:
+            code (int): HTTP status code returned by the API.
+            message (str): HTTP message response from the JustWatch API.
+
+        """
         super().__init__(f"HTTP code {code}: {message}")
         self.code = code
         self.message = message
@@ -39,7 +52,7 @@ class JustWatchHttpError(JustWatchError):
 
 class JustWatchApiError(JustWatchError):
     """
-    Raise when JustWatch API returned errors in JSON response.
+    Raised when JustWatch API returned errors in JSON response.
 
     If this error is raised, then API responded with status code `2xx`, but there are
     listed errors in the internal JSON response. It can happen for too high complexity
@@ -47,12 +60,21 @@ class JustWatchApiError(JustWatchError):
     [simplejustwatchapi.justwatch.details].
 
     Attributes:
-        errors (list[dict]): List of errors from JSON response. Each dict contain
-            at least two keys - "message" and "code".
+        errors (list[dict]): List of all errors in the JSON response from the API.
+            The `dict` elements are themselves basic JSONs, each with at least two
+            keys - `message` and `code`.
 
     """
 
     def __init__(self, errors: list[dict]) -> None:
-        """Init JustWatchApiError with internal errors from JSON response."""
+        """
+        Init JustWatchApiError with internal errors from JSON response.
+
+        Args:
+            errors (list[dict]): List of all errors in the JSON response from the API.
+                The `dict` elements are themselves basic JSONs, each with at least two
+                keys - `message` and `code`.
+
+        """
         super().__init__(f"Errors in JSON response: {errors}")
         self.errors = errors

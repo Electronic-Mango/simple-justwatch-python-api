@@ -44,10 +44,12 @@ Copyright &copy; 2023 Electronic Mango
 # can be defined using TOML syntax.
 #
 # Read more: https://zensical.org/docs/setup/navigation/
-# nav = [
-#   { "Get started" = "index.md" },
-#   { "Markdown in 5min" = "markdown.md" },
-# ]
+nav = [
+  { "Introduction" = "index.md" },
+  { "API Reference" = ["API Reference/functions.md", "API Reference/data.md", "API Reference/exceptions.md"] },
+  { "Internal API" = ["Internal API/query.md", "Internal API/graphql.md"] },
+  { "Zensical" = ["Zensical/zensical.md", "Zensical/markdown.md"] },
+]
 
 # With the "extra_css" option you can add your own CSS styling to customize
 # your Zensical project according to your needs. You can add any number of
@@ -341,6 +343,9 @@ separate_signature = true
 show_signature_annotations = true
 show_signature_type_parameters = true
 show_bases = true
+show_root_heading = false
+members = true
+line_length = 88
 
 [project.plugins.mkdocstrings.handlers.python.options.docstring_options]
 ignore_init_summary = true

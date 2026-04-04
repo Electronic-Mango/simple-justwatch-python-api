@@ -2,7 +2,6 @@
 
 from simplejustwatchapi.exceptions import (
     JustWatchApiError,
-    JustWatchCountryCodeError,
     JustWatchError,
     JustWatchHttpError,
 )
@@ -29,7 +28,6 @@ __all__ = [
     "Episode",
     "Interactions",
     "JustWatchApiError",
-    "JustWatchCountryCodeError",
     "JustWatchError",
     "JustWatchHttpError",
     "MediaEntry",

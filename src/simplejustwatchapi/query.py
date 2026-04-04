@@ -1,14 +1,8 @@
 """Module responsible for creating requests to and parsing responses from JustWatch."""
 
-from re import match
 from typing import Any
 
-from simplejustwatchapi.exceptions import (
-    JustWatchApiError,
-    JustWatchCountryCodeError,
-    JustWatchError,
-    JustWatchLanguageCodeError,
-)
+from simplejustwatchapi.exceptions import JustWatchApiError, JustWatchError
 from simplejustwatchapi.graphql import (
     graphql_details_query,
     graphql_episodes_query,
@@ -31,6 +25,7 @@ from simplejustwatchapi.tuples import (
 _DETAILS_URL = "https://justwatch.com"
 _IMAGES_URL = "https://images.justwatch.com"
 
+# TODO: Left here for posterity, remove once formats are well documented.
 _COUNTRY_CODE_REGEX = r"^[A-Z]{2}$"
 _LANGUAGE_CODE_REGEX = r"^[a-z]{2}(-[0-9A-Z]+)?$"
 
@@ -52,7 +47,8 @@ def prepare_search_request(
     Country code should be two uppercase letters, however it will be auto-converted to
     uppercase.
 
-    Meant to be used together with :func:`parse_search_response`.
+    Meant to be used together with [`parse_search_response`]
+    [simplejustwatchapi.query.parse_search_response].
 
     Args:
         title (str): Title to search.
@@ -67,10 +63,6 @@ def prepare_search_request(
 
     Returns:
         (dict[str, Any]): JSON with GraphQL POST body.
-
-    Raises:
-        exceptions.JustWatchCountryCodeError: Provided `country` is not a valid code.
-        exceptions.JustWatchLanguageCodeError: Provided `language` is not a valid code.
 
     """
     return {
@@ -145,10 +137,6 @@ def prepare_popular_request(
     Returns:
         (dict[str, Any]): JSON with GraphQL POST body.
 
-    Raises:
-        exceptions.JustWatchCountryCodeError: Provided `country` is not a valid code.
-        exceptions.JustWatchLanguageCodeError: Provided `language` is not a valid code.
-
     """
     return {
         "operationName": "GetPopularTitles",
@@ -214,10 +202,6 @@ def prepare_details_request(
     Returns:
         (dict[str, Any]): JSON with GraphQL POST body.
 
-    Raises:
-        exceptions.JustWatchCountryCodeError: Provided `country` is not a valid code.
-        exceptions.JustWatchLanguageCodeError: Provided `language` is not a valid code.
-
     """
     return {
         "operationName": "GetTitleNode",
@@ -276,10 +260,6 @@ def prepare_seasons_request(
 
     Returns:
         (dict[str, Any]): JSON with GraphQL POST body.
-
-    Raises:
-        exceptions.JustWatchCountryCodeError: Provided `country` is not a valid code.
-        exceptions.JustWatchLanguageCodeError: Provided `language` is not a valid code.
 
     """
     return {
@@ -340,10 +320,6 @@ def prepare_episodes_request(
     Returns:
         (dict[str, Any]): JSON with GraphQL POST body.
 
-    Raises:
-        exceptions.JustWatchCountryCodeError: Provided `country` is not a valid code.
-        exceptions.JustWatchLanguageCodeError: Provided `language` is not a valid code.
-
     """
     return {
         "operationName": "GetTitleNode",
@@ -370,9 +346,6 @@ def parse_episodes_response(json: dict[str, Any]) -> list[Episode]:
 
     Returns:
         (list[Episode]): Parsed received JSON as a `Episode` NamedTuple list.
-
-    Raises:
-        exceptions.JustWatchApiError: JSON response from API has internal errors.
 
     """
     _raise_for_errors_in_response(json)
@@ -408,21 +381,13 @@ def prepare_offers_for_countries_request(
     Returns:
         (dict[str, Any]): JSON with GraphQL POST body.
 
-    Raises:
-        exceptions.JustWatchCountryCodeError: Provided `countries` contain invalid
-            country code.
-        exceptions.JustWatchLanguageCodeError: Provided `language` is not a valid code.
-
     """
     if not countries:
         # This should never happen, justwatch.py should take care of this.
         # If it will happen API will respond with an error due to unused variables.
         error_msg = "No country codes, should not happen!"
         raise JustWatchError(error_msg)
-    _raise_for_invalid_language(language)
     countries = {country.upper() for country in countries}
-    for country in countries:
-        _raise_for_invalid_country(country)
     return {
         "operationName": "GetTitleOffers",
         "variables": {
@@ -487,16 +452,11 @@ def prepare_providers_request(country: str) -> dict[str, Any]:
     Returns:
         (dict[str, Any]): JSON with GraphQL POST body.
 
-    Raises:
-        exceptions.JustWatchCountryCodeError: Provided `country` is not a valid code.
-
     """
-    country = country.upper()
-    _raise_for_invalid_country(country)
     return {
         "operationName": "GetProviders",
         "variables": {
-            "country": country,
+            "country": country.upper(),
             "formatOfferIcon": "PNG",
         },
         "query": graphql_providers_query(),
@@ -520,9 +480,6 @@ def parse_providers_response(json: dict[str, Any]) -> list[OfferPackage]:
     Returns:
         (list[OfferPackage]): Parsed received JSON as a list of `OfferPackage`.
 
-    Raises:
-        exceptions.JustWatchApiError: JSON response from API has internal errors.
-
     """
     _raise_for_errors_in_response(json)
     return [_parse_package(package) for package in json["data"]["packages"]]
@@ -541,22 +498,7 @@ def _common_variables(best_only: bool) -> dict[str, Any]:
 
 def _locale_variables(country: str, language: str) -> dict[str, str]:
     """Return dict with variables related to locale, raise for invalid codes."""
-    country = country.upper()
-    _raise_for_invalid_country(country)
-    _raise_for_invalid_language(language)
-    return {"country": country, "language": language}
-
-
-def _raise_for_invalid_country(country: str) -> None:
-    """Raise JustWatchCountryCodeError if country doesn't match expected format."""
-    if not match(_COUNTRY_CODE_REGEX, country.upper()):
-        raise JustWatchCountryCodeError(country)
-
-
-def _raise_for_invalid_language(language: str) -> None:
-    """Raise JustWatchLanguageCodeError if language doesn't match expected format."""
-    if not match(_LANGUAGE_CODE_REGEX, language):
-        raise JustWatchLanguageCodeError(language)
+    return {"country": country.upper(), "language": language}
 
 
 def _raise_for_errors_in_response(json: dict[str, Any]) -> None:

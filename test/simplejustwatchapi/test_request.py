@@ -1,13 +1,8 @@
-from re import match
 from unittest.mock import patch
 
 from pytest import mark, raises
 
-from simplejustwatchapi.exceptions import (
-    JustWatchCountryCodeError,
-    JustWatchError,
-    JustWatchLanguageCodeError,
-)
+from simplejustwatchapi.exceptions import JustWatchError
 from simplejustwatchapi.query import (
     prepare_details_request,
     prepare_episodes_request,
@@ -250,90 +245,6 @@ def test_prepare_providers_request(_, country):
     }
     request = prepare_providers_request(country)
     assert expected_request == request
-
-
-# This might be too whacky, even for me...
-@mark.parametrize(
-    argnames=("function", "args", "code_position", "invalid_code"),
-    argvalues=[
-        (*args, code)
-        for args in [
-            (prepare_search_request, ("", "US", 5, True, 0, None), 2),
-            (prepare_popular_request, ("US", 5, True, 0, None), 1),
-            (prepare_details_request, ("", "US", True), 2),
-            (prepare_seasons_request, ("", "US", True), 2),
-            (prepare_episodes_request, ("", "US", True), 2),
-            (prepare_offers_for_countries_request, ("", {"US"}, True), 2),
-        ]
-        for code in [
-            "english",  # too long
-            "e",  # too short
-            "e-123ASD",  # too short before hyphen
-            "e-123#.ASD",  # too short before hyphen, contains invalid characters after
-            "e234-123#.",  # too long before hyphen, contains invalid characters after
-            "de-&^IU.",  # contains invalid characters after hyphen
-            "ro-france",  # contains invalid characters after hyphen
-        ]
-    ],
-)
-def test_prepare_request_asserts_on_invalid_language_code(
-    function, args, code_position, invalid_code
-):
-    args = (*args[0:code_position], invalid_code, *args[code_position:])
-    with raises(JustWatchLanguageCodeError) as error:
-        function(*args)
-    assert error.value.code == invalid_code
-
-
-@mark.parametrize(
-    argnames=("function", "args", "code_position", "invalid_code"),
-    argvalues=[
-        (*args, code)
-        for args in [
-            (prepare_search_request, ("", "en", 5, True, 0, None), 1),
-            (prepare_popular_request, ("en", 5, True, 0, None), 0),
-            (prepare_details_request, ("", "en", True), 1),
-            (prepare_seasons_request, ("", "en", True), 1),
-            (prepare_episodes_request, ("", "en", True), 1),
-            (prepare_providers_request, (), 0),
-        ]
-        for code in [
-            "United Stated of America",  # too long, invalid characters
-            "usa",  # too long
-            "u",  # too short
-            "1",  # too short, invalid character
-            "U1",  # invalid character
-            "U-K",  # too long, invalid character
-            "@",  # too short, invalid character
-        ]
-    ],
-)
-def test_prepare_request_asserts_on_invalid_country_code(
-    function, args, code_position, invalid_code
-):
-    with raises(JustWatchCountryCodeError) as error:
-        function(*(*args[0:code_position], invalid_code, *args[code_position:]))
-    assert error.value.code == invalid_code.upper()
-
-
-@mark.parametrize(
-    argnames=("codes", "invalid_code_regex"),
-    argvalues=[
-        ({"United Stated of America", "UK"}, "UNITED STATED OF AMERICA"),  # too long
-        ({"uk", "usa"}, "USA"),  # too long
-        ({"canada", "uk", "usa"}, r"USA|CANADA"),  # too long
-        ({"u", "uK", "a"}, r"A|U"),  # too short
-        ({"A"}, "A"),  # too short
-    ],
-)
-def test_prepare_offers_for_countries_request_asserts_on_invalid_country_codes(
-    codes, invalid_code_regex
-):
-    with raises(JustWatchCountryCodeError) as error:
-        prepare_offers_for_countries_request("", codes, "en", True)
-    # Regex here is required, as sets are unordered,
-    # so we have no guarantee which code will fail first.
-    assert match(invalid_code_regex, error.value.code)
 
 
 def test_prepare_offers_for_countries_request_asserts_on_empty_countries_set():

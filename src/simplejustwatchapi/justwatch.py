@@ -80,9 +80,8 @@ def search(
         (list[MediaEntry]): List of tuples parsed from JustWatch response.
 
     Raises:
-        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
-        exceptions.JustWatchCountryCodeError: Provided `country` is not a 2-letter code.
         exceptions.JustWatchApiError: JSON response from API has internal errors.
+        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
 
     """
     request = prepare_search_request(
@@ -144,9 +143,8 @@ def popular(
         (list[MediaEntry]): List of tuples parsed from JustWatch response.
 
     Raises:
-        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
-        exceptions.JustWatchCountryCodeError: Provided `country` is not a 2-letter code.
         exceptions.JustWatchApiError: JSON response from API has internal errors.
+        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
 
     """
     request = prepare_popular_request(
@@ -180,9 +178,8 @@ def details(
         (MediaEntry): Tuple with data about requested entry.
 
     Raises:
-        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
-        exceptions.JustWatchCountryCodeError: Provided `country` is not a 2-letter code.
         exceptions.JustWatchApiError: JSON response from API has internal errors.
+        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
 
     """
     request = prepare_details_request(node_id, country, language, best_only)
@@ -211,9 +208,8 @@ def seasons(
         (list[MediaEntry]): List of tuples with seasons data about requested entry.
 
     Raises:
-        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
-        exceptions.JustWatchCountryCodeError: Provided `country` is not a 2-letter code.
         exceptions.JustWatchApiError: JSON response from API has internal errors.
+        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
 
     """
     request = prepare_seasons_request(show_id, country, language, best_only)
@@ -242,9 +238,8 @@ def episodes(
         (list[Episode]): List of tuples with episode data about requested entry.
 
     Raises:
-        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
-        exceptions.JustWatchCountryCodeError: Provided `country` is not a 2-letter code.
         exceptions.JustWatchApiError: JSON response from API has internal errors.
+        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
 
     """
     request = prepare_episodes_request(season_id, country, language, best_only)
@@ -299,9 +294,8 @@ def offers_for_countries(
             found offers for their respective countries.
 
     Raises:
-        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
-        exceptions.JustWatchCountryCodeError: Provided `country` contain invalid code.
         exceptions.JustWatchApiError: JSON response from API has internal errors.
+        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
 
     """
     if not countries:
@@ -328,9 +322,8 @@ def providers(country: str = "US") -> list[OfferPackage]:
             so the same tuple is reused.
 
     Raises:
-        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
-        exceptions.JustWatchCountryCodeError: Provided `country` is not a 2-letter code.
         exceptions.JustWatchApiError: JSON response from API has internal errors.
+        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
 
     """
     request = prepare_providers_request(country)

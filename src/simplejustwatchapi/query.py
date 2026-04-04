@@ -1,4 +1,14 @@
-"""Module responsible for creating requests to and parsing responses from JustWatch."""
+"""
+Module responsible for creating requests to and parsing responses from JustWatch.
+
+Functions are prepared in pairs - prepare request and parse response for specific
+operation. "Request" functions do no verification of input data; "parse" functions check
+if returned JSON/`dict` contain `error` key. In such case a [`JustWatchApiError`]
+[simplejustwatchapi.erxceptions.JustWatchApiError] is raised.
+
+All "parse" functions convert JSON returned by API into request-specific Python
+[`NamedTuple`][typing.NamedTuple].
+"""
 
 from typing import Any
 
@@ -45,7 +55,7 @@ def prepare_search_request(
     Creates a `GetSearchTitles` GraphQL query.
 
     Country code should be two uppercase letters, however it will be auto-converted to
-    uppercase.
+    uppercase. Language code is not verified.
 
     Meant to be used together with [`parse_search_response`]
     [simplejustwatchapi.query.parse_search_response].
@@ -119,7 +129,7 @@ def prepare_popular_request(
     Creates a `GetPopularTitles` GraphQL query.
 
     Country code should be two uppercase letters, however it will be auto-converted to
-    uppercase.
+    uppercase. Language code is not verified.
 
     Meant to be used together with [`parse_popular_response`]
     [simplejustwatchapi.query.parse_popular_response].
@@ -187,7 +197,7 @@ def prepare_details_request(
     Creates a `GetTitleNode` GraphQL query.
 
     Country code should be two uppercase letters, however it will be auto-converted to
-    uppercase.
+    uppercase. Language code is not verified.
 
     Meant to be used together with [`parse_details_response`]
     [simplejustwatchapi.query.parse_details_response].
@@ -246,7 +256,7 @@ def prepare_seasons_request(
     Creates a `GetTitleNode` GraphQL query.
 
     Country code should be two uppercase letters, however it will be auto-converted to
-    uppercase.
+    uppercase. Language code is not verified.
 
     Meant to be used together with [`parse_seasons_response`]
     [simplejustwatchapi.query.parse_seasons_response].
@@ -305,7 +315,7 @@ def prepare_episodes_request(
     Creates a `GetTitleNode` GraphQL query.
 
     Country code should be two uppercase letters, however it will be auto-converted to
-    uppercase.
+    uppercase. Language code is not verified.
 
     Meant to be used together with [`parse_episodes_response`]
     [simplejustwatchapi.query.parse_episodes_response].
@@ -366,7 +376,7 @@ def prepare_offers_for_countries_request(
     Creates a `GetTitleOffers` GraphQL query.
 
     Country codes should be two uppercase letters, however they will be auto-converted
-    to uppercase. `countries` argument must not be empty.
+    to uppercase. `countries` argument must not be empty. Language code is not verified.
 
     Meant to be used together with [`parse_offers_for_countries_response`]
     [simplejustwatchapi.query.parse_offers_for_countries_response].
@@ -497,7 +507,7 @@ def _common_variables(best_only: bool) -> dict[str, Any]:
 
 
 def _locale_variables(country: str, language: str) -> dict[str, str]:
-    """Return dict with variables related to locale, raise for invalid codes."""
+    """Return dict with variables related to locale."""
     return {"country": country.upper(), "language": language}
 
 

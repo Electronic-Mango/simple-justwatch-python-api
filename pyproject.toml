@@ -1,26 +1,28 @@
 [project]
 name = "simple-justwatch-python-api"
-authors = [{name = "Electronic Mango", email = "78230210+Electronic-Mango@users.noreply.github.com"}]
+authors = [
+    { name = "Electronic Mango", email = "78230210+Electronic-Mango@users.noreply.github.com" },
+]
 version = "0.18.2"
-description="A simple JustWatch Python API"
+description = "A simple JustWatch Python API"
 readme = "README.md"
-license = {file = "LICENSE"}
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">= 3.11"
 keywords = ["justwatch", "api", "graphql"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
-    "Topic :: Software Development :: Build Tools",
-    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dependencies = [
-    "httpx>=0.28.1",
-]
+dependencies = ["httpx>=0.28.1"]
 
 [dependency-groups]
 dev = [
@@ -44,9 +46,7 @@ build-backend = "uv_build"
 module-name = "simplejustwatchapi"
 
 [tool.pytest.ini_options]
-pythonpath = [
-  "src", "test"
-]
+pythonpath = ["src", "test"]
 
 [tool.ruff]
 line-length = 100
@@ -55,14 +55,14 @@ line-length = 100
 exclude = ["./examples/*", "./docs/*"]
 select = ["ALL"]
 ignore = [
-  "ANN401",  # Type hinting JSONs is problematic
-  "COM812",  # Avoid issues with formatter
-  "D203",  # Conflicts with D211
-  "D212",  # Conflicts with D213
-  "FBT",
-  "FIX002",
-  "PLR0913",  # I think it makes sense for functions here to have more arguments
-  "S101",  # Remove once asserts are converted to exceptions
-  "TD002",
-  "TD003",
+    "ANN401",  # Type hinting JSONs is problematic
+    "COM812",  # Avoid issues with formatter
+    "D203",    # Conflicts with D211
+    "D212",    # Conflicts with D213
+    "FBT",
+    "FIX002",
+    "PLR0913", # I think it makes sense for functions here to have more arguments
+    "S101",    # Remove once asserts are converted to exceptions
+    "TD002",
+    "TD003",
 ]

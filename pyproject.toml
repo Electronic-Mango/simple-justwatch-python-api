@@ -3,7 +3,7 @@ name = "simple-justwatch-python-api"
 authors = [
     { name = "Electronic Mango", email = "78230210+Electronic-Mango@users.noreply.github.com" },
 ]
-version = "0.18.2"
+version = "0.19.0"
 description = "A simple JustWatch Python API"
 readme = "README.md"
 license = "MIT"

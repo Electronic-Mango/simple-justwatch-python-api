@@ -1,0 +1,579 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>simplejustwatchapi.graphql &mdash; Simple JustWatch Python API  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Simple JustWatch Python API
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">simplejustwatchapi</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Simple JustWatch Python API</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">simplejustwatchapi.graphql</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for simplejustwatchapi.graphql</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module responsible for preparing full GraphQL queries.</span>
+
+<span class="sd">Queries are usually prepared as main query + details fragment + offers fragment.</span>
+
+<span class="sd">In the long term these queries should be moved to dedicated GraphQL resource files</span>
+<span class="sd">to allow for formatting and syntax checking. However, the functions used for constructing</span>
+<span class="sd">full queries shouldn&#39;t change.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># TODO: Convert these strings into resources, e.g.:</span>
+<span class="c1">#       https://docs.python.org/3/library/importlib.resources.html</span>
+
+<span class="n">_GRAPHQL_SEARCH_QUERY</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">query GetSearchTitles(</span>
+<span class="s2">  $searchTitlesFilter: TitleFilter!,</span>
+<span class="s2">  $country: Country!,</span>
+<span class="s2">  $language: Language!,</span>
+<span class="s2">  $first: Int!,</span>
+<span class="s2">  $formatPoster: ImageFormat,</span>
+<span class="s2">  $formatOfferIcon: ImageFormat,</span>
+<span class="s2">  $profile: PosterProfile,</span>
+<span class="s2">  $backdropProfile: BackdropProfile,</span>
+<span class="s2">  $filter: OfferFilter!,</span>
+<span class="s2">  $offset: Int = 0,</span>
+<span class="s2">) {</span>
+<span class="s2">  popularTitles(</span>
+<span class="s2">    country: $country</span>
+<span class="s2">    filter: $searchTitlesFilter</span>
+<span class="s2">    first: $first</span>
+<span class="s2">    sortBy: POPULAR</span>
+<span class="s2">    sortRandomSeed: 0</span>
+<span class="s2">    offset: $offset</span>
+<span class="s2">  ) {</span>
+<span class="s2">    edges {</span>
+<span class="s2">      node {</span>
+<span class="s2">        ...TitleDetails</span>
+<span class="s2">        __typename</span>
+<span class="s2">      }</span>
+<span class="s2">      __typename</span>
+<span class="s2">    }</span>
+<span class="s2">    __typename</span>
+<span class="s2">  }</span>
+<span class="s2">}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">_GRAPHQL_POPULAR_QUERY</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">query GetPopularTitles(</span>
+<span class="s2">  $popularTitlesFilter: TitleFilter</span>
+<span class="s2">  $country: Country!</span>
+<span class="s2">  $language: Language!</span>
+<span class="s2">  $first: Int! = 70</span>
+<span class="s2">  $formatPoster: ImageFormat,</span>
+<span class="s2">  $formatOfferIcon: ImageFormat,</span>
+<span class="s2">  $profile: PosterProfile</span>
+<span class="s2">  $backdropProfile: BackdropProfile,</span>
+<span class="s2">  $filter: OfferFilter!,</span>
+<span class="s2">  $offset: Int = 0</span>
+<span class="s2">) {</span>
+<span class="s2">  popularTitles(</span>
+<span class="s2">    country: $country</span>
+<span class="s2">    filter: $popularTitlesFilter</span>
+<span class="s2">    first: $first</span>
+<span class="s2">    sortBy: POPULAR</span>
+<span class="s2">    sortRandomSeed: 0</span>
+<span class="s2">    offset: $offset</span>
+<span class="s2">  ) {</span>
+<span class="s2">    __typename</span>
+<span class="s2">    edges {</span>
+<span class="s2">      node {</span>
+<span class="s2">        ...TitleDetails</span>
+<span class="s2">        __typename</span>
+<span class="s2">      }</span>
+<span class="s2">      __typename</span>
+<span class="s2">    }</span>
+<span class="s2">  }</span>
+<span class="s2">}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">_GRAPHQL_DETAILS_QUERY</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">query GetTitleNode(</span>
+<span class="s2">  $nodeId: ID!,</span>
+<span class="s2">  $language: Language!,</span>
+<span class="s2">  $country: Country!,</span>
+<span class="s2">  $formatPoster: ImageFormat,</span>
+<span class="s2">  $formatOfferIcon: ImageFormat,</span>
+<span class="s2">  $profile: PosterProfile,</span>
+<span class="s2">  $backdropProfile: BackdropProfile,</span>
+<span class="s2">  $filter: OfferFilter!,</span>
+<span class="s2">) {</span>
+<span class="s2">  node(id: $nodeId) {</span>
+<span class="s2">    ...TitleDetails</span>
+<span class="s2">    __typename</span>
+<span class="s2">  }</span>
+<span class="s2">  __typename</span>
+<span class="s2">}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">_GRAPHQL_SEASONS_QUERY</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">query GetTitleNode(</span>
+<span class="s2">  $nodeId: ID!,</span>
+<span class="s2">  $language: Language!,</span>
+<span class="s2">  $country: Country!,</span>
+<span class="s2">  $formatPoster: ImageFormat,</span>
+<span class="s2">  $formatOfferIcon: ImageFormat,</span>
+<span class="s2">  $profile: PosterProfile,</span>
+<span class="s2">  $backdropProfile: BackdropProfile,</span>
+<span class="s2">  $filter: OfferFilter!,</span>
+<span class="s2">) {</span>
+<span class="s2">  node(id: $nodeId) {</span>
+<span class="s2">    ...on Show {</span>
+<span class="s2">      seasons(sortDirection: ASC) {</span>
+<span class="s2">        ...TitleDetails</span>
+<span class="s2">      }</span>
+<span class="s2">    }</span>
+<span class="s2">    __typename</span>
+<span class="s2">  }</span>
+<span class="s2">  __typename</span>
+<span class="s2">}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">_GRAPHQL_EPISODES_QUERY</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">query GetTitleNode(</span>
+<span class="s2">  $nodeId: ID!,</span>
+<span class="s2">  $language: Language!,</span>
+<span class="s2">  $country: Country!,</span>
+<span class="s2">  $formatPoster: ImageFormat,</span>
+<span class="s2">  $formatOfferIcon: ImageFormat,</span>
+<span class="s2">  $profile: PosterProfile,</span>
+<span class="s2">  $backdropProfile: BackdropProfile,</span>
+<span class="s2">  $filter: OfferFilter!,</span>
+<span class="s2">) {</span>
+<span class="s2">  node(id: $nodeId) {</span>
+<span class="s2">    ...on Season {</span>
+<span class="s2">      episodes(sortDirection: ASC) {</span>
+<span class="s2">        ...TitleDetails</span>
+<span class="s2">      }</span>
+<span class="s2">    }</span>
+<span class="s2">    __typename</span>
+<span class="s2">  }</span>
+<span class="s2">  __typename</span>
+<span class="s2">}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">_GRAPHQL_PROVIDERS_QUERY</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">query GetProviders(</span>
+<span class="s2">  $country: Country!,</span>
+<span class="s2">  $formatOfferIcon: ImageFormat</span>
+<span class="s2">) {</span>
+<span class="s2">  packages(</span>
+<span class="s2">    country: $country</span>
+<span class="s2">    platform: WEB</span>
+<span class="s2">    includeAddons: true</span>
+<span class="s2">  ) {</span>
+<span class="s2">    ... PackageDetails</span>
+<span class="s2">  }</span>
+<span class="s2">  __typename</span>
+<span class="s2">}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">_GRAPHQL_OFFERS_BY_COUNTRY_QUERY</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">query GetTitleOffers(</span>
+<span class="s2">  $nodeId: ID!,</span>
+<span class="s2">  $language: Language!,</span>
+<span class="s2">  $formatOfferIcon: ImageFormat,</span>
+<span class="s2">  $filter: OfferFilter!,</span>
+<span class="s2">) {{</span>
+<span class="s2">  node(id: $nodeId) {{</span>
+<span class="s2">    ... on MovieOrShowOrSeasonOrEpisode {{</span>
+<span class="s2">      </span><span class="si">{country_entries}</span>
+<span class="s2">      __typename</span>
+<span class="s2">    }}</span>
+<span class="s2">    __typename</span>
+<span class="s2">  }}</span>
+<span class="s2">  __typename</span>
+<span class="s2">}}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">_GRAPHQL_DETAILS_FRAGMENT</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">fragment TitleDetails on MovieOrShowOrSeasonOrEpisode {</span>
+<span class="s2">  id</span>
+<span class="s2">  objectId</span>
+<span class="s2">  objectType</span>
+<span class="s2">  content(country: $country, language: $language) {</span>
+<span class="s2">    ...ContentDetails</span>
+<span class="s2">    __typename</span>
+<span class="s2">  }</span>
+<span class="s2">  ...StreamingChartInfoFragment</span>
+<span class="s2">  ...on Show {</span>
+<span class="s2">    totalSeasonCount</span>
+<span class="s2">  }</span>
+<span class="s2">  ...on Season {</span>
+<span class="s2">    totalEpisodeCount</span>
+<span class="s2">  }</span>
+<span class="s2">  offers(country: $country, platform: WEB, filter: $filter) {</span>
+<span class="s2">    ...TitleOffer</span>
+<span class="s2">  }</span>
+<span class="s2">  __typename</span>
+<span class="s2">}</span>
+
+<span class="s2">fragment StreamingChartInfoFragment on MovieOrShowOrSeason {</span>
+<span class="s2">  streamingCharts(country: $country) {</span>
+<span class="s2">    edges {</span>
+<span class="s2">      streamingChartInfo {</span>
+<span class="s2">        rank</span>
+<span class="s2">        trend</span>
+<span class="s2">        trendDifference</span>
+<span class="s2">        daysInTop3</span>
+<span class="s2">        daysInTop10</span>
+<span class="s2">        daysInTop100</span>
+<span class="s2">        daysInTop1000</span>
+<span class="s2">        topRank</span>
+<span class="s2">        updatedAt</span>
+<span class="s2">        __typename</span>
+<span class="s2">      }</span>
+<span class="s2">      __typename</span>
+<span class="s2">    }</span>
+<span class="s2">    __typename</span>
+<span class="s2">  }</span>
+<span class="s2">}</span>
+
+<span class="s2">fragment ContentDetails on MovieOrShowOrSeasonOrEpisodeContent {</span>
+<span class="s2">  title</span>
+<span class="s2">  originalReleaseYear</span>
+<span class="s2">  originalReleaseDate</span>
+<span class="s2">  runtime</span>
+<span class="s2">  shortDescription</span>
+<span class="s2">  ...FullContentDetails</span>
+<span class="s2">  ...on MovieOrShowContent {</span>
+<span class="s2">    ageCertification</span>
+<span class="s2">  }</span>
+<span class="s2">  ...on SeasonContent {</span>
+<span class="s2">    seasonNumber</span>
+<span class="s2">  }</span>
+<span class="s2">  ...on EpisodeContent {</span>
+<span class="s2">    seasonNumber</span>
+<span class="s2">    episodeNumber</span>
+<span class="s2">  }</span>
+<span class="s2">}</span>
+
+<span class="s2">fragment FullContentDetails on MovieOrShowOrSeasonContent {</span>
+<span class="s2">  fullPath</span>
+<span class="s2">  genres {</span>
+<span class="s2">    shortName</span>
+<span class="s2">    __typename</span>
+<span class="s2">  }</span>
+<span class="s2">  externalIds {</span>
+<span class="s2">    imdbId</span>
+<span class="s2">    tmdbId</span>
+<span class="s2">    __typename</span>
+<span class="s2">  }</span>
+<span class="s2">  posterUrl(profile: $profile, format: $formatPoster)</span>
+<span class="s2">  backdrops(profile: $backdropProfile, format: $formatPoster) {</span>
+<span class="s2">    backdropUrl</span>
+<span class="s2">    __typename</span>
+<span class="s2">  }</span>
+<span class="s2">  scoring {</span>
+<span class="s2">    imdbScore</span>
+<span class="s2">    imdbVotes</span>
+<span class="s2">    tmdbPopularity</span>
+<span class="s2">    tmdbScore</span>
+<span class="s2">    tomatoMeter</span>
+<span class="s2">    certifiedFresh</span>
+<span class="s2">    jwRating</span>
+<span class="s2">    __typename</span>
+<span class="s2">  }</span>
+<span class="s2">  interactions {</span>
+<span class="s2">    likelistAdditions</span>
+<span class="s2">    dislikelistAdditions</span>
+<span class="s2">    __typename</span>
+<span class="s2">  }</span>
+<span class="s2">}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">_GRAPHQL_OFFER_FRAGMENT</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">fragment TitleOffer on Offer {</span>
+<span class="s2">  id</span>
+<span class="s2">  monetizationType</span>
+<span class="s2">  presentationType</span>
+<span class="s2">  retailPrice(language: $language)</span>
+<span class="s2">  retailPriceValue</span>
+<span class="s2">  currency</span>
+<span class="s2">  lastChangeRetailPriceValue</span>
+<span class="s2">  type</span>
+<span class="s2">  package {</span>
+<span class="s2">    ... PackageDetails</span>
+<span class="s2">  }</span>
+<span class="s2">  standardWebURL</span>
+<span class="s2">  elementCount</span>
+<span class="s2">  availableTo</span>
+<span class="s2">  deeplinkRoku: deeplinkURL(platform: ROKU_OS)</span>
+<span class="s2">  subtitleLanguages</span>
+<span class="s2">  videoTechnology</span>
+<span class="s2">  audioTechnology</span>
+<span class="s2">  audioLanguages</span>
+<span class="s2">  __typename</span>
+<span class="s2">}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">_GRAPHQL_PACKAGE_FRAGMENT</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">fragment PackageDetails on Package {</span>
+<span class="s2">  id</span>
+<span class="s2">  packageId</span>
+<span class="s2">  clearName</span>
+<span class="s2">  technicalName</span>
+<span class="s2">  shortName</span>
+<span class="s2">  slug</span>
+<span class="s2">  icon(profile: S100, format: $formatOfferIcon)</span>
+<span class="s2">  __typename</span>
+<span class="s2">}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">_GRAPHQL_COUNTRY_OFFERS_ENTRY</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">      </span><span class="si">{country_code}</span><span class="s2">: offers(country: </span><span class="si">{country_code}</span><span class="s2">, platform: WEB, filter: $filter) {{</span>
+<span class="s2">        ...TitleOffer</span>
+<span class="s2">        __typename</span>
+<span class="s2">      }}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="graphql_search_query">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.graphql.graphql_search_query">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">graphql_search_query</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prepare GraphQL query used for searching for entries.</span>
+
+<span class="sd">    The query is GetSearchTitles query + details fragment + offers fragment + package fragment.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Full GraphQL &quot;search&quot; query.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">_GRAPHQL_SEARCH_QUERY</span>
+        <span class="o">+</span> <span class="n">_GRAPHQL_DETAILS_FRAGMENT</span>
+        <span class="o">+</span> <span class="n">_GRAPHQL_OFFER_FRAGMENT</span>
+        <span class="o">+</span> <span class="n">_GRAPHQL_PACKAGE_FRAGMENT</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="graphql_popular_query">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.graphql.graphql_popular_query">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">graphql_popular_query</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prepare GraphQL query used for looking up currently popular titles.</span>
+
+<span class="sd">    The query is GetPopularTitles query + details fragment + offers fragment + package fragment.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Full GraphQL &quot;popular&quot; query.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">_GRAPHQL_POPULAR_QUERY</span>
+        <span class="o">+</span> <span class="n">_GRAPHQL_DETAILS_FRAGMENT</span>
+        <span class="o">+</span> <span class="n">_GRAPHQL_OFFER_FRAGMENT</span>
+        <span class="o">+</span> <span class="n">_GRAPHQL_PACKAGE_FRAGMENT</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="graphql_providers_query">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.graphql.graphql_providers_query">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">graphql_providers_query</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prepare GraphQL query used for looking up all providers for a given country.</span>
+
+<span class="sd">    The query is GetProviders query + package fragment.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">      str: Full GraphQL &quot;providers&quot; query.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_GRAPHQL_PROVIDERS_QUERY</span> <span class="o">+</span> <span class="n">_GRAPHQL_PACKAGE_FRAGMENT</span></div>
+
+
+
+<div class="viewcode-block" id="graphql_details_query">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.graphql.graphql_details_query">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">graphql_details_query</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prepare GraphQL query used for getting details regarding a single entry.</span>
+
+<span class="sd">    The full query is GetTitleNode query + details fragment + offers fragment  + package fragment.</span>
+<span class="sd">    It is meant for movies and shows, but can be used for seasons and episodes as well,</span>
+<span class="sd">    it just won&#39;t return full season/episodes list.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Full GraphQL &quot;get details&quot; query.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">_GRAPHQL_DETAILS_QUERY</span>
+        <span class="o">+</span> <span class="n">_GRAPHQL_DETAILS_FRAGMENT</span>
+        <span class="o">+</span> <span class="n">_GRAPHQL_OFFER_FRAGMENT</span>
+        <span class="o">+</span> <span class="n">_GRAPHQL_PACKAGE_FRAGMENT</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="graphql_seasons_query">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.graphql.graphql_seasons_query">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">graphql_seasons_query</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prepare GraphQL query used for getting a list of seasons for a single show.</span>
+
+<span class="sd">    The full query is GetTitleNode query (with seasons list) + details fragment + offers fragment</span>
+<span class="sd">    + package fragment.</span>
+<span class="sd">    It will only return data for shows with a list of all available seasons, ascending.</span>
+<span class="sd">    Details query itself matches :func:`graphql_details_query`, its conditions will return all</span>
+<span class="sd">    relevant data for seasons.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Full GraphQL &quot;get seasons&quot; query.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">_GRAPHQL_SEASONS_QUERY</span>
+        <span class="o">+</span> <span class="n">_GRAPHQL_DETAILS_FRAGMENT</span>
+        <span class="o">+</span> <span class="n">_GRAPHQL_OFFER_FRAGMENT</span>
+        <span class="o">+</span> <span class="n">_GRAPHQL_PACKAGE_FRAGMENT</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="graphql_episodes_query">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.graphql.graphql_episodes_query">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">graphql_episodes_query</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prepare GraphQL query used for getting a list of episodes for a single show season.</span>
+
+<span class="sd">    The full query is GetTitleNode query (with episodes list) + details fragment + offers fragment</span>
+<span class="sd">    + package fragment.</span>
+<span class="sd">    It will only return data for show seasons with a list of all available episodes, ascending.</span>
+<span class="sd">    Details query itself matches :func:`graphql_details_query`, its conditions will return all</span>
+<span class="sd">    relevant data for episodes.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Full GraphQL &quot;get episodes&quot; query.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">_GRAPHQL_EPISODES_QUERY</span>
+        <span class="o">+</span> <span class="n">_GRAPHQL_DETAILS_FRAGMENT</span>
+        <span class="o">+</span> <span class="n">_GRAPHQL_OFFER_FRAGMENT</span>
+        <span class="o">+</span> <span class="n">_GRAPHQL_PACKAGE_FRAGMENT</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="graphql_offers_for_countries_query">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.graphql.graphql_offers_for_countries_query">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">graphql_offers_for_countries_query</span><span class="p">(</span><span class="n">countries</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prepare GraphQL query with a list of offers from specified countries.</span>
+
+<span class="sd">    The full query is GetTitleOffers query with a list of offers per country.</span>
+<span class="sd">    No additional information is returned, only offers.</span>
+<span class="sd">    Can be used for all entry types - movies, shows, seasons, episodes.</span>
+
+<span class="sd">    The input is a set of 2-letter country codes. This function assumes that codes are valid length,</span>
+<span class="sd">    the set is not empty; it performs no additional verification.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        countries (set[str]): 2-letter country codes.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Full GraphQL &quot;get offers per country&quot; query.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">offer_requests</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">_GRAPHQL_COUNTRY_OFFERS_ENTRY</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">country_code</span><span class="o">=</span><span class="n">country_code</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">country_code</span> <span class="ow">in</span> <span class="n">countries</span>
+    <span class="p">]</span>
+    <span class="n">main_query</span> <span class="o">=</span> <span class="n">_GRAPHQL_OFFERS_BY_COUNTRY_QUERY</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">country_entries</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">offer_requests</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">main_query</span> <span class="o">+</span> <span class="n">_GRAPHQL_OFFER_FRAGMENT</span> <span class="o">+</span> <span class="n">_GRAPHQL_PACKAGE_FRAGMENT</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Electronic-Mango.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

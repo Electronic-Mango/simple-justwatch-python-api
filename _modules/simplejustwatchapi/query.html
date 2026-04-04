@@ -1,0 +1,820 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>simplejustwatchapi.query &mdash; Simple JustWatch Python API  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Simple JustWatch Python API
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">simplejustwatchapi</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Simple JustWatch Python API</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">simplejustwatchapi.query</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for simplejustwatchapi.query</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module responsible for creating GraphQL queries and parsing responses from JustWatch GraphQL API.</span>
+
+<span class="sd">Parsed responses are returned as Python NamedTuples for easier access.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">simplejustwatchapi.graphql</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">graphql_details_query</span><span class="p">,</span>
+    <span class="n">graphql_episodes_query</span><span class="p">,</span>
+    <span class="n">graphql_offers_for_countries_query</span><span class="p">,</span>
+    <span class="n">graphql_popular_query</span><span class="p">,</span>
+    <span class="n">graphql_providers_query</span><span class="p">,</span>
+    <span class="n">graphql_search_query</span><span class="p">,</span>
+    <span class="n">graphql_seasons_query</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">simplejustwatchapi.tuples</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Episode</span><span class="p">,</span>
+    <span class="n">Interactions</span><span class="p">,</span>
+    <span class="n">MediaEntry</span><span class="p">,</span>
+    <span class="n">Offer</span><span class="p">,</span>
+    <span class="n">OfferPackage</span><span class="p">,</span>
+    <span class="n">Scoring</span><span class="p">,</span>
+    <span class="n">StreamingCharts</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">_DETAILS_URL</span> <span class="o">=</span> <span class="s2">&quot;https://justwatch.com&quot;</span>
+<span class="n">_IMAGES_URL</span> <span class="o">=</span> <span class="s2">&quot;https://images.justwatch.com&quot;</span>
+<span class="n">_COUNTRY_CODE_LENGTH</span> <span class="o">=</span> <span class="mi">2</span>
+
+
+<div class="viewcode-block" id="prepare_search_request">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.query.prepare_search_request">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">prepare_search_request</span><span class="p">(</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">country</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">language</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">best_only</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">providers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prepare search request for JustWatch GraphQL API.</span>
+
+<span class="sd">    Creates a ``GetSearchTitles`` GraphQL query.</span>
+
+<span class="sd">    Country code should be two uppercase letters, however it will be auto-converted to uppercase.</span>
+
+<span class="sd">    Meant to be used together with :func:`parse_search_response`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        title (str): Title to search.</span>
+<span class="sd">        country (str): Country to search for offers.</span>
+<span class="sd">        language (str): Language of responses.</span>
+<span class="sd">        count (int): How many responses should be returned.</span>
+<span class="sd">        best_only (bool): Return only best offers if ``True``, return all offers if ``False``.</span>
+<span class="sd">        offset (int): Search results offset.</span>
+<span class="sd">        providers (list[str] | str | None): 3-letter service identifier(s),</span>
+<span class="sd">            or ``None`` for all providers.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: JSON/dict with GraphQL POST body.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_assert_country_code_is_valid</span><span class="p">(</span><span class="n">country</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;operationName&quot;</span><span class="p">:</span> <span class="s2">&quot;GetSearchTitles&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;variables&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;first&quot;</span><span class="p">:</span> <span class="n">count</span><span class="p">,</span>
+            <span class="s2">&quot;searchTitlesFilter&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;searchQuery&quot;</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span> <span class="s2">&quot;packages&quot;</span><span class="p">:</span> <span class="n">providers</span><span class="p">},</span>
+            <span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="n">language</span><span class="p">,</span>
+            <span class="s2">&quot;country&quot;</span><span class="p">:</span> <span class="n">country</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
+            <span class="s2">&quot;formatPoster&quot;</span><span class="p">:</span> <span class="s2">&quot;JPG&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;formatOfferIcon&quot;</span><span class="p">:</span> <span class="s2">&quot;PNG&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;profile&quot;</span><span class="p">:</span> <span class="s2">&quot;S718&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;backdropProfile&quot;</span><span class="p">:</span> <span class="s2">&quot;S1920&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;bestOnly&quot;</span><span class="p">:</span> <span class="n">best_only</span><span class="p">},</span>
+            <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="n">offset</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="n">graphql_search_query</span><span class="p">(),</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="parse_search_response">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.query.parse_search_response">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_search_response</span><span class="p">(</span><span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">MediaEntry</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse response from search query from JustWatch GraphQL API.</span>
+
+<span class="sd">    Parses response for ``GetSearchTitles`` query.</span>
+
+<span class="sd">    If API didn&#39;t return any data, then an empty list is returned.</span>
+
+<span class="sd">    Meant to be used together with :func:`prepare_search_request`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        json (dict): JSON returned by JustWatch GraphQL API.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[MediaEntry]: Parsed received JSON as a list of ``MediaEntry`` NamedTuples.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">_parse_entry</span><span class="p">(</span><span class="n">edge</span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">json</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;popularTitles&quot;</span><span class="p">][</span><span class="s2">&quot;edges&quot;</span><span class="p">]]</span></div>
+
+
+
+<div class="viewcode-block" id="prepare_popular_request">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.query.prepare_popular_request">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">prepare_popular_request</span><span class="p">(</span>
+    <span class="n">country</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">language</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">best_only</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">providers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prepare &quot;get popular&quot; request for JustWatch GraphQL API.</span>
+
+<span class="sd">    Creates a ``GetPopularTitles`` GraphQL query.</span>
+
+<span class="sd">    Country code should be two uppercase letters, however it will be auto-converted to uppercase.</span>
+
+<span class="sd">    Meant to be used together with :func:`parse_popular_response`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        country (str): Country to search for offers.</span>
+<span class="sd">        language (str): Language of responses.</span>
+<span class="sd">        count (int): How many responses should be returned.</span>
+<span class="sd">        best_only (bool): Return only best offers if ``True``, return all offers if ``False``.</span>
+<span class="sd">        offset (int): Search results offset.</span>
+<span class="sd">        providers (list[str] | str | None): 3-letter service identifier(s),</span>
+<span class="sd">            or ``None`` for all providers.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: JSON/dict with GraphQL POST body.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_assert_country_code_is_valid</span><span class="p">(</span><span class="n">country</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;operationName&quot;</span><span class="p">:</span> <span class="s2">&quot;GetPopularTitles&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;variables&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;first&quot;</span><span class="p">:</span> <span class="n">count</span><span class="p">,</span>
+            <span class="s2">&quot;popularTitlesFilter&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;packages&quot;</span><span class="p">:</span> <span class="n">providers</span><span class="p">},</span>
+            <span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="n">language</span><span class="p">,</span>
+            <span class="s2">&quot;country&quot;</span><span class="p">:</span> <span class="n">country</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
+            <span class="s2">&quot;formatPoster&quot;</span><span class="p">:</span> <span class="s2">&quot;JPG&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;formatOfferIcon&quot;</span><span class="p">:</span> <span class="s2">&quot;PNG&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;profile&quot;</span><span class="p">:</span> <span class="s2">&quot;S718&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;backdropProfile&quot;</span><span class="p">:</span> <span class="s2">&quot;S1920&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;bestOnly&quot;</span><span class="p">:</span> <span class="n">best_only</span><span class="p">},</span>
+            <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="n">offset</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="n">graphql_popular_query</span><span class="p">(),</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="parse_popular_response">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.query.parse_popular_response">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_popular_response</span><span class="p">(</span><span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">MediaEntry</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse response from the &quot;get popular&quot; query from JustWatch GraphQL API.</span>
+
+<span class="sd">    Parses response for ``GetPopularTitles`` query.</span>
+
+<span class="sd">    If API didn&#39;t return any data, then an empty list is returned.</span>
+
+<span class="sd">    Meant to be used together with :func:`prepare_popular_request`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        json (dict): JSON returned by JustWatch GraphQL API.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[MediaEntry]: Parsed received JSON as a list of ``MediaEntry`` NamedTuples.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">_parse_entry</span><span class="p">(</span><span class="n">edge</span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">json</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;popularTitles&quot;</span><span class="p">][</span><span class="s2">&quot;edges&quot;</span><span class="p">]]</span></div>
+
+
+
+<div class="viewcode-block" id="prepare_details_request">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.query.prepare_details_request">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">prepare_details_request</span><span class="p">(</span><span class="n">node_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">country</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">best_only</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prepare a details request for specified node ID to JustWatch GraphQL API.</span>
+
+<span class="sd">    Creates a ``GetTitleNode`` GraphQL query.</span>
+
+<span class="sd">    Country code should be two uppercase letters, however it will be auto-converted to uppercase.</span>
+
+<span class="sd">    Meant to be used together with :func:`parse_details_response`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        node_id (str): Node ID of entry to get details for.</span>
+<span class="sd">        country (str): Country to search for offers.</span>
+<span class="sd">        language (str): Language of responses.</span>
+<span class="sd">        best_only (bool): Return only best offers if ``True``, return all offers if ``False``.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: JSON/dict with GraphQL POST body.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_assert_country_code_is_valid</span><span class="p">(</span><span class="n">country</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;operationName&quot;</span><span class="p">:</span> <span class="s2">&quot;GetTitleNode&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;variables&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;nodeId&quot;</span><span class="p">:</span> <span class="n">node_id</span><span class="p">,</span>
+            <span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="n">language</span><span class="p">,</span>
+            <span class="s2">&quot;country&quot;</span><span class="p">:</span> <span class="n">country</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
+            <span class="s2">&quot;formatPoster&quot;</span><span class="p">:</span> <span class="s2">&quot;JPG&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;formatOfferIcon&quot;</span><span class="p">:</span> <span class="s2">&quot;PNG&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;profile&quot;</span><span class="p">:</span> <span class="s2">&quot;S718&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;backdropProfile&quot;</span><span class="p">:</span> <span class="s2">&quot;S1920&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;bestOnly&quot;</span><span class="p">:</span> <span class="n">best_only</span><span class="p">},</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="n">graphql_details_query</span><span class="p">(),</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="parse_details_response">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.query.parse_details_response">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_details_response</span><span class="p">(</span><span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MediaEntry</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse response from details query from JustWatch GraphQL API.</span>
+
+<span class="sd">    Parses response for ``GetTitleNode`` query.</span>
+
+<span class="sd">    If API responded with an internal error (mostly due to not found node ID),</span>
+<span class="sd">    then ``None`` will be returned instead.</span>
+
+<span class="sd">    Meant to be used together with :func:`prepare_details_request`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        json (dict): JSON returned by JustWatch GraphQL API.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        MediaEntry | None: Parsed received JSON as a ``MediaEntry`` NamedTuple,</span>
+<span class="sd">        or ``None`` in case data for a given node ID was not found.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_parse_entry</span><span class="p">(</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;node&quot;</span><span class="p">])</span> <span class="k">if</span> <span class="s2">&quot;errors&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">json</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="prepare_seasons_request">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.query.prepare_seasons_request">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">prepare_seasons_request</span><span class="p">(</span><span class="n">show_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">country</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">best_only</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prepare a seasons details request for specified show ID to JustWatch GraphQL API.</span>
+
+<span class="sd">    Creates a ``GetTitleNode`` GraphQL query.</span>
+
+<span class="sd">    Country code should be two uppercase letters, however it will be auto-converted to uppercase.</span>
+
+<span class="sd">    Meant to be used together with :func:`parse_seasons_response`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        show_id (str): Show ID of entry to get details for.</span>
+<span class="sd">        country (str): Country to search for offers.</span>
+<span class="sd">        language (str): Language of responses.</span>
+<span class="sd">        best_only (bool): Return only best offers if ``True``, return all offers if ``False``.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: JSON/dict with GraphQL POST body.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_assert_country_code_is_valid</span><span class="p">(</span><span class="n">country</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;operationName&quot;</span><span class="p">:</span> <span class="s2">&quot;GetTitleNode&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;variables&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;nodeId&quot;</span><span class="p">:</span> <span class="n">show_id</span><span class="p">,</span>
+            <span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="n">language</span><span class="p">,</span>
+            <span class="s2">&quot;country&quot;</span><span class="p">:</span> <span class="n">country</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
+            <span class="s2">&quot;formatPoster&quot;</span><span class="p">:</span> <span class="s2">&quot;JPG&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;formatOfferIcon&quot;</span><span class="p">:</span> <span class="s2">&quot;PNG&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;profile&quot;</span><span class="p">:</span> <span class="s2">&quot;S718&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;backdropProfile&quot;</span><span class="p">:</span> <span class="s2">&quot;S1920&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;bestOnly&quot;</span><span class="p">:</span> <span class="n">best_only</span><span class="p">},</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="n">graphql_seasons_query</span><span class="p">(),</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="parse_seasons_response">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.query.parse_seasons_response">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_seasons_response</span><span class="p">(</span><span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">MediaEntry</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse response from seasons details query from JustWatch GraphQL API.</span>
+
+<span class="sd">    Parses response for ``GetTitleNode`` query.</span>
+
+<span class="sd">    If API responded with an internal error (mostly due to not found node ID),</span>
+<span class="sd">    then ``None`` will be returned instead.</span>
+
+<span class="sd">    Meant to be used together with :func:`prepare_seasons_request`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        json (dict): JSON returned by JustWatch GraphQL API.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[MediaEntry] | None: Parsed received JSON as a ``MediaEntry`` NamedTuple list,</span>
+<span class="sd">        or ``None`` in case data for a given node ID was not found.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="p">[</span><span class="n">_parse_entry</span><span class="p">(</span><span class="n">season</span><span class="p">)</span> <span class="k">for</span> <span class="n">season</span> <span class="ow">in</span> <span class="n">json</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;node&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;seasons&quot;</span><span class="p">,</span> <span class="p">[])]</span>
+        <span class="k">if</span> <span class="s2">&quot;errors&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">json</span>
+        <span class="k">else</span> <span class="kc">None</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="prepare_episodes_request">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.query.prepare_episodes_request">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">prepare_episodes_request</span><span class="p">(</span><span class="n">episode_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">country</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">best_only</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prepare a episodes details request for specified node ID to JustWatch GraphQL API.</span>
+
+<span class="sd">    Creates a ``GetTitleNode`` GraphQL query.</span>
+
+<span class="sd">    Country code should be two uppercase letters, however it will be auto-converted to uppercase.</span>
+
+<span class="sd">    Meant to be used together with :func:`parse_episodes_response`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        episode_id (str): Episode ID of entry to get details for.</span>
+<span class="sd">        country (str): Country to search for offers.</span>
+<span class="sd">        language (str): Language of responses.</span>
+<span class="sd">        best_only (bool): Return only best offers if ``True``, return all offers if ``False``.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: JSON/dict with GraphQL POST body.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_assert_country_code_is_valid</span><span class="p">(</span><span class="n">country</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;operationName&quot;</span><span class="p">:</span> <span class="s2">&quot;GetTitleNode&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;variables&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;nodeId&quot;</span><span class="p">:</span> <span class="n">episode_id</span><span class="p">,</span>
+            <span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="n">language</span><span class="p">,</span>
+            <span class="s2">&quot;country&quot;</span><span class="p">:</span> <span class="n">country</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
+            <span class="s2">&quot;formatPoster&quot;</span><span class="p">:</span> <span class="s2">&quot;JPG&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;formatOfferIcon&quot;</span><span class="p">:</span> <span class="s2">&quot;PNG&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;profile&quot;</span><span class="p">:</span> <span class="s2">&quot;S718&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;backdropProfile&quot;</span><span class="p">:</span> <span class="s2">&quot;S1920&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;bestOnly&quot;</span><span class="p">:</span> <span class="n">best_only</span><span class="p">},</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="n">graphql_episodes_query</span><span class="p">(),</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="parse_episodes_response">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.query.parse_episodes_response">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_episodes_response</span><span class="p">(</span><span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Episode</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse response from episodes details query from JustWatch GraphQL API.</span>
+
+<span class="sd">    Parses response for ``GetTitleNode`` query.</span>
+
+<span class="sd">    If API responded with an internal error (mostly due to not found node ID),</span>
+<span class="sd">    then ``None`` will be returned instead.</span>
+
+<span class="sd">    Meant to be used together with :func:`prepare_episodes_request`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        json (dict): JSON returned by JustWatch GraphQL API.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[Episode] | None: Parsed received JSON as a ``Episode`` NamedTuple list,</span>
+<span class="sd">        or ``None`` in case data for a given node ID was not found.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="p">[</span><span class="n">_parse_episode</span><span class="p">(</span><span class="n">episode</span><span class="p">)</span> <span class="k">for</span> <span class="n">episode</span> <span class="ow">in</span> <span class="n">json</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;node&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;episodes&quot;</span><span class="p">,</span> <span class="p">[])]</span>
+        <span class="k">if</span> <span class="s2">&quot;errors&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">json</span>
+        <span class="k">else</span> <span class="kc">None</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="prepare_offers_for_countries_request">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.query.prepare_offers_for_countries_request">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">prepare_offers_for_countries_request</span><span class="p">(</span>
+    <span class="n">node_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">countries</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="n">language</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">best_only</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prepare an offers request for the node ID and for all given countries to JustWatch GraphQL API.</span>
+
+<span class="sd">    Creates a ``GetTitleOffers`` GraphQL query.</span>
+
+<span class="sd">    Country codes should be two uppercase letters, however they will be auto-converted to uppercase.</span>
+<span class="sd">    ``countries`` argument mustn&#39;t be empty.</span>
+
+<span class="sd">    Meant to be used together with :func:`parse_offers_for_countries_response`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        node_id (str): Node ID of entry to get details for.</span>
+<span class="sd">        countries (set[str]): Set of country codes to search for offers.</span>
+<span class="sd">        language (str): Language of responses.</span>
+<span class="sd">        best_only (bool): Return only best offers if ``True``, return all offers if ``False``.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: JSON/dict with GraphQL POST body.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: Convert assert to regular exception</span>
+    <span class="k">assert</span> <span class="n">countries</span><span class="p">,</span> <span class="s2">&quot;Cannot prepare offers request without specified countries&quot;</span>
+    <span class="k">for</span> <span class="n">country</span> <span class="ow">in</span> <span class="n">countries</span><span class="p">:</span>
+        <span class="n">_assert_country_code_is_valid</span><span class="p">(</span><span class="n">country</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;operationName&quot;</span><span class="p">:</span> <span class="s2">&quot;GetTitleOffers&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;variables&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;nodeId&quot;</span><span class="p">:</span> <span class="n">node_id</span><span class="p">,</span>
+            <span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="n">language</span><span class="p">,</span>
+            <span class="s2">&quot;formatPoster&quot;</span><span class="p">:</span> <span class="s2">&quot;JPG&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;formatOfferIcon&quot;</span><span class="p">:</span> <span class="s2">&quot;PNG&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;profile&quot;</span><span class="p">:</span> <span class="s2">&quot;S718&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;backdropProfile&quot;</span><span class="p">:</span> <span class="s2">&quot;S1920&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;bestOnly&quot;</span><span class="p">:</span> <span class="n">best_only</span><span class="p">},</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="n">graphql_offers_for_countries_query</span><span class="p">(</span><span class="n">countries</span><span class="p">),</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="parse_offers_for_countries_response">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.query.parse_offers_for_countries_response">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_offers_for_countries_response</span><span class="p">(</span><span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">countries</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Offer</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse response from offers query from JustWatch GraphQL API.</span>
+
+<span class="sd">    Parses response for ``GetTitleOffers`` query.</span>
+
+<span class="sd">    Response if searched for country codes passed as ``countries`` argument.</span>
+<span class="sd">    Countries in JSON response which are not present in ``countries`` set will be ignored.</span>
+<span class="sd">    If response doesn&#39;t have offers for a country, then that country still will be present</span>
+<span class="sd">    in returned dict, just with an empty list as value.</span>
+
+<span class="sd">    Meant to be used together with :func:`prepare_offers_for_countries_request`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        json (dict): JSON returned by JustWatch GraphQL API.</span>
+<span class="sd">        countries (set[str]): Set of country codes to look for in API response.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict[str, list[Offer]]: A dict, where keys are matching ``countries`` argument and values</span>
+<span class="sd">        are offers for a given country parsed from JSON response.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">offers_node</span> <span class="o">=</span> <span class="n">json</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;node&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="n">country</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">_parse_offer</span><span class="p">,</span> <span class="n">offers_node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">country</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="p">[])))</span>
+        <span class="k">for</span> <span class="n">country</span> <span class="ow">in</span> <span class="n">countries</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="prepare_providers_request">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.query.prepare_providers_request">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">prepare_providers_request</span><span class="p">(</span><span class="n">country</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prepare &quot;get all providers&quot; request for JustWatch GraphQL API.</span>
+
+<span class="sd">    Creates a ``GetProviders`` GraphQL query.</span>
+
+<span class="sd">    Country code should be two uppercase letters, however it will be auto-converted to uppercase.</span>
+
+<span class="sd">    Meant to be used together with :func:`parse_providers_response`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        country (str): 2-letter country code for which providers should be looked up.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: JSON/dict with GraphQL POST body.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_assert_country_code_is_valid</span><span class="p">(</span><span class="n">country</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;operationName&quot;</span><span class="p">:</span> <span class="s2">&quot;GetProviders&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;variables&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;country&quot;</span><span class="p">:</span> <span class="n">country</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
+            <span class="s2">&quot;formatOfferIcon&quot;</span><span class="p">:</span> <span class="s2">&quot;PNG&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="n">graphql_providers_query</span><span class="p">(),</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="parse_providers_response">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.query.parse_providers_response">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_providers_response</span><span class="p">(</span><span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">OfferPackage</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse response from &quot;get all providers&quot; query from JustWatch GraphQL API.</span>
+
+<span class="sd">    Parses response for ``GetProviders`` query.</span>
+
+<span class="sd">    If API didn&#39;t return any data, then an empty list is returned.</span>
+
+<span class="sd">    Meant to be used together with :func:`prepare_providers_request`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        json (dict): JSON returned by JustWatch GraphQL API.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[MediaEntry]: Parsed received JSON as a list of ``OfferPackage`` NamedTuples.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">_parse_package</span><span class="p">(</span><span class="n">package</span><span class="p">)</span> <span class="k">for</span> <span class="n">package</span> <span class="ow">in</span> <span class="n">json</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;packages&quot;</span><span class="p">]]</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_assert_country_code_is_valid</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># TODO: Convert assert to regular exception</span>
+    <span class="n">code_has_valid_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">code</span><span class="p">)</span> <span class="o">==</span> <span class="n">_COUNTRY_CODE_LENGTH</span>
+    <span class="k">assert</span> <span class="n">code_has_valid_length</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Invalid country code: </span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s2">, code must be 2 characters long&quot;</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_entry</span><span class="p">(</span><span class="n">json</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MediaEntry</span><span class="p">:</span>
+    <span class="n">entry_id</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
+    <span class="n">object_id</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;objectId&quot;</span><span class="p">)</span>
+    <span class="n">object_type</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;objectType&quot;</span><span class="p">)</span>
+    <span class="n">total_episode_count</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;totalEpisodeCount&quot;</span><span class="p">)</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">json</span><span class="p">[</span><span class="s2">&quot;content&quot;</span><span class="p">]</span>
+    <span class="n">season_number</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;seasonNumber&quot;</span><span class="p">)</span>
+    <span class="n">episode_number</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;episodeNumber&quot;</span><span class="p">)</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">)</span>
+    <span class="n">url_field</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fullPath&quot;</span><span class="p">)</span>
+    <span class="c1"># Missing URL should be &quot;None&quot;, not an empty string,</span>
+    <span class="c1"># but I want to keep the MediaEntry structure unchanged for now.</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">_DETAILS_URL</span> <span class="o">+</span> <span class="n">url_field</span> <span class="k">if</span> <span class="n">url_field</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">year</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;originalReleaseYear&quot;</span><span class="p">)</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;originalReleaseDate&quot;</span><span class="p">)</span>
+    <span class="n">runtime_minutes</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;runtime&quot;</span><span class="p">)</span>
+    <span class="n">short_description</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;shortDescription&quot;</span><span class="p">)</span>
+    <span class="n">genres</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;shortName&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;genres&quot;</span><span class="p">,</span> <span class="p">[])</span> <span class="k">if</span> <span class="n">node</span><span class="p">]</span>
+    <span class="n">external_ids</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;externalIds&quot;</span><span class="p">)</span>
+    <span class="n">imdb_id</span> <span class="o">=</span> <span class="n">external_ids</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;imdbId&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">external_ids</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="n">tmdb_id</span> <span class="o">=</span> <span class="n">external_ids</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tmdbId&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">external_ids</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="n">poster_url_field</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;posterUrl&quot;</span><span class="p">)</span>
+    <span class="n">poster</span> <span class="o">=</span> <span class="n">_IMAGES_URL</span> <span class="o">+</span> <span class="n">poster_url_field</span> <span class="k">if</span> <span class="n">poster_url_field</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="n">backdrops</span> <span class="o">=</span> <span class="p">[</span><span class="n">_IMAGES_URL</span> <span class="o">+</span> <span class="n">bd</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;backdropUrl&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">bd</span> <span class="ow">in</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;backdrops&quot;</span><span class="p">,</span> <span class="p">[])</span> <span class="k">if</span> <span class="n">bd</span><span class="p">]</span>
+    <span class="n">age_certification</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ageCertification&quot;</span><span class="p">)</span>
+    <span class="n">scoring</span> <span class="o">=</span> <span class="n">_parse_scores</span><span class="p">(</span><span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;scoring&quot;</span><span class="p">))</span>
+    <span class="n">interactions</span> <span class="o">=</span> <span class="n">_parse_interactions</span><span class="p">(</span><span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;interactions&quot;</span><span class="p">))</span>
+    <span class="n">streaming_charts</span> <span class="o">=</span> <span class="n">_parse_streaming_charts</span><span class="p">(</span><span class="n">json</span><span class="p">)</span>
+    <span class="n">offers</span> <span class="o">=</span> <span class="p">[</span><span class="n">_parse_offer</span><span class="p">(</span><span class="n">offer</span><span class="p">)</span> <span class="k">for</span> <span class="n">offer</span> <span class="ow">in</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;offers&quot;</span><span class="p">,</span> <span class="p">[])</span> <span class="k">if</span> <span class="n">offer</span><span class="p">]</span>
+    <span class="n">total_season_count</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;totalSeasonCount&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">MediaEntry</span><span class="p">(</span>
+        <span class="n">entry_id</span><span class="p">,</span>
+        <span class="n">object_id</span><span class="p">,</span>
+        <span class="n">object_type</span><span class="p">,</span>
+        <span class="n">title</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">,</span>
+        <span class="n">year</span><span class="p">,</span>
+        <span class="n">date</span><span class="p">,</span>
+        <span class="n">runtime_minutes</span><span class="p">,</span>
+        <span class="n">short_description</span><span class="p">,</span>
+        <span class="n">genres</span><span class="p">,</span>
+        <span class="n">imdb_id</span><span class="p">,</span>
+        <span class="n">tmdb_id</span><span class="p">,</span>
+        <span class="n">poster</span><span class="p">,</span>
+        <span class="n">backdrops</span><span class="p">,</span>
+        <span class="n">age_certification</span><span class="p">,</span>
+        <span class="n">scoring</span><span class="p">,</span>
+        <span class="n">interactions</span><span class="p">,</span>
+        <span class="n">streaming_charts</span><span class="p">,</span>
+        <span class="n">offers</span><span class="p">,</span>
+        <span class="n">total_season_count</span><span class="p">,</span>
+        <span class="n">total_episode_count</span><span class="p">,</span>
+        <span class="n">season_number</span><span class="p">,</span>
+        <span class="n">episode_number</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_episode</span><span class="p">(</span><span class="n">json</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Episode</span><span class="p">:</span>
+    <span class="n">episode_id</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
+    <span class="n">object_id</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;objectId&quot;</span><span class="p">)</span>
+    <span class="n">object_type</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;objectType&quot;</span><span class="p">)</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">json</span><span class="p">[</span><span class="s2">&quot;content&quot;</span><span class="p">]</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">)</span>
+    <span class="n">year</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;originalReleaseYear&quot;</span><span class="p">)</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;originalReleaseDate&quot;</span><span class="p">)</span>
+    <span class="n">runtime_minutes</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;runtime&quot;</span><span class="p">)</span>
+    <span class="n">short_description</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;shortDescription&quot;</span><span class="p">)</span>
+    <span class="n">episode_number</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;episodeNumber&quot;</span><span class="p">)</span>
+    <span class="n">season_number</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;seasonNumber&quot;</span><span class="p">)</span>
+    <span class="n">offers</span> <span class="o">=</span> <span class="p">[</span><span class="n">_parse_offer</span><span class="p">(</span><span class="n">offer</span><span class="p">)</span> <span class="k">for</span> <span class="n">offer</span> <span class="ow">in</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;offers&quot;</span><span class="p">,</span> <span class="p">[])</span> <span class="k">if</span> <span class="n">offer</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">Episode</span><span class="p">(</span>
+        <span class="n">episode_id</span><span class="p">,</span>
+        <span class="n">object_id</span><span class="p">,</span>
+        <span class="n">object_type</span><span class="p">,</span>
+        <span class="n">title</span><span class="p">,</span>
+        <span class="n">year</span><span class="p">,</span>
+        <span class="n">date</span><span class="p">,</span>
+        <span class="n">runtime_minutes</span><span class="p">,</span>
+        <span class="n">short_description</span><span class="p">,</span>
+        <span class="n">episode_number</span><span class="p">,</span>
+        <span class="n">season_number</span><span class="p">,</span>
+        <span class="n">offers</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_scores</span><span class="p">(</span><span class="n">json</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scoring</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">json</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">imdb_score</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;imdbScore&quot;</span><span class="p">)</span>
+    <span class="n">imdb_votes</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;imdbVotes&quot;</span><span class="p">)</span>
+    <span class="n">tmdb_popularity</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tmdbPopularity&quot;</span><span class="p">)</span>
+    <span class="n">tmdb_score</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tmdbScore&quot;</span><span class="p">)</span>
+    <span class="n">tomatometer</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tomatoMeter&quot;</span><span class="p">)</span>
+    <span class="n">certified_fresh</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;certifiedFresh&quot;</span><span class="p">)</span>
+    <span class="n">jw_rating</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;jwRating&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Scoring</span><span class="p">(</span>
+        <span class="n">imdb_score</span><span class="p">,</span>
+        <span class="nb">int</span><span class="p">(</span><span class="n">imdb_votes</span><span class="p">)</span> <span class="k">if</span> <span class="n">imdb_votes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">tmdb_popularity</span><span class="p">,</span>
+        <span class="n">tmdb_score</span><span class="p">,</span>
+        <span class="nb">int</span><span class="p">(</span><span class="n">tomatometer</span><span class="p">)</span> <span class="k">if</span> <span class="n">tomatometer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">certified_fresh</span><span class="p">,</span>
+        <span class="n">jw_rating</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_interactions</span><span class="p">(</span><span class="n">json</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Interactions</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">json</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">likes</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;likelistAdditions&quot;</span><span class="p">)</span>
+    <span class="n">dislikes</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dislikelistAdditions&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Interactions</span><span class="p">(</span><span class="n">likes</span><span class="p">,</span> <span class="n">dislikes</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_streaming_charts</span><span class="p">(</span><span class="n">json</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StreamingCharts</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="ow">not</span> <span class="p">(</span><span class="n">streaming_chart_info</span> <span class="o">:=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;streamingCharts&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;edges&quot;</span><span class="p">))</span>
+        <span class="ow">or</span> <span class="ow">not</span> <span class="p">(</span><span class="n">streaming_chart_info</span> <span class="o">:=</span> <span class="n">streaming_chart_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;streamingChartInfo&quot;</span><span class="p">))</span>
+        <span class="c1"># Getting final info is awkward, I think this in general can return a list when searching</span>
+        <span class="c1"># for ranks for multiple entries. In this case, to unify searching and displaying details,</span>
+        <span class="c1"># it&#39;s always getting single element in a list.</span>
+    <span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">rank</span> <span class="o">=</span> <span class="n">streaming_chart_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;rank&quot;</span><span class="p">)</span>
+    <span class="n">trend</span> <span class="o">=</span> <span class="n">streaming_chart_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;trend&quot;</span><span class="p">)</span>
+    <span class="n">trend_difference</span> <span class="o">=</span> <span class="n">streaming_chart_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;trendDifference&quot;</span><span class="p">)</span>
+    <span class="n">top_rank</span> <span class="o">=</span> <span class="n">streaming_chart_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;topRank&quot;</span><span class="p">)</span>
+    <span class="n">days_in_top_3</span> <span class="o">=</span> <span class="n">streaming_chart_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;daysInTop3&quot;</span><span class="p">)</span>
+    <span class="n">days_in_top_10</span> <span class="o">=</span> <span class="n">streaming_chart_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;daysInTop10&quot;</span><span class="p">)</span>
+    <span class="n">days_in_top_100</span> <span class="o">=</span> <span class="n">streaming_chart_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;daysInTop100&quot;</span><span class="p">)</span>
+    <span class="n">days_in_top_1000</span> <span class="o">=</span> <span class="n">streaming_chart_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;daysInTop1000&quot;</span><span class="p">)</span>
+    <span class="n">updated</span> <span class="o">=</span> <span class="n">streaming_chart_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;updatedAt&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">StreamingCharts</span><span class="p">(</span>
+        <span class="n">rank</span><span class="p">,</span>
+        <span class="n">trend</span><span class="p">,</span>
+        <span class="n">trend_difference</span><span class="p">,</span>
+        <span class="n">top_rank</span><span class="p">,</span>
+        <span class="n">days_in_top_3</span><span class="p">,</span>
+        <span class="n">days_in_top_10</span><span class="p">,</span>
+        <span class="n">days_in_top_100</span><span class="p">,</span>
+        <span class="n">days_in_top_1000</span><span class="p">,</span>
+        <span class="n">updated</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_offer</span><span class="p">(</span><span class="n">json</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Offer</span><span class="p">:</span>
+    <span class="n">offer_id</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
+    <span class="n">monetization_type</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;monetizationType&quot;</span><span class="p">)</span>
+    <span class="n">presentation_type</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;presentationType&quot;</span><span class="p">)</span>
+    <span class="n">price_string</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;retailPrice&quot;</span><span class="p">)</span>
+    <span class="n">price_value</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;retailPriceValue&quot;</span><span class="p">)</span>
+    <span class="n">price_currency</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;currency&quot;</span><span class="p">)</span>
+    <span class="n">last_change_retail_price_value</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;lastChangeRetailPriceValue&quot;</span><span class="p">)</span>
+    <span class="n">offer_type</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span>
+    <span class="n">package</span> <span class="o">=</span> <span class="n">_parse_package</span><span class="p">(</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;package&quot;</span><span class="p">])</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;standardWebURL&quot;</span><span class="p">)</span>
+    <span class="n">element_count</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;elementCount&quot;</span><span class="p">)</span>
+    <span class="n">available_to</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;availableTo&quot;</span><span class="p">)</span>
+    <span class="n">deeplink_roku</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;deeplinkRoku&quot;</span><span class="p">)</span>
+    <span class="n">subtitle_languages</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;subtitleLanguages&quot;</span><span class="p">)</span>
+    <span class="n">video_technology</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;videoTechnology&quot;</span><span class="p">)</span>
+    <span class="n">audio_technology</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;audioTechnology&quot;</span><span class="p">)</span>
+    <span class="n">audio_languages</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;audioLanguages&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Offer</span><span class="p">(</span>
+        <span class="n">offer_id</span><span class="p">,</span>
+        <span class="n">monetization_type</span><span class="p">,</span>
+        <span class="n">presentation_type</span><span class="p">,</span>
+        <span class="n">price_string</span><span class="p">,</span>
+        <span class="n">price_value</span><span class="p">,</span>
+        <span class="n">price_currency</span><span class="p">,</span>
+        <span class="n">last_change_retail_price_value</span><span class="p">,</span>
+        <span class="n">offer_type</span><span class="p">,</span>
+        <span class="n">package</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">,</span>
+        <span class="n">element_count</span><span class="p">,</span>
+        <span class="n">available_to</span><span class="p">,</span>
+        <span class="n">deeplink_roku</span><span class="p">,</span>
+        <span class="n">subtitle_languages</span><span class="p">,</span>
+        <span class="n">video_technology</span><span class="p">,</span>
+        <span class="n">audio_technology</span><span class="p">,</span>
+        <span class="n">audio_languages</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_package</span><span class="p">(</span><span class="n">json</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OfferPackage</span><span class="p">:</span>
+    <span class="n">platform_id</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
+    <span class="n">package_id</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;packageId&quot;</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;clearName&quot;</span><span class="p">)</span>
+    <span class="n">technical_name</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;technicalName&quot;</span><span class="p">)</span>
+    <span class="n">short_name</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;shortName&quot;</span><span class="p">)</span>
+    <span class="n">icon</span> <span class="o">=</span> <span class="n">_IMAGES_URL</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;icon&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">OfferPackage</span><span class="p">(</span><span class="n">platform_id</span><span class="p">,</span> <span class="n">package_id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">technical_name</span><span class="p">,</span> <span class="n">short_name</span><span class="p">,</span> <span class="n">icon</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Electronic-Mango.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

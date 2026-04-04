@@ -1,0 +1,364 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>simplejustwatchapi.tuples &mdash; Simple JustWatch Python API  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Simple JustWatch Python API
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">simplejustwatchapi</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Simple JustWatch Python API</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">simplejustwatchapi.tuples</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for simplejustwatchapi.tuples</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Module storing tuples used as responses returned from this library.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedTuple</span>
+
+
+<div class="viewcode-block" id="OfferPackage">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.OfferPackage">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OfferPackage</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parsed single offer package from JustWatch GraphQL API for single entry.</span>
+
+<span class="sd">    Contains information about platform on which given offer is available.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        id (str): ID, defines whole platform on which this offer is available, not a single offer.</span>
+<span class="sd">        package_id (int): Package ID, defines whole platform on which this offer is available,</span>
+<span class="sd">            not a single offer.</span>
+<span class="sd">        name (str): Name of the platform in format suited to display for users.</span>
+<span class="sd">        technical_name (str): Technical name of the platform,</span>
+<span class="sd">            usually all lowercase with no whitespaces.</span>
+<span class="sd">        short_name (str): 3-letter provider name.</span>
+<span class="sd">        icon (str): Platform icon URL.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">package_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">technical_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">short_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">icon</span><span class="p">:</span> <span class="nb">str</span></div>
+
+
+
+<div class="viewcode-block" id="Offer">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.Offer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Offer</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parsed single offer from JustWatch GraphQL API for single entry.</span>
+
+<span class="sd">    One platform can have multiple offers for one entry available, e.g. renting, buying, etc.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        id (str): Offer ID.</span>
+<span class="sd">        monetization_type (str): Type of monetization of this offer,</span>
+<span class="sd">            e.g. ``FLATRATE`` (streaming), ``RENT``, ``BUY``.</span>
+<span class="sd">        presentation_type (str): Quality of media in this offer, e.g. ``HD``, ``SD``, ``4K``.</span>
+<span class="sd">        price_string (str | None): Current price as a string with currency,</span>
+<span class="sd">            suitable for displaying to users. Format can change based on used ``language`` argument.</span>
+<span class="sd">        price_value (float | None): Current price as a numeric value.</span>
+<span class="sd">        price_currency (str): Represents only currency, without price, or value.</span>
+<span class="sd">        last_change_retail_price_value (float | None): Previous available price if change in price</span>
+<span class="sd">            was recorded.</span>
+<span class="sd">        type (str): Type of offer.</span>
+<span class="sd">        package (OfferPackage): Information about platform on which this offer is available.</span>
+<span class="sd">        url (str): URL to this offer.</span>
+<span class="sd">        element_count (int | None): Element count, usually ``0``.</span>
+<span class="sd">        available_to (str | None): Date until which this offer will be available.</span>
+<span class="sd">        deeplink_roku (str | None): Deeplink to this offer in Roku.</span>
+<span class="sd">        subtitle_languages (list[str]): List of 2-letter language codes of available subtitles,</span>
+<span class="sd">            e.g. ``[&quot;en&quot;, &quot;pt&quot;, &quot;de&quot;]``.</span>
+<span class="sd">        video_technology (list[str]): List of known video technologies available in this offer,</span>
+<span class="sd">            e.g. ``DOLBY_VISION``.</span>
+<span class="sd">        audio_technology (list[str]): List of known audio technologies available in this offer,</span>
+<span class="sd">            e.g. ``DOLBY_ATMOS``.</span>
+<span class="sd">        audio_languages (list[str]): List of 2-letter language codes of available audio tracks,</span>
+<span class="sd">            e.g. ``[&quot;en&quot;, &quot;pt&quot;, &quot;de&quot;]``.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">monetization_type</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">presentation_type</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">price_string</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">price_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">price_currency</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">last_change_retail_price_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">package</span><span class="p">:</span> <span class="n">OfferPackage</span>
+    <span class="n">url</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">element_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">available_to</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">deeplink_roku</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">subtitle_languages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">video_technology</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">audio_technology</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">audio_languages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="Scoring">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.Scoring">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Scoring</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parsed data related to user scoring for a single entry.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        imdb_score (float | None): IMDB score.</span>
+<span class="sd">        imdb_votes (int | None): Number of votes on IMDB.</span>
+<span class="sd">        tmdb_popularity (float | None): TMDB popularity score.</span>
+<span class="sd">        tmdb_score (float | None): TMDB score.</span>
+<span class="sd">        tomatometer (int | None): Tomatometer score on Rotten Tomatoes.</span>
+<span class="sd">        certified_fresh (bool | None): Flag whether entry has &quot;Certified Fresh&quot; seal</span>
+<span class="sd">            on Rotten Tomatoes.</span>
+<span class="sd">        jw_rating (float | None): JustWatch rating.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">imdb_score</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">imdb_votes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">tmdb_popularity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">tmdb_score</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">tomatometer</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">certified_fresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">jw_rating</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Interactions">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.Interactions">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Interactions</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parsed data regarding number of likes and dislikes on JustWatch for a single entry.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        likes (int | None): Number of likes on JustWatch.</span>
+<span class="sd">        dislikes (int | None): Number of dislikes on JustWatch.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">likes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">dislikes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="StreamingCharts">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.StreamingCharts">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">StreamingCharts</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parsed data related to JustWatch rank for a single entry.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        rank (int): Rank on JustWatch.</span>
+<span class="sd">        trend (str): Trend in ranking on JustWatch, ``UP``, ``DOWN``, ``STABLE``.</span>
+<span class="sd">        trend_difference (int): Difference in rank; related to trend.</span>
+<span class="sd">        top_rank (int): Top rank ever reached.</span>
+<span class="sd">        days_in_top_3 (int): Number of days in top 3 ranks.</span>
+<span class="sd">        days_in_top_10 (int): Number of days in top 10 ranks.</span>
+<span class="sd">        days_in_top_100 (int): Number of days in top 100 ranks.</span>
+<span class="sd">        days_in_top_1000 (int): Number of days in top 1000 ranks.</span>
+<span class="sd">        updated (str): Date when rank data was last updated as a string,</span>
+<span class="sd">            e.g.: ``2024-10-06T09:20:36.397Z``.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">trend</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">trend_difference</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">top_rank</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">days_in_top_3</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">days_in_top_10</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">days_in_top_100</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">days_in_top_1000</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">updated</span><span class="p">:</span> <span class="nb">str</span></div>
+
+
+
+<div class="viewcode-block" id="Episode">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.Episode">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Episode</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parsed data related to a single episode.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        episode_id (str): Episode ID, contains type code and numeric ID.</span>
+<span class="sd">        object_id (int): Object ID, the numeric part of full episode ID.</span>
+<span class="sd">        object_type (str): Type of entry, for episodes should be ``SHOW_EPISODE``.</span>
+<span class="sd">        title (str | None): Full title.</span>
+<span class="sd">        release_year (int | None): Release year as a number.</span>
+<span class="sd">        release_date (str | None): Full release date as a string, e.g. ``2013-12-16``.</span>
+<span class="sd">        runtime_minutes (int | None): Runtime in minutes.</span>
+<span class="sd">        short_description (str | None): Short description of this episode.</span>
+<span class="sd">        episode_number (int | None): Number of this episode.</span>
+<span class="sd">        season_number (int | None): Season number with this episode.</span>
+<span class="sd">        offers (list[Offer]): List of available offers for this episode,</span>
+<span class="sd">            empty if there are no available offers.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">episode_id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">object_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">object_type</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">release_year</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">release_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">runtime_minutes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">short_description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">episode_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">season_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">offers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Offer</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="MediaEntry">
+<a class="viewcode-back" href="../../simplejustwatchapi.html#simplejustwatchapi.MediaEntry">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MediaEntry</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parsed response from JustWatch GraphQL API for &quot;GetSearchTitles&quot; query for single entry.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        entry_id (str): Entry ID, contains type code and numeric ID.</span>
+<span class="sd">        object_id (int): Object ID, the numeric part of full entry ID.</span>
+<span class="sd">        object_type (str): Type of entry, e.g. ``MOVIE``, ``SHOW``.</span>
+<span class="sd">        title (str): Full title.</span>
+<span class="sd">        url (str): URL to JustWatch with details for this entry.</span>
+<span class="sd">        release_year (int): Release year as a number.</span>
+<span class="sd">        release_date (str): Full release date as a string, e.g. ``2013-12-16``.</span>
+<span class="sd">        runtime_minutes (int): Runtime in minutes.</span>
+<span class="sd">        short_description (str): Short description of this entry.</span>
+<span class="sd">        genres (list[str]): List of genre codes for this entry,</span>
+<span class="sd">            e.g. ``[&quot;rly&quot;]``, ``[&quot;cmy&quot;, &quot;drm&quot;, &quot;rma&quot;]``.</span>
+<span class="sd">        imdb_id (str | None): ID of this entry in IMDB.</span>
+<span class="sd">        tmdb_id (str | None): ID of this entry in TMDB.</span>
+<span class="sd">        poster (str | None): URL to poster for this ID.</span>
+<span class="sd">        backdrops (list[str]): List of URLs for backdrops (full screen images to use as background).</span>
+<span class="sd">        age_certification (str | None): Age rating as a string, e.g.: ``R``, ``TV-14``.</span>
+<span class="sd">        scoring (Scoring | None): Scoring data.</span>
+<span class="sd">        interactions (Interactions | None): Interactions (likes/dislikes) data.</span>
+<span class="sd">        streaming_charts (StreamingCharts | None): JustWatch charts/ranks data.</span>
+<span class="sd">        offers (list[Offer]): List of available offers for this entry,</span>
+<span class="sd">            empty if there are no available offers.</span>
+<span class="sd">        total_season_count (int | None): Total season count, for non-shows it&#39;s always ``None``.</span>
+<span class="sd">        total_episode_count (int | None): Total number of episodes in this season,</span>
+<span class="sd">            for non-seasons it&#39;s always ``None``.</span>
+<span class="sd">        season_number (int | None): Number of this season, for movies it&#39;s always ``None``.</span>
+<span class="sd">        episode_number (int | None): Number of this episode, for non-episodes it&#39;s always ``None``.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">entry_id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">object_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">object_type</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">url</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">release_year</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">release_date</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">runtime_minutes</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">short_description</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">genres</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">imdb_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">tmdb_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">poster</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">backdrops</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">age_certification</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">scoring</span><span class="p">:</span> <span class="n">Scoring</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">interactions</span><span class="p">:</span> <span class="n">Interactions</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">streaming_charts</span><span class="p">:</span> <span class="n">StreamingCharts</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">offers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Offer</span><span class="p">]</span>
+    <span class="n">total_season_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">total_episode_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">season_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">episode_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Electronic-Mango.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

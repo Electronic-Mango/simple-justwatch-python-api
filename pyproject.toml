@@ -49,7 +49,6 @@ module-name = "simplejustwatchapi"
 pythonpath = ["src", "test"]
 
 [tool.ruff.lint]
-exclude = ["./examples/*", "./docs/*"]
 select = ["ALL"]
 ignore = [
     "ANN401",  # Type hinting JSONs is problematic

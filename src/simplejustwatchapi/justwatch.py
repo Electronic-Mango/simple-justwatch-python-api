@@ -1,4 +1,52 @@
-"""Main module orchestrating requests to JustWatch GraphQL API."""
+"""
+Main functions used for obtaining data from JustWatch GraphQL API.
+
+Each function sends **one** GraphQL query to JustWatch API and returns API response
+parsed into a [`NamedTuple`][typing.NamedTuple] from [`tuples`]
+[simplejustwatchapi.tuples] module. Everything is handled on the API side through
+prepared GraphQL query.
+
+Most functions have a number of common arguments (in addition to function-specific)
+ones, like `node_id`, or `title` to search for):
+
+| Name        | Description |
+|-------------|-------------|
+| `country`   | 2-letter country code for which offers will be returned, e.g., `US`, \
+                `GB`, `DE`. |
+| `language`  | Language code for responses' language. It can be just basic 2-letter \
+                code (e.g., `en`, `de`) or with a BCP47-like suffix (e.g., `en-US`, \
+                `de-CH`). I don't think this is exactly BCP47, as the suffix can \
+                contain only uppercase letters and numbers. |
+| `best_only` | Whether to return only "best" offers for each provider instead of, \
+                e.g., separate offer for SD, HD, and 4K. |
+
+Functions returning data for multiple titles
+([`search`][simplejustwatchapi.justwatch.search],
+[`details`][simplejustwatchapi.justwatch.details])
+also allow for specifying number of elements, basic pagination, and filtering for
+specific providers:
+
+| Name        | Description |
+|-------------|-------------|
+| `count`     | How many entries should be returned. |
+| `offset`    | Basic "pagination", how many first elements should be skipped. \
+                Everything is handled on API side, this library isn't doing any \
+                filtering. |
+| `providers` | Providers (like Netflix, Amazon Prime Video) for which offers should \
+                returned. Requires 3-letter "short name". Check \
+                [`providers`][simplejustwatchapi.justwatch.providers] for an example \
+                of how you can get that value.
+
+Each function can raise two exceptions:
+
+| Exception | Cause |
+|-----------|-------|
+| [`JustWatchHttpError`][simplejustwatchapi.exceptions.JustWatchHttpError] | \
+    JustWatch API responded with non-`2xx` code. |
+| [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError] | \
+    JSON response from JustWatch API contains errors. If this exception is raised, \
+    then API responded with `2xx` code |
+"""
 
 from httpx import post
 
@@ -34,12 +82,25 @@ def search(
     providers: list[str] | str | None = None,
 ) -> list[MediaEntry]:
     """
-    Search JustWatch for given title.
+    Search JustWatch for the given title.
 
     If no `title` is provided (or an empty string, as per default value) you'll get a
     selection of "popular" titles. Without `title` the output is very similar to
     [`popular`][simplejustwatchapi.justwatch.popular] function. This argument isn't
     stripped, so passing string with only spaces will look for those spaces.
+
+    `country` is a 2-letter country code for which offers are selected. It should be
+    uppercase, however it will be normalized to uppercase automatically. It **must** be
+    2-letters long. It looks like ISO 3166-1 alpha-2 standard, however API doesn't
+    specify exact standard. If unexpected code is used, then [`JustWatchApiError`]
+    [simplejustwatchapi.exceptions.JustWatchApiError] exception is raised, as the API
+    will respond with internal error.
+
+    `language` is a language code for language in response (e.g., description, title).
+    It's value isn't normalized and **must** be provided in expected format, including
+    case. It looks like a subset of IETF BCP 47, however the suffix can contain only
+    uppercase letters and numbers. It can be a simple 2-letter code (e.g., `en`, `de`),
+    it can also contain optional suffix (e.g., `en-US`, `de-CH`).
 
     Returns a list of entries up to `count`.
 
@@ -60,7 +121,7 @@ def search(
     `providers` is a list of (usually) 3-letter service identifiers (e.g, `nfx` for
     "Netflix). Only entries which are available for given providers will be returned.
     For single provider you can either pass a single string, or a list of one string.
-    For `None` (also a default value) entries for all providers will be looked up.
+    For `None` (also the default value) entries for all providers will be looked up.
     Invalid names will be ignored, however if all are invalid, then no filtering will be
     done. You can look up values through [`providers`]
     [simplejustwatchapi.justwatch.providers] function.
@@ -104,6 +165,19 @@ def popular(
 
     This function returns similar values as `search` with no `title` provided.
 
+    `country` is a 2-letter country code for which offers are selected. It should be
+    uppercase, however it will be normalized to uppercase automatically. It **must** be
+    2-letters long. It looks like ISO 3166-1 alpha-2 standard, however API doesn't
+    specify exact standard. If unexpected code is used, then [`JustWatchApiError`]
+    [simplejustwatchapi.exceptions.JustWatchApiError] exception is raised, as the API
+    will respond with internal error.
+
+    `language` is a language code for language in response (e.g., description, title).
+    It's value isn't normalized and **must** be provided in expected format, including
+    case. It looks like a subset of IETF BCP 47, however the suffix can contain only
+    uppercase letters and numbers. It can be a simple 2-letter code (e.g., `en`, `de`),
+    it can also contain optional suffix (e.g., `en-US`, `de-CH`).
+
     Returns a list of entries up to `count`.
 
     `offset` specifies how many first entries should be skipped. This is done on API
@@ -124,7 +198,7 @@ def popular(
     `providers` is a list of (usually) 3-letter service identifiers (e.g, `nfx` for
     "Netflix). Only entries which are available for given providers will be returned.
     For single provider you can either pass a single string, or a list of one string.
-    For `None` (also a default value) entries for all providers will be looked up.
+    For `None` (also the default value) entries for all providers will be looked up.
     Invalid names will be ignored, however if all are invalid, then no filtering will be
     done. You can look up values through [`providers`]
     [simplejustwatchapi.justwatch.providers] function.
@@ -163,6 +237,19 @@ def details(
     """
     Get details of entry for a given ID.
 
+    `country` is a 2-letter country code for which offers are selected. It should be
+    uppercase, however it will be normalized to uppercase automatically. It **must** be
+    2-letters long. It looks like ISO 3166-1 alpha-2 standard, however API doesn't
+    specify exact standard. If unexpected code is used, then [`JustWatchApiError`]
+    [simplejustwatchapi.exceptions.JustWatchApiError] exception is raised, as the API
+    will respond with internal error.
+
+    `language` is a language code for language in response (e.g., description, title).
+    It's value isn't normalized and **must** be provided in expected format, including
+    case. It looks like a subset of IETF BCP 47, however the suffix can contain only
+    uppercase letters and numbers. It can be a simple 2-letter code (e.g., `en`, `de`),
+    it can also contain optional suffix (e.g., `en-US`, `de-CH`).
+
     `best_only` allows filtering out redundant offers, e.g. when if provide offers
     service in 4K, HD and SD, using `best_only = True` returns only 4K option,
     `best_only = False` returns all three.
@@ -193,6 +280,19 @@ def seasons(
     """
     Get details of all seasons available for a given show ID.
 
+    `country` is a 2-letter country code for which offers are selected. It should be
+    uppercase, however it will be normalized to uppercase automatically. It **must** be
+    2-letters long. It looks like ISO 3166-1 alpha-2 standard, however API doesn't
+    specify exact standard. If unexpected code is used, then [`JustWatchApiError`]
+    [simplejustwatchapi.exceptions.JustWatchApiError] exception is raised, as the API
+    will respond with internal error.
+
+    `language` is a language code for language in response (e.g., description, title).
+    It's value isn't normalized and **must** be provided in expected format, including
+    case. It looks like a subset of IETF BCP 47, however the suffix can contain only
+    uppercase letters and numbers. It can be a simple 2-letter code (e.g., `en`, `de`),
+    it can also contain optional suffix (e.g., `en-US`, `de-CH`).
+
     `best_only` allows filtering out redundant offers, e.g. when if provide offers
     service in 4K, HD and SD, using `best_only = True` returns only 4K option,
     `best_only = False` returns all three.
@@ -222,6 +322,19 @@ def episodes(
 ) -> list[Episode]:
     """
     Get details of all episodes available for a given season ID.
+
+    `country` is a 2-letter country code for which offers are selected. It should be
+    uppercase, however it will be normalized to uppercase automatically. It **must** be
+    2-letters long. It looks like ISO 3166-1 alpha-2 standard, however API doesn't
+    specify exact standard. If unexpected code is used, then [`JustWatchApiError`]
+    [simplejustwatchapi.exceptions.JustWatchApiError] exception is raised, as the API
+    will respond with internal error.
+
+    `language` is a language code for language in response (e.g., description, title).
+    It's value isn't normalized and **must** be provided in expected format, including
+    case. It looks like a subset of IETF BCP 47, however the suffix can contain only
+    uppercase letters and numbers. It can be a simple 2-letter code (e.g., `en`, `de`),
+    it can also contain optional suffix (e.g., `en-US`, `de-CH`).
 
     `best_only` allows filtering out redundant offers, e.g. when if provide offers
     service in 4K, HD and SD, using `best_only = True` returns only 4K option,
@@ -255,6 +368,19 @@ def offers_for_countries(
 ) -> dict[str, list[Offer]]:
     """
     Get offers for entry of given node ID for all countries passed as argument.
+
+    `countries` is a set of 2-letter country codes. They all should be uppercase,
+    however it will be normalized to uppercase automatically. They **must** be
+    2-letters long. It looks like ISO 3166-1 alpha-2 standard, however API doesn't
+    specify exact standard. If unexpected codes are used, then [`JustWatchApiError`]
+    [simplejustwatchapi.exceptions.JustWatchApiError] exception is raised, as the API
+    will respond with internal error.
+
+    `language` is a language code for language in response (e.g., description, title).
+    It's value isn't normalized and **must** be provided in expected format, including
+    case. It looks like a subset of IETF BCP 47, however the suffix can contain only
+    uppercase letters and numbers. It can be a simple 2-letter code (e.g., `en`, `de`),
+    it can also contain optional suffix (e.g., `en-US`, `de-CH`).
 
     Returned dict has keys matching `countries` argument and values are list of found
     offers. If no countries are passed (an empty set given as argument) empty dict is
@@ -310,6 +436,13 @@ def offers_for_countries(
 def providers(country: str = "US") -> list[OfferPackage]:
     """
     Look up all providers for the given country code.
+
+    `country` is a 2-letter country code for which offers are selected. It should be
+    uppercase, however it will be normalized to uppercase automatically. It **must** be
+    2-letters long. It looks like ISO 3166-1 alpha-2 standard, however API doesn't
+    specify exact standard. If unexpected code is used, then [`JustWatchApiError`]
+    [simplejustwatchapi.exceptions.JustWatchApiError] exception is raised, as the API
+    will respond with internal error.
 
     Args:
         country (str): 2-letter country code, `US` by default.

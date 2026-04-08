@@ -6,6 +6,7 @@ icon: lucide/function-square
 
 ::: simplejustwatchapi.justwatch
     options:
+        toc_label: "Functions"
         members:
             - details
             - episodes

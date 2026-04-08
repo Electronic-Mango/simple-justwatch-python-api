@@ -1,0 +1,9 @@
+[tool.ruff]
+extend = "../pyproject.toml"
+
+[tool.ruff.lint]
+ignore = [
+    "D100",   # Not adding docstrings to examples.
+    "ERA001", # Commented out example commands.
+    "RUF001", # Some strings in API responeses contain them.
+]

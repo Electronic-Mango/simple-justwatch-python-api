@@ -16,7 +16,13 @@ result = [
         release_year=2014,
         release_date="2014-01-12",
         runtime_minutes=58,
-        short_description="Former Louisiana State CID partners Martin Hart and Rustin Cohle give separate statements to a pair of investigators about the murder of a prostitute, Dora Lange, 17 years earlier. As they look back, details of the crime, replete with occult overtones, are accompanied by insights into the detectives’ volatile partnership and personal lives.",
+        short_description=(
+            "Former Louisiana State CID partners Martin Hart and Rustin Cohle give"
+            " separate statements to a pair of investigators about the murder of a"
+            " prostitute, Dora Lange, 17 years earlier. As they look back, details of"
+            " the crime, replete with occult overtones, are accompanied by insights"
+            " into the detectives’ volatile partnership and personal lives."
+        ),
         episode_number=1,
         season_number=1,
         offers=[
@@ -186,7 +192,13 @@ result = [
         release_year=2014,
         release_date="2014-01-19",
         runtime_minutes=59,
-        short_description="Under pressure to land a suspect in the Lange murder, Quesada warns Hart and Cohle that they might be replaced by three detectives from a new task force. The pair lobbies for extra time to follow up on a lead that takes them from a rural cathouse to an incinerated church. With his marriage to Maggie already strained by work, Hart finds respite away from home.",
+        short_description=(
+            "Under pressure to land a suspect in the Lange murder, Quesada warns Hart"
+            " and Cohle that they might be replaced by three detectives from a new task"
+            " force. The pair lobbies for extra time to follow up on a lead that takes"
+            " them from a rural cathouse to an incinerated church. With his marriage to"
+            " Maggie already strained by work, Hart finds respite away from home."
+        ),
         episode_number=2,
         season_number=1,
         offers=[
@@ -356,7 +368,16 @@ result = [
         release_year=2014,
         release_date="2014-01-26",
         runtime_minutes=60,
-        short_description="A hidden image at the burned-out church leads Cohle and Hart to Joel Theriot, a tent-revival minister whose parishioners finger a scarred “tall man” seen with Dora Lange. Brought in for interrogation, a sex offender matching the description is quickly dismissed by Cohle, despite offering a confession. Hart gets sidetracked after Maggie sets Cohle up with a friend at a C&W bar. Looking to establish a pattern of murder, Cohle pores over old case files, finding a connection with a woman assumed to have drowned years earlier.",
+        short_description=(
+            "A hidden image at the burned-out church leads Cohle and Hart to Joel"
+            " Theriot, a tent-revival minister whose parishioners finger a scarred"
+            " “tall man” seen with Dora Lange. Brought in for interrogation, a sex"
+            " offender matching the description is quickly dismissed by Cohle, despite"
+            " offering a confession. Hart gets sidetracked after Maggie sets Cohle up"
+            " with a friend at a C&W bar. Looking to establish a pattern of murder,"
+            " Cohle pores over old case files, finding a connection with a woman"
+            " assumed to have drowned years earlier."
+        ),
         episode_number=3,
         season_number=1,
         offers=[
@@ -526,7 +547,14 @@ result = [
         release_year=2014,
         release_date="2014-02-09",
         runtime_minutes=56,
-        short_description="Hart and Cohle hunt for their newly identified suspect, Reggie Ledoux, a meth cooker who shared a cell with Dora Lange's husband and recently skipped parole. As Hart's personal life collapses around him, Cohle immerses himself in an old criminal identity from his narco days, contacting an East-Texas biker gang known to deal with their primary suspect.",
+        short_description=(
+            "Hart and Cohle hunt for their newly identified suspect, Reggie Ledoux, a"
+            " meth cooker who shared a cell with Dora Lange's husband and recently"
+            " skipped parole. As Hart's personal life collapses around him, Cohle"
+            " immerses himself in an old criminal identity from his narco days,"
+            " contacting an East-Texas biker gang known to deal with their primary"
+            " suspect."
+        ),
         episode_number=4,
         season_number=1,
         offers=[
@@ -696,7 +724,18 @@ result = [
         release_year=2014,
         release_date="2014-02-16",
         runtime_minutes=57,
-        short_description="A violent denouement in the forest clears the Dora Lange case and turns Cohle and Hart into local heroes. Each man settles into a healthier rhythm of living as Hart returns to his family, and Cohle starts a relationship while gaining a reputation as a closer in interrogations. As time passes and his daughters grow older, Hart faces new tensions and temptations, and Cohle learns from a double-murder suspect that there could be much more to an old case than he'd once thought. In 2012, Gilbough and Papania put their cards on the table, presenting new intelligence that threatens Cohle and causes Hart to reassess everything he thought he knew about his former partner.",
+        short_description=(
+            "A violent denouement in the forest clears the Dora Lange case and turns"
+            " Cohle and Hart into local heroes. Each man settles into a healthier"
+            " rhythm of living as Hart returns to his family, and Cohle starts a"
+            " relationship while gaining a reputation as a closer in interrogations. As"
+            " time passes and his daughters grow older, Hart faces new tensions and"
+            " temptations, and Cohle learns from a double-murder suspect that there"
+            " could be much more to an old case than he'd once thought. In 2012,"
+            " Gilbough and Papania put their cards on the table, presenting new"
+            " intelligence that threatens Cohle and causes Hart to reassess everything"
+            " he thought he knew about his former partner."
+        ),
         episode_number=5,
         season_number=1,
         offers=[
@@ -866,7 +905,10 @@ result = [
         release_year=2014,
         release_date="2014-02-23",
         runtime_minutes=59,
-        short_description="Maggie reveals Cohle's activities in 2002, when his relationship with Hart fractured and he quit the force.",
+        short_description=(
+            "Maggie reveals Cohle's activities in 2002, when his relationship with Hart"
+            " fractured and he quit the force."
+        ),
         episode_number=6,
         season_number=1,
         offers=[
@@ -1036,7 +1078,10 @@ result = [
         release_year=2014,
         release_date="2014-03-02",
         runtime_minutes=54,
-        short_description="Hart and Cohle call a truce to investigate a series of disappearances that may be related to the Dora Lange murder and the Tuttle family.",
+        short_description=(
+            "Hart and Cohle call a truce to investigate a series of disappearances that"
+            " may be related to the Dora Lange murder and the Tuttle family."
+        ),
         episode_number=7,
         season_number=1,
         offers=[
@@ -1206,7 +1251,10 @@ result = [
         release_year=2014,
         release_date="2014-03-09",
         runtime_minutes=54,
-        short_description="An overlooked detail provides Hart and Cohle with an important new lead in their 17-year-old case.",
+        short_description=(
+            "An overlooked detail provides Hart and Cohle with an important new lead in"
+            " their 17-year-old case."
+        ),
         episode_number=8,
         season_number=1,
         offers=[

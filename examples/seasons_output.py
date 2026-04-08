@@ -1,7 +1,14 @@
 # Output from:
 # seasons("ts20054", "US", "en", True)
 
-from simplejustwatchapi import *
+from simplejustwatchapi import (
+    Interactions,
+    MediaEntry,
+    Offer,
+    OfferPackage,
+    Scoring,
+    StreamingCharts,
+)
 
 result = [
     MediaEntry(
@@ -13,7 +20,17 @@ result = [
         release_year=2014,
         release_date="2014-01-12",
         runtime_minutes=57,
-        short_description="In 2012, Louisiana State Police Detectives Rust Cohle and Martin Hart  are brought in to revisit a homicide case they worked in 1995. As the  inquiry unfolds in present day through separate interrogations, the two  former detectives narrate the story of their investigation, reopening  unhealed wounds, and drawing into question their supposed solving of a  bizarre ritualistic murder in 1995. The timelines braid and converge in  2012 as each man is pulled back into a world they believed they'd left  behind. In learning about each other and their killer, it becomes clear  that darkness lives on both sides of the law.",
+        short_description=(
+            "In 2012, Louisiana State Police Detectives Rust Cohle and Martin Hart  are"
+            " brought in to revisit a homicide case they worked in 1995. As the "
+            " inquiry unfolds in present day through separate interrogations, the two "
+            " former detectives narrate the story of their investigation, reopening "
+            " unhealed wounds, and drawing into question their supposed solving of a "
+            " bizarre ritualistic murder in 1995. The timelines braid and converge in "
+            " 2012 as each man is pulled back into a world they believed they'd left "
+            " behind. In learning about each other and their killer, it becomes clear "
+            " that darkness lives on both sides of the law."
+        ),
         genres=["drm", "trl", "crm"],
         imdb_id=None,
         tmdb_id="46648:1",
@@ -271,7 +288,11 @@ result = [
         release_year=2015,
         release_date="2015-06-21",
         runtime_minutes=62,
-        short_description="A bizarre murder brings together three law-enforcement officers and a career criminal, each of whom must navigate a web of conspiracy and betrayal in the scorched landscapes of California.",
+        short_description=(
+            "A bizarre murder brings together three law-enforcement officers and a"
+            " career criminal, each of whom must navigate a web of conspiracy and"
+            " betrayal in the scorched landscapes of California."
+        ),
         genres=["drm", "trl", "crm"],
         imdb_id=None,
         tmdb_id="46648:2",
@@ -503,7 +524,11 @@ result = [
         release_year=2019,
         release_date="2019-01-13",
         runtime_minutes=61,
-        short_description="Season 3 tells the story of a macabre crime involving two missing children in the heart of the Ozarks, a mystery that deepens over decades and plays out in three separate time periods.",
+        short_description=(
+            "Season 3 tells the story of a macabre crime involving two missing children"
+            " in the heart of the Ozarks, a mystery that deepens over decades and plays"
+            " out in three separate time periods."
+        ),
         genres=["drm", "trl", "crm"],
         imdb_id=None,
         tmdb_id="46648:3",
@@ -761,7 +786,13 @@ result = [
         release_year=2024,
         release_date="2024-01-14",
         runtime_minutes=63,
-        short_description="When the long winter night falls in Ennis, Alaska, the eight men who operate the Tsalal Arctic Research Station vanish without a trace. To solve the case, Detectives Liz Danvers and Evangeline Navarro will have to confront the darkness they carry in themselves, and dig into the haunted truths that lie buried under the eternal ice.",
+        short_description=(
+            "When the long winter night falls in Ennis, Alaska, the eight men who"
+            " operate the Tsalal Arctic Research Station vanish without a trace. To"
+            " solve the case, Detectives Liz Danvers and Evangeline Navarro will have"
+            " to confront the darkness they carry in themselves, and dig into the"
+            " haunted truths that lie buried under the eternal ice."
+        ),
         genres=["drm", "trl", "crm"],
         imdb_id=None,
         tmdb_id="46648:4",

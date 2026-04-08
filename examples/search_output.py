@@ -20,7 +20,11 @@ result = [
         release_year=1999,
         release_date="1999-03-31",
         runtime_minutes=136,
-        short_description="Set in the 22nd century, The Matrix tells the story of a computer hacker who joins a group of underground insurgents fighting the vast and powerful computers who now rule the earth.",
+        short_description=(
+            "Set in the 22nd century, The Matrix tells the story of a computer hacker"
+            " who joins a group of underground insurgents fighting the vast and"
+            " powerful computers who now rule the earth."
+        ),
         genres=["act", "scf"],
         imdb_id="tt0133093",
         tmdb_id="603",
@@ -70,7 +74,9 @@ result = [
                     name="YouTube TV",
                     technical_name="youtubetv",
                     short_name="ytt",
-                    icon="https://images.justwatch.com/icon/334102416/s100/youtubetv.png",
+                    icon=(
+                        "https://images.justwatch.com/icon/334102416/s100/youtubetv.png"
+                    ),
                 ),
                 url="https://tv.youtube.com/browse/UCpZA8rufjU5pHypV5FhlQOw",
                 element_count=0,
@@ -347,7 +353,9 @@ result = [
                     short_name="vdu",
                     icon="https://images.justwatch.com/icon/322380782/s100/vudu.png",
                 ),
-                url="https://athome.fandango.com/content/browse/details/The-Matrix/9254",
+                url=(
+                    "https://athome.fandango.com/content/browse/details/The-Matrix/9254"
+                ),
                 element_count=0,
                 available_to=None,
                 deeplink_roku="launch/13842?contentID=9254&MediaType=movie",
@@ -449,7 +457,13 @@ result = [
         release_year=2003,
         release_date="2003-05-15",
         runtime_minutes=138,
-        short_description="The Resistance builds in numbers as humans are freed from the Matrix and brought to the city of Zion. Neo discovers his superpowers, including the ability to see the code inside the Matrix. With machine sentinels digging to Zion in 72 hours, Neo, Morpheus and Trinity must find the Keymaker to ultimately reach the Source.",
+        short_description=(
+            "The Resistance builds in numbers as humans are freed from the Matrix and"
+            " brought to the city of Zion. Neo discovers his superpowers, including the"
+            " ability to see the code inside the Matrix. With machine sentinels digging"
+            " to Zion in 72 hours, Neo, Morpheus and Trinity must find the Keymaker to"
+            " ultimately reach the Source."
+        ),
         genres=["act", "trl", "scf"],
         imdb_id="tt0234215",
         tmdb_id="604",
@@ -499,7 +513,9 @@ result = [
                     name="YouTube TV",
                     technical_name="youtubetv",
                     short_name="ytt",
-                    icon="https://images.justwatch.com/icon/334102416/s100/youtubetv.png",
+                    icon=(
+                        "https://images.justwatch.com/icon/334102416/s100/youtubetv.png"
+                    ),
                 ),
                 url="https://tv.youtube.com/browse/UCZAgF8XugSVikx4P-Qf-SZA",
                 element_count=0,
@@ -837,7 +853,11 @@ result = [
         release_year=2003,
         release_date="2003-11-05",
         runtime_minutes=129,
-        short_description="The human city of Zion defends itself against the massive invasion of the machines as Neo fights to end the war at another front while also opposing the rogue Agent Smith.",
+        short_description=(
+            "The human city of Zion defends itself against the massive invasion of the"
+            " machines as Neo fights to end the war at another front while also"
+            " opposing the rogue Agent Smith."
+        ),
         genres=["scf", "act", "trl"],
         imdb_id="tt0242653",
         tmdb_id="605",
@@ -887,7 +907,9 @@ result = [
                     name="YouTube TV",
                     technical_name="youtubetv",
                     short_name="ytt",
-                    icon="https://images.justwatch.com/icon/334102416/s100/youtubetv.png",
+                    icon=(
+                        "https://images.justwatch.com/icon/334102416/s100/youtubetv.png"
+                    ),
                 ),
                 url="https://tv.youtube.com/browse/UCL9wvYaIflzwgKLURRc4X9w",
                 element_count=0,
@@ -941,7 +963,9 @@ result = [
                     short_name="sod",
                     icon="https://images.justwatch.com/icon/305635208/s100/spectrumondemand.png",
                 ),
-                url="https://ondemand.spectrum.net/movies/33157/the-matrix-revolutions/",
+                url=(
+                    "https://ondemand.spectrum.net/movies/33157/the-matrix-revolutions/"
+                ),
                 element_count=0,
                 available_to=None,
                 deeplink_roku=None,

@@ -122,7 +122,9 @@ result = [
         name="Paramount Plus Premium",
         technical_name="paramountpluspremium",
         short_name="ppp",
-        icon="https://images.justwatch.com/icon/332803145/s100/paramountpluspremium.png",
+        icon=(
+            "https://images.justwatch.com/icon/332803145/s100/paramountpluspremium.png"
+        ),
     ),
     OfferPackage(
         id="cGF8MjYxNg==",
@@ -162,7 +164,9 @@ result = [
         name="Paramount Plus Apple TV Channel ",
         technical_name="appletvparamountplus",
         short_name="ppa",
-        icon="https://images.justwatch.com/icon/303391391/s100/appletvparamountplus.png",
+        icon=(
+            "https://images.justwatch.com/icon/303391391/s100/appletvparamountplus.png"
+        ),
     ),
     OfferPackage(
         id="cGF8MTg1NQ==",
@@ -602,7 +606,9 @@ result = [
         name="PBS Masterpiece Amazon Channel",
         technical_name="amazonpbsmasterpiece",
         short_name="apm",
-        icon="https://images.justwatch.com/icon/241732455/s100/amazonpbsmasterpiece.png",
+        icon=(
+            "https://images.justwatch.com/icon/241732455/s100/amazonpbsmasterpiece.png"
+        ),
     ),
     OfferPackage(
         id="cGF8Mjkx",
@@ -1082,7 +1088,9 @@ result = [
         name="Plex Channel",
         technical_name="justwatchplexchannel",
         short_name="plc",
-        icon="https://images.justwatch.com/icon/311774696/s100/justwatchplexchannel.png",
+        icon=(
+            "https://images.justwatch.com/icon/311774696/s100/justwatchplexchannel.png"
+        ),
     ),
     OfferPackage(
         id="cGF8NTU0",
@@ -1794,7 +1802,9 @@ result = [
         name="UP Faith & Family Apple TV Channel",
         technical_name="appletvupfaithfamily",
         short_name="ufa",
-        icon="https://images.justwatch.com/icon/311511403/s100/appletvupfaithfamily.png",
+        icon=(
+            "https://images.justwatch.com/icon/311511403/s100/appletvupfaithfamily.png"
+        ),
     ),
     OfferPackage(
         id="cGF8MjA0Nw==",
@@ -2074,7 +2084,9 @@ result = [
         name="Strand Releasing Amazon Channel",
         technical_name="amazonstrandreleasing",
         short_name="ars",
-        icon="https://images.justwatch.com/icon/318073935/s100/amazonstrandreleasing.png",
+        icon=(
+            "https://images.justwatch.com/icon/318073935/s100/amazonstrandreleasing.png"
+        ),
     ),
     OfferPackage(
         id="cGF8Mzg3",
@@ -2154,7 +2166,9 @@ result = [
         name="Stingray Karaoke Amazon Channel",
         technical_name="amazonstingraykaraoke",
         short_name="skk",
-        icon="https://images.justwatch.com/icon/321625406/s100/amazonstingraykaraoke.png",
+        icon=(
+            "https://images.justwatch.com/icon/321625406/s100/amazonstingraykaraoke.png"
+        ),
     ),
     OfferPackage(
         id="cGF8MjMxNA==",
@@ -2274,7 +2288,9 @@ result = [
         name="The Coda Collection Amazon Channel",
         technical_name="amazoncodacollection",
         short_name="ccl",
-        icon="https://images.justwatch.com/icon/327288766/s100/amazoncodacollection.png",
+        icon=(
+            "https://images.justwatch.com/icon/327288766/s100/amazoncodacollection.png"
+        ),
     ),
     OfferPackage(
         id="cGF8MjM2Nw==",
@@ -2554,7 +2570,9 @@ result = [
         name="Magnolia Network Amazon Channel",
         technical_name="amazonmagnolianetwork",
         short_name="amn",
-        icon="https://images.justwatch.com/icon/329619889/s100/amazonmagnolianetwork.png",
+        icon=(
+            "https://images.justwatch.com/icon/329619889/s100/amazonmagnolianetwork.png"
+        ),
     ),
     OfferPackage(
         id="cGF8MjQxOA==",
@@ -2562,7 +2580,9 @@ result = [
         name="Magnolia Selects Amazon Channel",
         technical_name="amazonmagnoliaselects",
         short_name="msa",
-        icon="https://images.justwatch.com/icon/329619928/s100/amazonmagnoliaselects.png",
+        icon=(
+            "https://images.justwatch.com/icon/329619928/s100/amazonmagnoliaselects.png"
+        ),
     ),
     OfferPackage(
         id="cGF8MjQxOQ==",
@@ -2706,7 +2726,9 @@ result = [
         name="ZenLIFE by Stingray Amazon Channel",
         technical_name="amazonstingrayzenlife",
         short_name="zls",
-        icon="https://images.justwatch.com/icon/329634230/s100/amazonstingrayzenlife.png",
+        icon=(
+            "https://images.justwatch.com/icon/329634230/s100/amazonstingrayzenlife.png"
+        ),
     ),
     OfferPackage(
         id="cGF8MjQ0MA==",
@@ -2730,7 +2752,9 @@ result = [
         name="The Surf Network Amazon Channel",
         technical_name="amazonthesurfnetwork",
         short_name="tsf",
-        icon="https://images.justwatch.com/icon/329636121/s100/amazonthesurfnetwork.png",
+        icon=(
+            "https://images.justwatch.com/icon/329636121/s100/amazonthesurfnetwork.png"
+        ),
     ),
     OfferPackage(
         id="cGF8MjQ0NA==",
@@ -3002,7 +3026,9 @@ result = [
         name="The Great Courses Amazon Channel",
         technical_name="amazonthegreatcourses",
         short_name="atg",
-        icon="https://images.justwatch.com/icon/318071797/s100/amazonthegreatcourses.png",
+        icon=(
+            "https://images.justwatch.com/icon/318071797/s100/amazonthegreatcourses.png"
+        ),
     ),
     OfferPackage(
         id="cGF8MjI5Ng==",

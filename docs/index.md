@@ -22,15 +22,12 @@ This library provides multiple functions for accessing JustWatch:
 
  - `search` - search for entries based on title
  - `popular` - get a list of currently popular titles
- - `details` - get details for entry based on its node ID
+ - `details` - get details for a title based on its ID
  - `seasons` - get information about all seasons of a show
  - `episodes` - get information about all episodes of a season
- - `offers_for_countries` - get offers for entry based on its node ID,
-    can look for offers in multiple countries
- - `providers` - get data about available providers (e.g., Netflix)
-
-All functions return response from JustWatch API parsed into a [`NamedTuple`]
-[typing.NamedTuple].
+ - `offers_for_countries` - get offers for a title based on its ID for multiple
+    countries
+ - `providers` - get data about all available providers (like Netflix) in a country
 
 All needed functions, data structures, raised exceptions are available through single
 module `simplejustwatchapi`.

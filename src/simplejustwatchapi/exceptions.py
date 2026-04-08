@@ -1,5 +1,5 @@
 """
-Exception definitions raised by this library.
+Exceptions raised by this library.
 
 All exceptions inherit from [`JustWatchError`]
 [simplejustwatchapi.exceptions.JustWatchError] for easier catching.
@@ -49,7 +49,7 @@ class JustWatchHttpError(JustWatchError):
 
     Attributes:
         code (int): HTTP status code returned by the API.
-        message (str): HTTP message response from the JustWatch API.
+        message (str): HTTP message response from the API.
 
     """
 

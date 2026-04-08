@@ -27,7 +27,7 @@ This project is managed by [uv](https://docs.astral.sh/uv/).
   - [Providers](#providers)
 - [Data structures](#data-structures)
 - [Locale, language, country](#locale-language-country)
-- [Request complexity](#request-complexity)
+- [Operation complexity](#operation-complexity)
 - [Maximum number of entries](#maximum-number-of-entries)
 - [Provider codes](#provider-codes)
   - [`providers` function](#providers-function)
@@ -102,7 +102,7 @@ If JustWatch GraphQL API returns fewer entries, then this function will also ret
 `best_only` determines whether similar offers, but lower quality should be included in response.
 If a platform offers streaming for a given entry in 4K, HD and SD, then `best_only = True` will return only the 4K offer, `best_only = False` will return all three.
 
-`offset` allows for very basic pagination, letting you get more data without running into [request complexity](#request-complexity).
+`offset` allows for very basic pagination, letting you get more data without running into [operation complexity](#operation-complexity).
 It simply skips `offset` number of first entries (on the API side, nothing is done inside the library).
 Since there is no session there's no guarantee of results "stability" - if JustWatch decides to
 shuffle returned values (I'm not sure what would be the reason, but in theory it's possible)
@@ -117,7 +117,7 @@ or check [Provider codes](#provider-codes) for more details.
 
 Returned value is a list of [`MediaEntry`](#return-data-structures) objects.
 
-For very large searches (high `count` value) I recommend using default `best_only=True` to avoid issues with [request complexity](#request-complexity).
+For very large searches (high `count` value) I recommend using default `best_only=True` to avoid issues with [operation complexity](#operation-complexity).
 
 Example function call and its output is in [`examples/search_output.py`](examples/search_output.py).
 
@@ -154,7 +154,7 @@ If JustWatch GraphQL API returns fewer entries, then this function will also ret
 `best_only` determines whether similar offers, but lower quality should be included in response.
 If a platform offers streaming for a given entry in 4K, HD and SD, then `best_only = True` will return only the 4K offer, `best_only = False` will return all three.
 
-`offset` allows for very basic pagination letting you get more data without running into [request complexity](#request-complexity).
+`offset` allows for very basic pagination letting you get more data without running into [operation complexity](#operation-complexity).
 It simply skips first entries (on the API side, nothing is done inside the library).
 Since there is no session there's no guarantee of results "stability" - if JustWatch decides to
 shuffle returned values (I'm not sure what would be the reason, but in theory it's possible)
@@ -169,7 +169,7 @@ or check [Provider codes](#provider-codes) for more details.
 
 Returned value is a list of [`MediaEntry`](#return-data-structures) objects.
 
-For very large searches (high `count` value) I recommend using default `best_only=True` to avoid issues with [request complexity](#request-complexity).
+For very large searches (high `count` value) I recommend using default `best_only=True` to avoid issues with [operation complexity](#operation-complexity).
 
 Example function call and its output is in [`examples/popular_output.py`](examples/popular_output.py).
 
@@ -357,9 +357,9 @@ Any combination of those languages and countries should work with this API as we
 
 
 
-## Request complexity
+## Operation complexity
 
-JustWatch API will respond with error on too high request/response complexity - essentially when returned graph would be too large.
+JustWatch API will respond with error on too high operation complexity - essentially when returned graph would be too large.
 It's the reason for why seasons/episodes data isn't available directly in [`search`](#search), or [`details`](#details) function
 (mostly the former).
 
@@ -373,7 +373,7 @@ Using `best_only=True` should alleviate the issue somewhat, so for very large re
 
 ## Maximum number of entries
 
-The JustWatch API itself won't allow for getting more than 1999 entries, through `count` and `offset`, regardless of request complexity.
+The JustWatch API itself won't allow for getting more than 1999 entries, through `count` and `offset`, regardless of operation complexity.
 If you try to get the 2000th entry the API (and functions in this libary) will return an empty list.
 
 **If you try to access over the 1999th entry you won't get *up to* 1999 entries, you'll get an empty list.**
@@ -405,7 +405,7 @@ results = search("title", count=100, offset=1950)
 # len(results) == 0, API responded with empty list
 ```
 
-Interestingly, you'll still hit [too high request complexity](#request-complexity)
+Interestingly, you'll still hit [too high operation complexity](#operation-complexity)
 for too high values of `count`, even though you'd get an empty list anyway:
 
 ```python

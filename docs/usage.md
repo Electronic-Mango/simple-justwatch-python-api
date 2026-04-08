@@ -8,20 +8,21 @@ This library provides multiple functions for accessing JustWatch:
 
  - `search` - search for entries based on title
  - `popular` - get a list of currently popular titles
- - `details` - get details for entry based on its node ID
+ - `details` - get details for a title based on its ID
  - `seasons` - get information about all seasons of a show
  - `episodes` - get information about all episodes of a season
- - `offers_for_countries` - get offers for entry based on its node ID,
-    can look for offers in multiple countries
- - `providers` - get data about available providers (e.g., Netflix)
+ - `offers_for_countries` - get offers for a title based on its ID for multiple
+    countries
+ - `providers` - get data about all available providers (like Netflix) in a country
 
 All functions return response from JustWatch API parsed into a [`NamedTuple`]
-[typing.NamedTuple].
+[typing.NamedTuple], check [Data structures](API Reference/data.md) page for more
+details.
 
 All needed functions, data structures, raised exceptions are available through single
-module `simplejustwatchapi`.
+module - `simplejustwatchapi`.
 
-Examples of parsed [`NamedTuple`][typing.NamedTuple] are in the GitHub repository in
+Examples of parsed responses are in the GitHub repository in
 [`examples/`](https://github.com/Electronic-Mango/simple-justwatch-python-api/tree/\
 main/examples).
 
@@ -92,7 +93,7 @@ If JustWatch GraphQL API returns fewer entries, then this function will also ret
 `best_only` determines whether similar offers, but lower quality should be included in response.
 If a platform offers streaming for a given entry in 4K, HD and SD, then `best_only = True` will return only the 4K offer, `best_only = False` will return all three.
 
-`offset` allows for very basic pagination, letting you get more data without running into [request complexity](#request-complexity).
+`offset` allows for very basic pagination, letting you get more data without running into [operation complexity](caveats.md#operation-complexity).
 It simply skips `offset` number of first entries (on the API side, nothing is done inside the library).
 Since there is no session there's no guarantee of results "stability" - if JustWatch decides to
 shuffle returned values (I'm not sure what would be the reason, but in theory it's possible)
@@ -107,7 +108,7 @@ or check [Provider codes](#provider-codes) for more details.
 
 Returned value is a list of [`MediaEntry`](#return-data-structures) objects.
 
-For very large searches (high `count` value) I recommend using default `best_only=True` to avoid issues with [request complexity](#request-complexity).
+For very large searches (high `count` value) I recommend using default `best_only=True` to avoid issues with [operation complexity](caveats.md#operation-complexity).
 
 Example function call and its output is in [`examples/search_output.py`](examples/search_output.py).
 
@@ -146,7 +147,7 @@ If JustWatch GraphQL API returns fewer entries, then this function will also ret
 `best_only` determines whether similar offers, but lower quality should be included in response.
 If a platform offers streaming for a given entry in 4K, HD and SD, then `best_only = True` will return only the 4K offer, `best_only = False` will return all three.
 
-`offset` allows for very basic pagination letting you get more data without running into [request complexity](#request-complexity).
+`offset` allows for very basic pagination letting you get more data without running into [operation complexity](caveats.md#operation-complexity).
 It simply skips first entries (on the API side, nothing is done inside the library).
 Since there is no session there's no guarantee of results "stability" - if JustWatch decides to
 shuffle returned values (I'm not sure what would be the reason, but in theory it's possible)
@@ -161,7 +162,7 @@ or check [Provider codes](#provider-codes) for more details.
 
 Returned value is a list of [`MediaEntry`](#return-data-structures) objects.
 
-For very large searches (high `count` value) I recommend using default `best_only=True` to avoid issues with [request complexity](#request-complexity).
+For very large searches (high `count` value) I recommend using default `best_only=True` to avoid issues with [operation complexity](caveats.md#operation-complexity).
 
 Example function call and its output is in [`examples/popular_output.py`](examples/popular_output.py).
 
@@ -323,11 +324,98 @@ Example function call and its output is in [`examples/providers_output.py`](exam
 
 Each function can raise two exceptions:
 
-| Exception | Cause |
-|-----------|-------|
+| Exception                                                                | Cause |
+|--------------------------------------------------------------------------|-------|
 | [`JustWatchHttpError`][simplejustwatchapi.exceptions.JustWatchHttpError] | JustWatch API responded with non-`2xx` code. |
-| [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError] | JSON response from JustWatch API contains errors. If this exception is raised, then API responded with `2xx` code. |
+| [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError]   | JSON response from JustWatch API contains errors,<br>even though the API responded with a `2xx` status code. |
 
+You can check [Exceptions](API Reference/exceptions.md) page for more details.
+
+### HTTP errors
+
+Non-`2xx` response status codes can happen when trying to use incorrect type for
+parameters, e.g., trying to use a non-numeric string for `count`:
+
+```python
+from simplejustwatchapi import search, JustWatchHttpError
+
+try:
+    results = search("The Matrix", count="five")
+except JustWatchHttpError as e:
+    print(e.code, e.message)
+    # In this case "e.message" is a JSON, but handled as a regular string.
+```
+
+!!! note "Numeric strings instead of `int`"
+    Since requests are send as a JSON you can use strings for `int` arguments, as long
+    as they are numeric strings, like `5`, instead of `five`:
+
+    ```python
+    from simplejustwatchapi import search
+
+    results = search("The Matrix", count="5")
+    # No exception is raised.
+    ```
+
+
+### API errors
+
+API errors can occur for invalid country code:
+```python
+from simplejustwatchapi import search, JustWatchApiError
+
+try:
+    # Country code matches 2-letter pattern, but isn't a valid code for any country.
+    results = search("The Matrix", country="xx")
+except JustWatchApiError as e:
+    # Print all error messages.
+    error_messages = [error.get("message") for error in e.errors]
+    print(",".join(error_messages))
+```
+
+It can occur for language codes not matching expected pattern:
+```python
+from simplejustwatchapi import search, JustWatchApiError
+
+try:
+    # Language code "xx" also isn't valid for any languages, but since it matches the
+    # pattern it would default to english.
+    results = search("The Matrix", language="xxx")
+except JustWatchApiError as e:
+    # Print only error codes.
+    # Codes are collected to a set, as the API will return an error for each place,
+    # where language code is used, in all offers, descriptions, etc.
+    error_codes = {error["extensions"]["code"] for error in e.errors}
+    print(",".join(error_codes))
+```
+
+Using title, instead of ID in [`details`][simplejustwatchapi.justwatch.details]
+function:
+
+```python
+from simplejustwatchapi import details, JustWatchError
+
+try:
+    # "details" expects an ID, not a title.
+    results = details("The Matrix")
+except JustWatchError as e:
+    # JustWatchError will catch both API and HTTP exceptions.
+    print(e.errors)
+```
+
+Too high operation complexity due to too large `count`:
+
+```python
+from simplejustwatchapi import search, JustWatchApiError
+
+try:
+    results = search("The Matrix", count=500)
+except JustWatchApiError as e:
+    error_messages = [error.get("message") for error in e.errors]
+    print(",".join(error_messages))
+```
+
+And, probably, many other, similar, cases as well.
 
 
 ## Advanced examples

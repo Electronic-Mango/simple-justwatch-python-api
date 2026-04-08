@@ -5,9 +5,11 @@ Each response is parsed into a [`NamedTuple`][typing.NamedTuple] for easy access
 each field and type checking. Each function available in this library is returning
 one (or more) of these structures.
 
-Most of returned fields are marked optional (with `| None`), as they might be missing
-from the API response. However, to be safe you might need to treat **all** fields as
-optional, as there is no guarantee that API will always return all of them.
+Some of the returned fields are marked optional (with `| None`), as they might be
+missing from the API response. I tried to only mark fields as optional when they are
+**actually** optional, based on my own testing. However, if you need maximum safety you
+might need to treat **all** fields as optional, as there is no guarantee what the API
+will return.
 """
 
 from typing import NamedTuple
@@ -168,8 +170,7 @@ class Episode(NamedTuple):
     Parsed data related to a single episode.
 
     It's a subset of fields available in [`MediaEntry`]
-    [simplejustwatchapi.tuples.MediaEntry], but with some episode-specific fields,
-    e.g. `episode_number`, `season_number`, etc.
+    [simplejustwatchapi.tuples.MediaEntry].
 
     Attributes:
         episode_id (str): Episode ID, contains type code and numeric ID.
@@ -211,7 +212,7 @@ class MediaEntry(NamedTuple):
 
     Some details might be specific for different media types, e.g. `total_episode_count`
     is only relevant for seasons, `total_season_count` for seasons and shows, etc.
-    For non-relevant fields, the value is always `None`.
+    For non-relevant fields, the value is `None`.
 
     Attributes:
         entry_id (str): Entry ID, contains type code and numeric ID.

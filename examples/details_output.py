@@ -19,7 +19,10 @@ result = MediaEntry(
     release_year=1987,
     release_date="1987-06-12",
     runtime_minutes=107,
-    short_description="A team of elite commandos on a secret mission in a Central American jungle come to find themselves hunted by an extraterrestrial warrior.",
+    short_description=(
+        "A team of elite commandos on a secret mission in a Central American jungle"
+        " come to find themselves hunted by an extraterrestrial warrior."
+    ),
     genres=["scf", "act", "trl", "hrr"],
     imdb_id="tt0093773",
     tmdb_id="106",

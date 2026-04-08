@@ -218,7 +218,9 @@ result = {
                 name="Canal VOD",
                 technical_name="canalplayvod",
                 short_name="cpv",
-                icon="https://images.justwatch.com/icon/107895447/s100/canalplayvod.png",
+                icon=(
+                    "https://images.justwatch.com/icon/107895447/s100/canalplayvod.png"
+                ),
             ),
             url="https://www.canalplus.com/cinema/matrix/h/114045_40099",
             element_count=0,
@@ -462,7 +464,9 @@ result = {
                 name="ARTE Boutique",
                 technical_name="arteboutique",
                 short_name="atb",
-                icon="https://images.justwatch.com/icon/341523116/s100/arteboutique.png",
+                icon=(
+                    "https://images.justwatch.com/icon/341523116/s100/arteboutique.png"
+                ),
             ),
             url="https://boutique.arte.tv/detail/matrix-1999",
             element_count=0,

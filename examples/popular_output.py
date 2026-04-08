@@ -20,7 +20,11 @@ result = [
         release_year=2026,
         release_date="2026-03-14",
         runtime_minutes=54,
-        short_description="A New York family's life unravels after a tragedy; they process their grief while vacationing in rural Montana, where they explore human connection amid their profound sorrow.",
+        short_description=(
+            "A New York family's life unravels after a tragedy; they process their"
+            " grief while vacationing in rural Montana, where they explore human"
+            " connection amid their profound sorrow."
+        ),
         genres=["act", "drm"],
         imdb_id="tt33204276",
         tmdb_id="225891",
@@ -170,7 +174,11 @@ result = [
         release_year=2025,
         release_date="2025-01-26",
         runtime_minutes=52,
-        short_description="The tranquility in a serene, wealthy community inhabited by some of the world's most prominent individuals explodes when a shocking murder occurs and a high stakes investigation unfolds.",
+        short_description=(
+            "The tranquility in a serene, wealthy community inhabited by some of the"
+            " world's most prominent individuals explodes when a shocking murder occurs"
+            " and a high stakes investigation unfolds."
+        ),
         genres=["crm", "drm", "trl", "act"],
         imdb_id="tt27444205",
         tmdb_id="245927",
@@ -247,7 +255,9 @@ result = [
                 url="https://www.hulu.com/watch/26fb7558-a0bb-4153-9dde-18800e1738a9",
                 element_count=2,
                 available_to=None,
-                deeplink_roku="launch/2285?contentID=26fb7558-a0bb-4153-9dde-18800e1738a9",
+                deeplink_roku=(
+                    "launch/2285?contentID=26fb7558-a0bb-4153-9dde-18800e1738a9"
+                ),
                 subtitle_languages=[],
                 video_technology=["HDR"],
                 audio_technology=["DOLBY_ATMOS"],
@@ -268,7 +278,10 @@ result = [
         release_year=2025,
         release_date="2025-01-09",
         runtime_minutes=49,
-        short_description="The staff of Pittsburgh's Trauma Medical Center work around the clock to save lives in an overcrowded and underfunded emergency department.",
+        short_description=(
+            "The staff of Pittsburgh's Trauma Medical Center work around the clock to"
+            " save lives in an overcrowded and underfunded emergency department."
+        ),
         genres=["drm"],
         imdb_id="tt31938062",
         tmdb_id="250307",
@@ -415,7 +428,9 @@ result = [
                     name="YouTube TV",
                     technical_name="youtubetv",
                     short_name="ytt",
-                    icon="https://images.justwatch.com/icon/334102416/s100/youtubetv.png",
+                    icon=(
+                        "https://images.justwatch.com/icon/334102416/s100/youtubetv.png"
+                    ),
                 ),
                 url="https://tv.youtube.com/browse/UC_aQzLZGTjhiYfdhQyk34eg",
                 element_count=1,
@@ -467,7 +482,9 @@ result = [
         release_year=2026,
         release_date="2026-03-11",
         runtime_minutes=53,
-        short_description="A brilliant forensic pathologist uses forensic technology to solve crimes.",
+        short_description=(
+            "A brilliant forensic pathologist uses forensic technology to solve crimes."
+        ),
         genres=["trl", "crm", "drm"],
         imdb_id="tt14786934",
         tmdb_id="240740",
@@ -750,7 +767,10 @@ result = [
         release_year=2026,
         release_date="2026-03-01",
         runtime_minutes=50,
-        short_description="A love triangle among three adults experiencing middle-age malaise leads to one of them ending up dead.",
+        short_description=(
+            "A love triangle among three adults experiencing middle-age malaise leads"
+            " to one of them ending up dead."
+        ),
         genres=["crm", "drm", "cmy"],
         imdb_id="tt21375452",
         tmdb_id="206828",
@@ -922,7 +942,12 @@ result = [
         release_year=2023,
         release_date="2023-01-26",
         runtime_minutes=35,
-        short_description="Jimmy is struggling to grieve the loss of his wife while being a dad, friend, and therapist. He decides to try a new approach with everyone in his path: unfiltered, brutal honesty. Will it make things better—or unleash uproarious chaos?",
+        short_description=(
+            "Jimmy is struggling to grieve the loss of his wife while being a dad,"
+            " friend, and therapist. He decides to try a new approach with everyone in"
+            " his path: unfiltered, brutal honesty. Will it make things better—or"
+            " unleash uproarious chaos?"
+        ),
         genres=["drm", "cmy"],
         imdb_id="tt15677150",
         tmdb_id="136311",
@@ -1097,7 +1122,10 @@ result = [
         release_year=2026,
         release_date="2026-03-08",
         runtime_minutes=30,
-        short_description="A single-camera comedy set on a college campus, centering on an author's complicated relationship with his daughter.",
+        short_description=(
+            "A single-camera comedy set on a college campus, centering on an author's"
+            " complicated relationship with his daughter."
+        ),
         genres=["cmy"],
         imdb_id="tt32421069",
         tmdb_id="254953",
@@ -1268,11 +1296,18 @@ result = [
         release_year=2026,
         release_date="2026-03-04",
         runtime_minutes=48,
-        short_description="Sherlock Holmes is a disgraced young man, raw and unfiltered, when he finds himself wrapped up in a murder case that threatens his liberty. His first ever case unravels a globe-trotting conspiracy that changes his life forever.",
+        short_description=(
+            "Sherlock Holmes is a disgraced young man, raw and unfiltered, when he"
+            " finds himself wrapped up in a murder case that threatens his liberty. His"
+            " first ever case unravels a globe-trotting conspiracy that changes his"
+            " life forever."
+        ),
         genres=["act", "trl"],
         imdb_id="tt8599532",
         tmdb_id="255661",
-        poster="https://images.justwatch.com/poster/342837915/s718/young-sherlock-0.jpg",
+        poster=(
+            "https://images.justwatch.com/poster/342837915/s718/young-sherlock-0.jpg"
+        ),
         backdrops=[
             "https://images.justwatch.com/backdrop/340253214/s1920/young-sherlock-0.jpg"
         ],
@@ -1551,7 +1586,10 @@ result = [
         release_year=2025,
         release_date="2025-11-26",
         runtime_minutes=126,
-        short_description="The powerful story of love and loss that inspired the creation of Shakespeare's timeless masterpiece, Hamlet.",
+        short_description=(
+            "The powerful story of love and loss that inspired the creation of"
+            " Shakespeare's timeless masterpiece, Hamlet."
+        ),
         genres=["rma", "hst", "drm"],
         imdb_id="tt14905854",
         tmdb_id="858024",
@@ -1601,7 +1639,9 @@ result = [
                     name="Peacock Premium",
                     technical_name="peacocktv",
                     short_name="pct",
-                    icon="https://images.justwatch.com/icon/194173870/s100/peacocktv.png",
+                    icon=(
+                        "https://images.justwatch.com/icon/194173870/s100/peacocktv.png"
+                    ),
                 ),
                 url="https://www.peacocktv.com/watch/asset/movies/hamnet/b9ada8e7-9ebd-3516-9f61-a58f239ec5e2",
                 element_count=0,
@@ -1809,7 +1849,9 @@ result = [
                     name="FlixFling",
                     technical_name="flixfling",
                     short_name="fxf",
-                    icon="https://images.justwatch.com/icon/147271109/s100/flixfling.png",
+                    icon=(
+                        "https://images.justwatch.com/icon/147271109/s100/flixfling.png"
+                    ),
                 ),
                 url="https://www.flixfling.com/justwatch/30773",
                 element_count=0,
@@ -1978,7 +2020,11 @@ result = [
         release_year=2025,
         release_date="2025-07-23",
         runtime_minutes=161,
-        short_description="Brazil, 1977. Marcelo, a technology expert in his early 40s, is on the run. Hoping to reunite with his son, he travels to Recife during Carnival but soon realizes that the city is not the safe haven he was expecting.",
+        short_description=(
+            "Brazil, 1977. Marcelo, a technology expert in his early 40s, is on the"
+            " run. Hoping to reunite with his son, he travels to Recife during Carnival"
+            " but soon realizes that the city is not the safe haven he was expecting."
+        ),
         genres=["crm", "drm", "trl"],
         imdb_id="tt27847051",
         tmdb_id="1220564",
@@ -2029,7 +2075,9 @@ result = [
                 url="https://www.hulu.com/watch/48ef3c24-0884-4f7a-9a98-a682ad028564",
                 element_count=0,
                 available_to=None,
-                deeplink_roku="launch/2285?contentID=48ef3c24-0884-4f7a-9a98-a682ad028564",
+                deeplink_roku=(
+                    "launch/2285?contentID=48ef3c24-0884-4f7a-9a98-a682ad028564"
+                ),
                 subtitle_languages=[],
                 video_technology=[],
                 audio_technology=["_5_POINT_1"],

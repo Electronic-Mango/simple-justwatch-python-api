@@ -6,7 +6,7 @@ parsed into a [`NamedTuple`][typing.NamedTuple] from [`tuples`]
 [simplejustwatchapi.tuples] module. Everything is handled on the API side through
 prepared GraphQL query.
 
-Most functions have a number of common arguments (in addition to function-specific)
+Most functions have a number of common arguments (in addition to function-specific
 ones, like `node_id`, or `title` to search for):
 
 | Name        | Description |
@@ -14,9 +14,9 @@ ones, like `node_id`, or `title` to search for):
 | `country`   | 2-letter country code for which offers will be returned, e.g., `US`, \
                 `GB`, `DE`. |
 | `language`  | Language code for responses' language. It can be just basic 2-letter \
-                code (e.g., `en`, `de`) or with a BCP47-like suffix (e.g., `en-US`, \
-                `de-CH`). I don't think this is exactly BCP47, as the suffix can \
-                contain only uppercase letters and numbers. |
+                code (e.g., `en`, `de`) or with a BCP47-like suffix for region \
+                (e.g., `en-US`, `de-CH`). I don't think this is exactly BCP47, \
+                as the suffix can contain only uppercase letters and numbers. |
 | `best_only` | Whether to return only "best" offers for each provider instead of, \
                 e.g., separate offer for SD, HD, and 4K. |
 
@@ -45,7 +45,7 @@ Each function can raise two exceptions:
     JustWatch API responded with non-`2xx` code. |
 | [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError] | \
     JSON response from JustWatch API contains errors. If this exception is raised, \
-    then API responded with `2xx` code |
+    then API responded with `2xx` code. |
 """
 
 from httpx import post
@@ -97,10 +97,12 @@ def search(
     will respond with internal error.
 
     `language` is a language code for language in response (e.g., description, title).
-    It's value isn't normalized and **must** be provided in expected format, including
-    case. It looks like a subset of IETF BCP 47, however the suffix can contain only
-    uppercase letters and numbers. It can be a simple 2-letter code (e.g., `en`, `de`),
-    it can also contain optional suffix (e.g., `en-US`, `de-CH`).
+    In most basic form it's 2 lowercase letters (e.g., `en`, `de`).
+    It can also contain alphanumeric (in uppercase) suffix after `-` symbol, most
+    likely used for regional variants (e.g., `en-US`, `de-CH`).
+    It looks like a subset of IETF BCP 47, however the suffix can contain only uppercase
+    letters and numbers. It's value isn't normalized and **must** be provided in
+    expected format, including letter case.
 
     Returns a list of entries up to `count`.
 
@@ -173,10 +175,12 @@ def popular(
     will respond with internal error.
 
     `language` is a language code for language in response (e.g., description, title).
-    It's value isn't normalized and **must** be provided in expected format, including
-    case. It looks like a subset of IETF BCP 47, however the suffix can contain only
-    uppercase letters and numbers. It can be a simple 2-letter code (e.g., `en`, `de`),
-    it can also contain optional suffix (e.g., `en-US`, `de-CH`).
+    In most basic form it's 2 lowercase letters (e.g., `en`, `de`).
+    It can also contain alphanumeric (in uppercase) suffix after `-` symbol, most
+    likely used for regional variants (e.g., `en-US`, `de-CH`).
+    It looks like a subset of IETF BCP 47, however the suffix can contain only uppercase
+    letters and numbers. It's value isn't normalized and **must** be provided in
+    expected format, including letter case.
 
     Returns a list of entries up to `count`.
 
@@ -245,10 +249,12 @@ def details(
     will respond with internal error.
 
     `language` is a language code for language in response (e.g., description, title).
-    It's value isn't normalized and **must** be provided in expected format, including
-    case. It looks like a subset of IETF BCP 47, however the suffix can contain only
-    uppercase letters and numbers. It can be a simple 2-letter code (e.g., `en`, `de`),
-    it can also contain optional suffix (e.g., `en-US`, `de-CH`).
+    In most basic form it's 2 lowercase letters (e.g., `en`, `de`).
+    It can also contain alphanumeric (in uppercase) suffix after `-` symbol, most
+    likely used for regional variants (e.g., `en-US`, `de-CH`).
+    It looks like a subset of IETF BCP 47, however the suffix can contain only uppercase
+    letters and numbers. It's value isn't normalized and **must** be provided in
+    expected format, including letter case.
 
     `best_only` allows filtering out redundant offers, e.g. when if provide offers
     service in 4K, HD and SD, using `best_only = True` returns only 4K option,
@@ -288,10 +294,12 @@ def seasons(
     will respond with internal error.
 
     `language` is a language code for language in response (e.g., description, title).
-    It's value isn't normalized and **must** be provided in expected format, including
-    case. It looks like a subset of IETF BCP 47, however the suffix can contain only
-    uppercase letters and numbers. It can be a simple 2-letter code (e.g., `en`, `de`),
-    it can also contain optional suffix (e.g., `en-US`, `de-CH`).
+    In most basic form it's 2 lowercase letters (e.g., `en`, `de`).
+    It can also contain alphanumeric (in uppercase) suffix after `-` symbol, most
+    likely used for regional variants (e.g., `en-US`, `de-CH`).
+    It looks like a subset of IETF BCP 47, however the suffix can contain only uppercase
+    letters and numbers. It's value isn't normalized and **must** be provided in
+    expected format, including letter case.
 
     `best_only` allows filtering out redundant offers, e.g. when if provide offers
     service in 4K, HD and SD, using `best_only = True` returns only 4K option,
@@ -331,10 +339,12 @@ def episodes(
     will respond with internal error.
 
     `language` is a language code for language in response (e.g., description, title).
-    It's value isn't normalized and **must** be provided in expected format, including
-    case. It looks like a subset of IETF BCP 47, however the suffix can contain only
-    uppercase letters and numbers. It can be a simple 2-letter code (e.g., `en`, `de`),
-    it can also contain optional suffix (e.g., `en-US`, `de-CH`).
+    In most basic form it's 2 lowercase letters (e.g., `en`, `de`).
+    It can also contain alphanumeric (in uppercase) suffix after `-` symbol, most
+    likely used for regional variants (e.g., `en-US`, `de-CH`).
+    It looks like a subset of IETF BCP 47, however the suffix can contain only uppercase
+    letters and numbers. It's value isn't normalized and **must** be provided in
+    expected format, including letter case.
 
     `best_only` allows filtering out redundant offers, e.g. when if provide offers
     service in 4K, HD and SD, using `best_only = True` returns only 4K option,
@@ -377,10 +387,12 @@ def offers_for_countries(
     will respond with internal error.
 
     `language` is a language code for language in response (e.g., description, title).
-    It's value isn't normalized and **must** be provided in expected format, including
-    case. It looks like a subset of IETF BCP 47, however the suffix can contain only
-    uppercase letters and numbers. It can be a simple 2-letter code (e.g., `en`, `de`),
-    it can also contain optional suffix (e.g., `en-US`, `de-CH`).
+    In most basic form it's 2 lowercase letters (e.g., `en`, `de`).
+    It can also contain alphanumeric (in uppercase) suffix after `-` symbol, most
+    likely used for regional variants (e.g., `en-US`, `de-CH`).
+    It looks like a subset of IETF BCP 47, however the suffix can contain only uppercase
+    letters and numbers. It's value isn't normalized and **must** be provided in
+    expected format, including letter case.
 
     Returned dict has keys matching `countries` argument and values are list of found
     offers. If no countries are passed (an empty set given as argument) empty dict is

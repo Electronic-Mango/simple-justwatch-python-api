@@ -48,7 +48,7 @@ pip install simple-justwatch-python-api
 
 ## Usage
 
-This Python API has multiple functions:
+This Python library has multiple functions:
 
  - [`search`](#search) - search for entries based on title
  - [`popular`](#popular) - get a list of currently popular titles
@@ -328,7 +328,7 @@ Example function call and its output is in [`examples/providers_output.py`](exam
 
 ## Data structures
 
-Detailed descriptions of all used data structures are available in the [documentation](https://electronic-mango.github.io/simple-justwatch-python-api/simplejustwatchapi.html#module-simplejustwatchapi.query).
+Detailed descriptions of all used data structures are available in the [documentation](https://electronic-mango.github.io/simple-justwatch-python-api).
 
 The main structure `MediaEntry` contains fields for all media types - movies, shows, seasons, episodes.
 Some fields are specific for one of the media types and will be `None` for others - e.g.:
@@ -354,8 +354,6 @@ The country part **must** be uppercase.
 
 There is a list of supported locales in [JustWatch **REST API** documentation](https://apis.justwatch.com/docs/api/#tips).
 Any combination of those languages and countries should work with this API as well.
-
-If you provide unsupported language JustWatch API should default to english.
 
 
 
@@ -455,10 +453,10 @@ Only for multiple you'll get the needed codes as `?providers=<code1>+<code2>+...
 for example on US version the URL when selecting "Netflix" and "Amazon Prime Video" is:
 
 ```url
-https://www.justwatch.com/us?providers=nfx,prv
+https://www.justwatch.com/us?providers=amp,nfx
 ```
 
-So the codes for them are `nfx` and `prv` for the US.
+So the codes for them are `amp` and `nfx` for the US.
 
 
 ### Stored output from other functions with offers
@@ -479,18 +477,18 @@ name_to_code_dict = {
 
 
 
-# TODO
+## TODO
 
- - [ ] Add another custom exception for invalid language code.
+ - [x] Add another custom exception for invalid language code.
 JustWatch reports expected regex: `^[a-z]{2}(-[0-9A-Z]+)?$`.
 It seems to be a combination of ISO 639-1 and BCP 47 subtags.
- - [ ] Improve checking for country code validity - JustWatch rports expected regex: `^[A-Z]{2}$` - better than just length.
+ - [x] Improve checking for country code validity - JustWatch rports expected regex: `^[A-Z]{2}$` - better than just length.
  - [ ] Should exceptions be raised in `justwatch.py`, or in `query.py`?
 
 
 
 ## Disclaimer
 
-This API is in no way affiliated, associated, authorized, endorsed by, or in any way officially connected with JustWatch.
+This library is in no way affiliated, associated, authorized, endorsed by, or in any way officially connected with JustWatch.
 This is an independent and unofficial project.
 Use at your own risk.

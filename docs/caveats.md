@@ -53,15 +53,16 @@ it doesn't seem to be comprehensive.
 
 ### Country
 
-Required pattern is two uppercase letters:
+Required pattern is two uppercase letters (e.g., `US`, `DE`, `GB`):
 ```regex
 ^[A-Z]{2}$
 ```
 
 It looks like **ISO 3166-1 alpha-2** standard.
 
-API expects only uppercase letters, however this library will automatically convert
-country codes to uppercase.
+!!! tip "Country code letter case"
+    API expects only uppercase letters, however this library will automatically convert
+    country codes to uppercase.
 
 If country code doesn't match the regex, or isn't a valid code the API will respond
 with an internal error and [`JustWatchApiError`]
@@ -70,17 +71,18 @@ with an internal error and [`JustWatchApiError`]
 
 ### Language
 
-Required pattern is 2 lowercase letters with optional alphanumeric suffix after `-`.
+Required pattern is 2 lowercase letters with optional
+alphanumeric suffix after `-` (e.g., `en`, `en-US`, `fr`, `de`, `de-CH`, `de-CH1901`).
 The sufix must be uppercase:
 ```
 ^[a-z]{2}(-[0-9A-Z]+)?$
 ```
 
-It looks like a subset of **IETF BCP 47**. The code isn't full BCP 47 as the suffix
-allows only for numbers and uppercase letters.
+It looks similar to **IETF BCP 47** standard.
 
-**The provided language isn't modified at all by this library, so it must match the
-regex exactly, including letter case.**
+!!! warning "Language code letter case"
+    The provided language isn't modified at all by this library, so it must match the
+    regex exactly, including letter case.
 
 If language code doesn't match the expected regex the API will respond with an internal
 error and [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError] will be

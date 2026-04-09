@@ -354,4 +354,103 @@ except JustWatchApiError as e:
 And so on.
 
 
-## Advanced examples
+## Multi-function examples
+
+Small collection of examples of how you can combine multiple functions together.
+
+### Get popular titles for only specific providers
+
+You can combine [`providers`](#get-all-available-providers-for-a-country) and
+[`popular`](#popular-titles) functions:
+```python
+from simplejustwatchapi import popular, providers
+
+# Get all providers in the US.
+all_providers = providers("US")
+
+# Filter only required providers by name.
+netflix_apple_only = [
+    provider.short_name  # We only need the codes for filtering.
+    for provider in all_providers
+    if provider.name in ("Netflix", "Apple TV")  # Get providers we need.
+]
+
+# Use found codes for filtering.
+filtered_popular = popular("US", providers=netflix_apple_only)
+```
+
+
+### Get offers for each episode of a TV show based on title
+
+You can combine [`search`](#search-for-a-title),
+[`seasons`](#details-for-all-seasons-of-a-tv-show) and
+[`episodes`](#details-for-all-episodes-of-a-tv-show) functions:
+```python
+from simplejustwatchapi import episodes, search, seasons
+
+title = "True Detective"
+
+# Search for a title.
+search_results = search(title)
+
+# Look for a first match with the expected title.
+first_match = next(
+    result
+    for result in search_results
+    if result.title == title and result.object_type == "SHOW"
+)
+
+# Get all seasons.
+all_seasons = seasons(first_match.entry_id)
+
+# Create a dict with episode offers.
+id_to_episodes_offers = {
+    season.season_number: {
+        episode.episode_number: episode.offers
+        for episode in episodes(season.entry_id)
+    }
+    for season in all_seasons
+}
+```
+
+
+### Get offers for multiple countries for all seasons of a TV show
+
+You can combine [`search`](#search-for-a-title),
+[`seasons`](#details-for-all-seasons-of-a-tv-show) and
+[`offers_for_countries`](#get-offers-for-multiple-countries-for-a-single-title)
+functions:
+```python
+from simplejustwatchapi import offers_for_countries, search, seasons
+
+title = "Andor"
+
+# Search for a title.
+search_results = search(title)
+
+# Look for a first match with the expected title.
+first_match = next(
+    result
+    for result in search_results
+    if result.title == title and result.object_type == "SHOW"
+)
+
+# Get all seasons.
+all_seasons = seasons(first_match.entry_id)
+
+# Get offers for each season for each country.
+countries = {"US", "DE"}
+season_offers = [
+    offers_for_countries(season.entry_id, countries)
+    for season in all_seasons
+]
+
+# Convert to a dict of country codes to list of offers.
+season_offers_per_country = {
+    country: [
+        season[country]
+        for season in season_offers
+    ]
+    for country in countries
+}
+```

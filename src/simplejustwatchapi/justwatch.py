@@ -7,16 +7,14 @@ parsed into a [`NamedTuple`][typing.NamedTuple] from [`tuples`]
 prepared GraphQL query.
 
 Most functions have a number of common arguments (in addition to function-specific
-ones, like `node_id`, or `title` to search for):
+ones, like `title` to search for):
 
 | Name        | Description |
 |-------------|-------------|
 | `country`   | 2-letter country code for which offers will be returned, e.g., `US`, \
                 `GB`, `DE`. |
 | `language`  | Language code for responses' language. It can be just basic 2-letter \
-                code (e.g., `en`, `de`) or with a BCP47-like suffix for region \
-                (e.g., `en-US`, `de-CH`). I don't think this is exactly BCP47, \
-                as the suffix can contain only uppercase letters and numbers. |
+                code or with a IETF BCP 47 suffix (e.g., `en-US`, `de-CH1901`). |
 | `best_only` | Whether to return only "best" offers for each provider instead of, \
                 e.g., separate offer for SD, HD, and 4K. |
 
@@ -86,61 +84,56 @@ def search(
 
     If no `title` is provided (or an empty string, as per default value) you'll get a
     selection of "popular" titles. Without `title` the output is very similar to
-    [`popular`][simplejustwatchapi.justwatch.popular] function. This argument isn't
-    stripped, so passing string with only spaces will look for those spaces.
+    [`popular`][simplejustwatchapi.justwatch.popular] function.
 
-    `country` is a 2-letter country code for which offers are selected. It should be
-    uppercase, however it will be normalized to uppercase automatically. It **must** be
-    2-letters long. It looks like ISO 3166-1 alpha-2 standard, however API doesn't
-    specify exact standard. If unexpected code is used, then [`JustWatchApiError`]
-    [simplejustwatchapi.exceptions.JustWatchApiError] exception is raised, as the API
-    will respond with internal error.
+    Title isn't stripped, so passing string with only spaces will look for those spaces.
 
-    `language` is a language code for language in response (e.g., description, title).
-    In most basic form it's 2 lowercase letters (e.g., `en`, `de`).
-    It can also contain alphanumeric (in uppercase) suffix after `-` symbol, most
-    likely used for regional variants (e.g., `en-US`, `de-CH`).
-    It looks like a subset of IETF BCP 47, however the suffix can contain only uppercase
-    letters and numbers. Its value isn't normalized and **must** be provided in
-    expected format, including letter case.
-
-    Returns a list of entries up to `count`.
-
-    `offset` specifies how many first entries should be skipped. This is done on API
-    side, not the library side; the returned list is still directly parsed from API
-    response. I'm not sure if it guarantees stability of results - it repeated calls to
-    this function with increasing offset will guarantee that you won't get repeats.
-
-    JustWatch API won't allow for getting more than 2000 responses, either through
+    JustWatch API won't allow for getting more than 1999 responses, either through
     `count`, or when `count + offset` is equal or greater than 2000 - it will return an
-    empty list instead (ALWAYS an empty list, if `offset` is lower than 2000 it won't
-    include entries up to 2000).
-
-    `best_only` allows filtering out redundant offers, e.g. when service provides offers
-    in 4K, HD and SD, using `best_only = True` returns only 4K option,
-    `best_only = False` returns all three.
-
-    `providers` is a list of (usually) 3-letter service identifiers (e.g, `nfx` for
-    "Netflix). Only entries which are available for given providers will be returned.
-    For single provider you can either pass a single string, or a list of one string.
-    For `None` (also the default value) entries for all providers will be looked up.
-    Invalid names will be ignored, however if all are invalid, then no filtering will be
-    done. You can look up values through [`providers`]
-    [simplejustwatchapi.justwatch.providers] function.
+    empty list instead (**always** an empty list, it won't include entries up to 1999).
 
     Args:
-        title (str): Title to search, empty string by default.
-        country (str): Country to search for offers, `US` by default.
-        language (str): Language of responses, `en` by default.
-        count (int): How many responses should be returned.
-        best_only (bool): Return only best offers if `True`,
-            return all offers if `False`.
-        offset (int): Search results offset.
-        providers (list[str] | str | None): 3-letter service identifier(s),
-            or `None` for all providers.
+        title (str): Title to search. Not stripped, passed to the API as-is.
+
+        country (str): 2-letter country code for which offers are selected. It should be
+            uppercase, however it will be normalized to uppercase automatically. It
+            **must** be 2-letters long. It seems to be **ISO 3166-1 alpha-2** code,
+            however the API doesn't specify exact standard. If unexpected code is used,
+            then [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError]
+            exception is raised, as the API will respond with internal error.
+
+        language (str): Code for language in response (e.g., description, title).
+            In most basic form it's 2 lowercase letters (e.g., `en`, `de`).
+            It can also contain alphanumeric (in uppercase) suffix after `-` symbol,
+            most likely used for regional variants (e.g., `en-US`, `de-CH1901`).
+            It looks like a variant of **IETF BCP 47**, however the suffix can contain
+            only uppercase letters and numbers. Its value isn't normalized and **must**
+            be provided in expected format, including letter case.
+
+        count (int): Return up to this many results. Too high values can cause API
+            errors due to too high operation complexity, if you need more results, use
+            with `offset` argument to get them in batches.
+
+        best_only (bool): Return only best offers if `True`, return all offers if
+            `False`. If service offers the same title in 4K, HD, and SD, then
+            `best_only = True` returns only 4K, `best_only = False` returns all three.
+
+        offset (int): Offset for the first returned result, i.e. how many first entries
+            should be skipped. This is done on API side, not the library side;
+            the returned list is still directly parsed from API response. I'm not sure
+            if it guarantees stability of results - if repeated calls to this function
+            with increasing offset will guarantee that you won't get repeats.
+
+        providers (list[str] | str | None): Selection of 3-letter service identifiers
+            (e.g, `nfx` for "Netflix). Only entries which are available for given
+            providers will be returned. For single provider you can either pass a single
+            string, or a list of one string. For `None` (the default value) entries for
+            all providers will be looked up. Invalid names will be ignored, however if
+            all are invalid, then no filtering will be done. You can look up values
+            through [`providers`] [simplejustwatchapi.justwatch.providers] function.
 
     Returns:
-        (list[MediaEntry]): List of tuples parsed from JustWatch response.
+        (list[MediaEntry]): List of tuples with details of search results.
 
     Raises:
         exceptions.JustWatchApiError: JSON response from API has internal errors.
@@ -165,60 +158,48 @@ def popular(
     """
     Look up all currently popular titles on JustWatch.
 
-    This function returns similar values as `search` with no `title` provided.
+    This function returns similar values as [`search`]
+    [simplejustwatchapi.justwatch.search] with no `title` provided.
 
-    `country` is a 2-letter country code for which offers are selected. It should be
-    uppercase, however it will be normalized to uppercase automatically. It **must** be
-    2-letters long. It looks like ISO 3166-1 alpha-2 standard, however API doesn't
-    specify exact standard. If unexpected code is used, then [`JustWatchApiError`]
-    [simplejustwatchapi.exceptions.JustWatchApiError] exception is raised, as the API
-    will respond with internal error.
-
-    `language` is a language code for language in response (e.g., description, title).
-    In most basic form it's 2 lowercase letters (e.g., `en`, `de`).
-    It can also contain alphanumeric (in uppercase) suffix after `-` symbol, most
-    likely used for regional variants (e.g., `en-US`, `de-CH`).
-    It looks like a subset of IETF BCP 47, however the suffix can contain only uppercase
-    letters and numbers. It's value isn't normalized and **must** be provided in
-    expected format, including letter case.
-
-    Returns a list of entries up to `count`.
-
-    `offset` specifies how many first entries should be skipped. This is done on API
-    side, not the library side; the returned list is still directly parsed from API
-    response. I'm not sure if it guarantees stability of results - whether repeated
-    calls to this function with increasing offset will guarantee that you won't get
-    repeats.
-
-    JustWatch API won't allow for getting more than 2000 responses, either through
+    JustWatch API won't allow for getting more than 1999 responses, either through
     `count`, or when `count + offset` is equal or greater than 2000 - it will return an
-    empty list instead (ALWAYS an empty list, if `offset` is lower than 2000 it won't
-    include entries up to 2000).
-
-    `best_only` allows filtering out redundant offers, e.g. when service provides offers
-    in 4K, HD and SD, using `best_only = True` returns only 4K option,
-    `best_only = False` returns all three.
-
-    `providers` is a list of (usually) 3-letter service identifiers (e.g, `nfx` for
-    "Netflix). Only entries which are available for given providers will be returned.
-    For single provider you can either pass a single string, or a list of one string.
-    For `None` (also the default value) entries for all providers will be looked up.
-    Invalid names will be ignored, however if all are invalid, then no filtering will be
-    done. You can look up values through [`providers`]
-    [simplejustwatchapi.justwatch.providers] function.
+    empty list instead (**always** an empty list, it won't include entries up to 1999).
 
     Args:
-        country (str): Country to search for offers, `US` by default.
-        language (str): Language of responses, `en` by default.
-        count (int): How many responses should be returned.
-        best_only (bool): Return only best offers if `True`,
-            return all offers if `False`.
-        offset (int): Search results offset.
-        providers (list[str] | str | None): 3-letter service identifier(s),
-            or `None` for all providers.
+        country (str): 2-letter country code for which offers are selected. It should be
+            uppercase, however it will be normalized to uppercase automatically. It
+            **must** be 2-letters long. It seems to be **ISO 3166-1 alpha-2** code,
+            however the API doesn't specify exact standard. If unexpected code is used,
+            then [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError]
+            exception is raised, as the API will respond with internal error.
+        language (str): Code for language in response (e.g., description, title).
+            In most basic form it's 2 lowercase letters (e.g., `en`, `de`).
+            It can also contain alphanumeric (in uppercase) suffix after `-` symbol,
+            most likely used for regional variants (e.g., `en-US`, `de-CH1901`).
+            It looks like a variant of **IETF BCP 47**, however the suffix can contain
+            only uppercase letters and numbers. Its value isn't normalized and **must**
+            be provided in expected format, including letter case.
+        count (int): Return up to this many results. Too high values can cause API
+            errors due to too high operation complexity, if you need more results, use
+            with `offset` argument to get them in batches.
+        best_only (bool): Return only best offers if `True`, return all offers if
+            `False`. If service offers the same title in 4K, HD, and SD, then
+            `best_only = True` returns only 4K, `best_only = False` returns all three.
+        offset (int): Offset for the first returned result, i.e. how many first entries
+            should be skipped. This is done on API side, not the library side;
+            the returned list is still directly parsed from API response. I'm not sure
+            if it guarantees stability of results - if repeated calls to this function
+            with increasing offset will guarantee that you won't get repeats.
+        providers (list[str] | str | None): Selection of 3-letter service identifiers
+            (e.g, `nfx` for "Netflix). Only entries which are available for given
+            providers will be returned. For single provider you can either pass a single
+            string, or a list of one string. For `None` (the default value) entries for
+            all providers will be looked up. Invalid names will be ignored, however if
+            all are invalid, then no filtering will be done. You can look up values
+            through [`providers`] [simplejustwatchapi.justwatch.providers] function.
 
     Returns:
-        (list[MediaEntry]): List of tuples parsed from JustWatch response.
+        (list[MediaEntry]): List of tuples with details of popular titles.
 
     Raises:
         exceptions.JustWatchApiError: JSON response from API has internal errors.
@@ -261,11 +242,23 @@ def details(
     `best_only = False` returns all three.
 
     Args:
-        node_id (str): ID of entry to look up.
-        country (str): Country to search for offers, `US` by default.
-        language (str): Language of responses, `en` by default.
-        best_only (bool): Return only best offers if `True`,
-            return all offers if `False`.
+        node_id (str): ID of an entry to look up.
+        country (str): 2-letter country code for which offers are selected. It should be
+            uppercase, however it will be normalized to uppercase automatically. It
+            **must** be 2-letters long. It seems to be **ISO 3166-1 alpha-2** code,
+            however the API doesn't specify exact standard. If unexpected code is used,
+            then [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError]
+            exception is raised, as the API will respond with internal error.
+        language (str): Code for language in response (e.g., description, title).
+            In most basic form it's 2 lowercase letters (e.g., `en`, `de`).
+            It can also contain alphanumeric (in uppercase) suffix after `-` symbol,
+            most likely used for regional variants (e.g., `en-US`, `de-CH1901`).
+            It looks like a variant of **IETF BCP 47**, however the suffix can contain
+            only uppercase letters and numbers. Its value isn't normalized and **must**
+            be provided in expected format, including letter case.
+        best_only (bool): Return only best offers if `True`, return all offers if
+            `False`. If service offers the same title in 4K, HD, and SD, then
+            `best_only = True` returns only 4K, `best_only = False` returns all three.
 
     Returns:
         (MediaEntry): Tuple with data about requested entry.
@@ -286,34 +279,30 @@ def seasons(
     """
     Get details of all seasons available for a given show ID.
 
-    `country` is a 2-letter country code for which offers are selected. It should be
-    uppercase, however it will be normalized to uppercase automatically. It **must** be
-    2-letters long. It looks like ISO 3166-1 alpha-2 standard, however API doesn't
-    specify exact standard. If unexpected code is used, then [`JustWatchApiError`]
-    [simplejustwatchapi.exceptions.JustWatchApiError] exception is raised, as the API
-    will respond with internal error.
-
-    `language` is a language code for language in response (e.g., description, title).
-    In most basic form it's 2 lowercase letters (e.g., `en`, `de`).
-    It can also contain alphanumeric (in uppercase) suffix after `-` symbol, most
-    likely used for regional variants (e.g., `en-US`, `de-CH`).
-    It looks like a subset of IETF BCP 47, however the suffix can contain only uppercase
-    letters and numbers. It's value isn't normalized and **must** be provided in
-    expected format, including letter case.
-
-    `best_only` allows filtering out redundant offers, e.g. when if provide offers
-    service in 4K, HD and SD, using `best_only = True` returns only 4K option,
-    `best_only = False` returns all three.
+    You can use [`episodes`][simplejustwatchapi.justwatch.episodes] function to get
+    details for each episode of a single season.
 
     Args:
-        show_id (str): ID of show to look up seasons for.
-        country (str): Country to search for offers, `US` by default.
-        language (str): Language of responses, `en` by default.
-        best_only (bool): Return only best offers if `True`,
-            return all offers if `False`.
+        show_id (str): ID of a show to look up seasons for.
+        country (str): 2-letter country code for which offers are selected. It should be
+            uppercase, however it will be normalized to uppercase automatically. It
+            **must** be 2-letters long. It seems to be **ISO 3166-1 alpha-2** code,
+            however the API doesn't specify exact standard. If unexpected code is used,
+            then [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError]
+            exception is raised, as the API will respond with internal error.
+        language (str): Code for language in response (e.g., description, title).
+            In most basic form it's 2 lowercase letters (e.g., `en`, `de`).
+            It can also contain alphanumeric (in uppercase) suffix after `-` symbol,
+            most likely used for regional variants (e.g., `en-US`, `de-CH1901`).
+            It looks like a variant of **IETF BCP 47**, however the suffix can contain
+            only uppercase letters and numbers. Its value isn't normalized and **must**
+            be provided in expected format, including letter case.
+        best_only (bool): Return only best offers if `True`, return all offers if
+            `False`. If service offers the same title in 4K, HD, and SD, then
+            `best_only = True` returns only 4K, `best_only = False` returns all three.
 
     Returns:
-        (list[MediaEntry]): List of tuples with seasons data about requested entry.
+        (list[MediaEntry]): List of tuples with seasons data about requested show.
 
     Raises:
         exceptions.JustWatchApiError: JSON response from API has internal errors.
@@ -331,34 +320,31 @@ def episodes(
     """
     Get details of all episodes available for a given season ID.
 
-    `country` is a 2-letter country code for which offers are selected. It should be
-    uppercase, however it will be normalized to uppercase automatically. It **must** be
-    2-letters long. It looks like ISO 3166-1 alpha-2 standard, however API doesn't
-    specify exact standard. If unexpected code is used, then [`JustWatchApiError`]
-    [simplejustwatchapi.exceptions.JustWatchApiError] exception is raised, as the API
-    will respond with internal error.
-
-    `language` is a language code for language in response (e.g., description, title).
-    In most basic form it's 2 lowercase letters (e.g., `en`, `de`).
-    It can also contain alphanumeric (in uppercase) suffix after `-` symbol, most
-    likely used for regional variants (e.g., `en-US`, `de-CH`).
-    It looks like a subset of IETF BCP 47, however the suffix can contain only uppercase
-    letters and numbers. It's value isn't normalized and **must** be provided in
-    expected format, including letter case.
-
-    `best_only` allows filtering out redundant offers, e.g. when if provide offers
-    service in 4K, HD and SD, using `best_only = True` returns only 4K option,
-    `best_only = False` returns all three.
+    [`Episode`][simplejustwatchapi.tuples.Episode] tuple is a subset of[`MediaEntry`]
+    [simplejustwatchapi.tuples.MediaEntry], but with only episode-specific fields,
+    e.g., `episode_number`.
 
     Args:
         season_id (str): ID of season to look up episodes for.
-        country (str): Country to search for offers, `US` by default.
-        language (str): Language of responses, `en` by default.
-        best_only (bool): Return only best offers if `True`,
-            return all offers if `False`.
+        country (str): 2-letter country code for which offers are selected. It should be
+            uppercase, however it will be normalized to uppercase automatically. It
+            **must** be 2-letters long. It seems to be **ISO 3166-1 alpha-2** code,
+            however the API doesn't specify exact standard. If unexpected code is used,
+            then [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError]
+            exception is raised, as the API will respond with internal error.
+        language (str): Code for language in response (e.g., description, title).
+            In most basic form it's 2 lowercase letters (e.g., `en`, `de`).
+            It can also contain alphanumeric (in uppercase) suffix after `-` symbol,
+            most likely used for regional variants (e.g., `en-US`, `de-CH1901`).
+            It looks like a variant of **IETF BCP 47**, however the suffix can contain
+            only uppercase letters and numbers. Its value isn't normalized and **must**
+            be provided in expected format, including letter case.
+        best_only (bool): Return only best offers if `True`, return all offers if
+            `False`. If service offers the same title in 4K, HD, and SD, then
+            `best_only = True` returns only 4K, `best_only = False` returns all three.
 
     Returns:
-        (list[Episode]): List of tuples with episode data about requested entry.
+        (list[Episode]): List of tuples with episode data about requested season.
 
     Raises:
         exceptions.JustWatchApiError: JSON response from API has internal errors.
@@ -377,36 +363,18 @@ def offers_for_countries(
     best_only: bool = True,
 ) -> dict[str, list[Offer]]:
     """
-    Get offers for entry of given node ID for all countries passed as argument.
+    Get offers for entry of given node ID for all given countries.
 
-    `countries` is a set of 2-letter country codes. They all should be uppercase,
-    however it will be normalized to uppercase automatically. They **must** be
-    2-letters long. It looks like ISO 3166-1 alpha-2 standard, however API doesn't
-    specify exact standard. If unexpected codes are used, then [`JustWatchApiError`]
-    [simplejustwatchapi.exceptions.JustWatchApiError] exception is raised, as the API
-    will respond with internal error.
-
-    `language` is a language code for language in response (e.g., description, title).
-    In most basic form it's 2 lowercase letters (e.g., `en`, `de`).
-    It can also contain alphanumeric (in uppercase) suffix after `-` symbol, most
-    likely used for regional variants (e.g., `en-US`, `de-CH`).
-    It looks like a subset of IETF BCP 47, however the suffix can contain only uppercase
-    letters and numbers. It's value isn't normalized and **must** be provided in
-    expected format, including letter case.
-
-    Returned dict has keys matching `countries` argument and values are list of found
+    Returned `dict` has keys matching `countries` argument and values are list of found
     offers. If no countries are passed (an empty set given as argument) empty dict is
     returned.
 
     Country codes passed as argument are case-insensitive, however keys in returned dict
     will match them exactly. For example, for countries specified as:
-
     ```python
     {"uK", "Us", "AU", "ca"}
     ```
-
-    returned dict will have the following structure:
-
+    Returned dict will have the following structure:
     ```python
     {
         "uK": [ ... offers ... ],
@@ -416,16 +384,25 @@ def offers_for_countries(
     }
     ```
 
-    `best_only` allows filtering out redundant offers, e.g. when if provide offers
-    service in 4K, HD and SD, using `best_only = True` returns only 4K option,
-    `best_only = False` returns all three.
-
     Args:
         node_id (str): ID of entry to look up offers for.
-        countries (set[str]): 2-letter country codes to search for offers.
-        language (str): Language of responses, `en` by default.
-        best_only (bool): Return only best offers if `True`,
-            return all offers if `False`.
+        countries (set[str]): 2-letter country codes for which offers are selected.
+            They should be uppercase, however tthey will be normalized to uppercase
+            automatically. They **must** be 2-letters long. They seems to be
+            **ISO 3166-1 alpha-2** code, however the API doesn't specify exact standard.
+            If unexpected code is used, then [`JustWatchApiError`]
+            [simplejustwatchapi.exceptions.JustWatchApiError] exception is raised,
+            as the API will respond with internal error.
+        language (str): Code for language in response (e.g., description, title).
+            In most basic form it's 2 lowercase letters (e.g., `en`, `de`).
+            It can also contain alphanumeric (in uppercase) suffix after `-` symbol,
+            most likely used for regional variants (e.g., `en-US`, `de-CH1901`).
+            It looks like a variant of **IETF BCP 47**, however the suffix can contain
+            only uppercase letters and numbers. Its value isn't normalized and **must**
+            be provided in expected format, including letter case.
+        best_only (bool): Return only best offers if `True`, return all offers if
+            `False`. If service offers the same title in 4K, HD, and SD, then
+            `best_only = True` returns only 4K, `best_only = False` returns all three.
 
     Returns:
         (dict[str, list[Offer]]): Keys match values in `countries` and values are all
@@ -447,17 +424,15 @@ def offers_for_countries(
 
 def providers(country: str = "US") -> list[OfferPackage]:
     """
-    Look up all providers for the given country code.
-
-    `country` is a 2-letter country code for which offers are selected. It should be
-    uppercase, however it will be normalized to uppercase automatically. It **must** be
-    2-letters long. It looks like ISO 3166-1 alpha-2 standard, however API doesn't
-    specify exact standard. If unexpected code is used, then [`JustWatchApiError`]
-    [simplejustwatchapi.exceptions.JustWatchApiError] exception is raised, as the API
-    will respond with internal error.
+    Look up all providers for the given country.
 
     Args:
-        country (str): 2-letter country code, `US` by default.
+        country (str): 2-letter country code for which offers are selected. It should be
+            uppercase, however it will be normalized to uppercase automatically. It
+            **must** be 2-letters long. It seems to be **ISO 3166-1 alpha-2** code,
+            however the API doesn't specify exact standard. If unexpected code is used,
+            then [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError]
+            exception is raised, as the API will respond with internal error.
 
     Returns:
         (list[OfferPackage]): List of all found providers. [`OfferPackage`]

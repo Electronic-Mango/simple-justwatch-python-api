@@ -51,7 +51,6 @@ nav = [
   "caveats.md",
   "license.md",
   { "API Reference" = ["API Reference/functions.md", "API Reference/data.md", "API Reference/exceptions.md"] },
-  { "Internal API" = ["Internal API/query.md", "Internal API/graphql.md"] },
   { "Zensical" = ["Zensical/zensical.md", "Zensical/markdown.md"] },
 ]
 

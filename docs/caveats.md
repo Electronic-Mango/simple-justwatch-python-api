@@ -32,9 +32,11 @@ and to reuse the structure in [`seasons`][simplejustwatchapi.justwatch.seasons].
 
 Some fields in returned data is marked as optional (through `| None`). Since there is no
 documentation for the JustWatch GraphQL API I tried to mark as optional fields which I
-found to **actually** be optional, rather than mark everything. However, there is no
-guarantee what the API will return, so if you need maximum safety you might need to
-treat **all** fields as effectively optional (as in - they can be `None`).
+found to **actually** be optional, rather than mark everything.
+
+However, there is no guarantee what the API will return, so if you need maximum safety
+you might need to treat **all** fields as effectively optional (as in - they can be
+`None`).
 
 
 
@@ -78,7 +80,7 @@ The sufix must be uppercase:
 ^[a-z]{2}(-[0-9A-Z]+)?$
 ```
 
-It looks similar to **IETF BCP 47** standard.
+It looks similar to **IETF BCP 47** standard, without `-` characters in the suffix.
 
 !!! warning "Language code letter case"
     The provided language isn't modified at all by this library, so it must match the

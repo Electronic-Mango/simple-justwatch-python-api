@@ -65,7 +65,9 @@ based on a given title.
 ```python
 from simplejustwatchapi import search
 
-results = search("The Matrix", "US", "en", 5, True, 0, {"nfx", "apv"})
+results = search("The Matrix", "US", "en", 5, True, 0, ["nfx", "apv"])
+for entry in results:
+    print(entry.title, entry.offers)
 ```
 
 All arguments are optional.
@@ -95,7 +97,9 @@ currently popular titles.
 ```python
 from simplejustwatchapi import popular
 
-results = popular("US", "en", 5, True, 0, {"nfx", "apv"})
+results = popular("US", "en", 5, True, 0, ["nfx", "apv"])
+for entry in results:
+    print(entry.title, entry.offers)
 ```
 
 All arguments are optional.
@@ -122,7 +126,8 @@ for a single entry via its node ID.
 ```python
 from simplejustwatchapi import details
 
-results = details("tm19698", "US", "en", False)
+result = details("tm19698", "US", "en", False)
+print(result.title, result.short_description)
 ```
 
 Node ID can be taken from output of the [`search`](#search-for-a-title) function.
@@ -160,6 +165,8 @@ for all seasons of a TV show based on its node ID.
 from simplejustwatchapi import seasons
 
 results = seasons("tss20091", "US", "en", True)
+for season in results:
+    print(season.season_number, season.total_episode_count)
 ```
 
 Only the first argument is required - the node ID of a TV show to look up season
@@ -175,9 +182,11 @@ Example function call and its output is in
 details for all episodes of a single TV show season based on its node ID.
 
 ```python
-from simplejustwatchapi import seasons
+from simplejustwatchapi import episodes
 
 results = episodes("tse334769", "US", "en", False)
+for episode in results:
+    print(episode.episode_id, episode.episode_number, episode.offers)
 ```
 
 Only the first argument is required - the node ID of a season to look up episode details
@@ -202,6 +211,10 @@ Only offers are returned, not additional data.
 from simplejustwatchapi import offers_for_countries
 
 results = offers_for_countries("tm10", {"US", "UK", "CA"}, "en", True)
+for country, offers in results.items():
+    print(f"Offers for {country}:")
+    for offer in offers:
+        print(f"  - {offer.package.name}: {offer.monetization_type}")
 ```
 
 First two arguments are required - ID, and a set of country codes.
@@ -220,6 +233,11 @@ given country.
 from simplejustwatchapi import providers
 
 results = providers("US")
+netflix_apple_only = [
+    provider
+    for provider in all_providers
+    if provider.name in ("Netflix", "Apple TV")
+]
 ```
 
 Returned value is a list of [`OfferPackage`][simplejustwatchapi.tuples.OfferPackage].

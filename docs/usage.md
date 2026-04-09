@@ -65,6 +65,7 @@ based on a given title.
 from simplejustwatchapi import search
 
 results = search("The Matrix", "US", "en", 5, True, 0, ["nfx", "apv"])
+
 for entry in results:
     print(entry.title, entry.offers)
 ```
@@ -97,6 +98,7 @@ currently popular titles.
 from simplejustwatchapi import popular
 
 results = popular("US", "en", 5, True, 0, ["nfx", "apv"])
+
 for entry in results:
     print(entry.title, entry.offers)
 ```
@@ -126,6 +128,7 @@ for a single entry via its node ID.
 from simplejustwatchapi import details
 
 result = details("tm19698", "US", "en", False)
+
 print(result.title, result.short_description)
 ```
 
@@ -165,6 +168,7 @@ for all seasons of a TV show based on its node ID.
 from simplejustwatchapi import seasons
 
 results = seasons("tss20091", "US", "en", True)
+
 for season in results:
     print(season.season_number, season.total_episode_count)
 ```
@@ -185,6 +189,7 @@ details for all episodes of a single TV show season based on its node ID.
 from simplejustwatchapi import episodes
 
 results = episodes("tse334769", "US", "en", False)
+
 for episode in results:
     print(episode.episode_id, episode.episode_number, episode.offers)
 ```
@@ -211,6 +216,7 @@ Only offers are returned, not additional data.
 from simplejustwatchapi import offers_for_countries
 
 results = offers_for_countries("tm10", {"US", "UK", "CA"}, "en", True)
+
 for country, offers in results.items():
     print(f"Offers for {country}:")
     for offer in offers:
@@ -233,6 +239,7 @@ given country.
 from simplejustwatchapi import providers
 
 results = providers("US")
+
 netflix_apple_only = [
     provider
     for provider in all_providers

@@ -101,7 +101,7 @@ def search(
     It can also contain alphanumeric (in uppercase) suffix after `-` symbol, most
     likely used for regional variants (e.g., `en-US`, `de-CH`).
     It looks like a subset of IETF BCP 47, however the suffix can contain only uppercase
-    letters and numbers. It's value isn't normalized and **must** be provided in
+    letters and numbers. Its value isn't normalized and **must** be provided in
     expected format, including letter case.
 
     Returns a list of entries up to `count`.

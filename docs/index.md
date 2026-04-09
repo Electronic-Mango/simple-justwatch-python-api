@@ -9,25 +9,25 @@ icon: lucide/circle-play
     However, the main functionality should be (more or less) correct.
 
 A simple unofficial JustWatch Python API which uses [`GraphQL`](https://graphql.org/)
-to access JustWatch data, built with [`httpx`](https://www.python-httpx.org/) and
-Python `3.11+`.
+to access [JustWatch](https://www.justwatch.com/) data, built with
+[`httpx`](https://www.python-httpx.org/) and available for Python `3.11+`.
 
-This project is managed by [uv](https://docs.astral.sh/uv/).
+This library is published as a
+[Python package on PyPi](https://pypi.org/project/simple-justwatch-python-api/).
 
 
 
 ## Functions
 
-This library provides multiple functions for accessing JustWatch:
+This library provides multiple ways of accessing JustWatch:
 
- - `search` - search for entries based on title
- - `popular` - get a list of currently popular titles
- - `details` - get details for a title based on its ID
- - `seasons` - get information about all seasons of a show
- - `episodes` - get information about all episodes of a season
- - `offers_for_countries` - get offers for a title based on its ID for multiple
-    countries
- - `providers` - get data about all available providers (like Netflix) in a country
+ - Search for a title.
+ - Get currently popular titles.
+ - Get details of a specific entry based on ID.
+ - Get information about all seasons of a show.
+ - Get information about all episodes of a season.
+ - Get offers for a title for multiple countries.
+ - Get data about all available providers (such as Netflix) in a country.
 
 All needed functions, data structures, raised exceptions are available through single
 module `simplejustwatchapi`.

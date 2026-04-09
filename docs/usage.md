@@ -42,7 +42,7 @@ ones, like `node_id`, or `title` to search for):
 
 Functions returning data for multiple titles
 ([`search`][simplejustwatchapi.justwatch.search],
-[`details`][simplejustwatchapi.justwatch.details])
+[`popular`][simplejustwatchapi.justwatch.popular])
 also allow for specifying number of elements, basic pagination, and filtering for
 specific providers:
 

@@ -170,6 +170,50 @@ results = search("title", count=200, offset=1950)
 
 
 
+## Getting more results and pagination
+
+This library allows for very simple pagination in
+[`search`][simplejustwatchapi.justwatch.search] and
+[`popular`][simplejustwatchapi.justwatch.popular] commands through `count` and `offset`
+arguments. The first one configures how many entries are returned in one request, the
+second allows for offsetting which is the "first" result (thus "skipping" first
+entries).
+
+This lets you get around issues with [operation complexity](#operation-complexity)
+and get more data. For example, to get all available popular titles without running
+into the issue with complexity you can:
+
+```python
+from simplejustwatchapi import popular
+
+i = 0
+page = 99
+all_results = []
+while results := popular(count=page, offset=i):
+    i += page
+    all_results.extend(results)
+# len(all_results) == 1980
+```
+While trying to get them all at once will result in an exception:
+```python
+from simplejustwatchapi import popular
+
+results = popular(count=1980)
+# JustWatchApiError is raised due to too high operation complexity.
+```
+
+Unfortunately, I don't know of any way around the issue with
+[maximum number of entries](#maximum-number-of-entries), so it's impossible to get more
+than 1999 elements.
+
+!!! note "Stability of results with pagination"
+    All "pagination" is done on the side of the API, by offsetting which is the first
+    element, nothing is done on the side of this library. Since this operation isn't
+    keeping any context between requests there's no guarantee of "stability" of results
+    between requests - whether titles will shift order while you're getting pages.
+
+
+
 ## Provider codes
 
 !!! tip "Different countries can have different codes"

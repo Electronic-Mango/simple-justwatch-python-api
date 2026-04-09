@@ -115,10 +115,8 @@ It's a lot, but keep it in mind.
 Using `best_only=True` should alleviate the issue somewhat, so for very large requests I
 recommend using its default `True` value.
 
-If you need even more entries you can retrieve data in chunks using `offset` parameter.
-
-!!! tip
-    Add a link to the page with example, once it's ready.
+If you need even more entries you can retrieve data in
+[chunks using `offset` parameter](#getting-more-results-and-pagination).
 
 
 

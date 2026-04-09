@@ -27,8 +27,7 @@ All needed functions, data structures, raised exceptions are available through s
 module - `simplejustwatchapi`.
 
 Examples of parsed responses are in the GitHub repository in
-[`examples/`](https://github.com/Electronic-Mango/simple-justwatch-python-api/tree/\
-main/examples).
+[`examples/`](https://github.com/Electronic-Mango/simple-justwatch-python-api/tree/main/examples).
 
 
 ## Functions
@@ -70,14 +69,14 @@ for entry in results:
     print(entry.title, entry.offers)
 ```
 
+!!! note "Whitespaces in title"
+    Value of the given title isn't stripped, so passing a string with multiple spaces
+    will look them up. For more than 1 space it will probably return an empty list.
+
 All arguments are optional.
 
 First argument is just a string to look up. If empty, or not provided, you'll get a
 selection of popular titles, similar to [`popular`](#popular) function.
-
-!!! note "Whitespaces in title"
-    value of `title` isn't stripped, so passing a string with multiple spaces will look
-    them up. For more than 1 space it will (probably) always return an empty list.
 
 For very large searches (high `count` value) I recommend using default `best_only=True`
 to avoid issues with [operation complexity](caveats.md#operation-complexity).
@@ -143,6 +142,7 @@ This function can be used for all types of media - shows, movies, episodes, seas
 (the last two having their dedicated functions described below), for all types the
 result is a single [`MediaEntry`][simplejustwatchapi.tuples.MediaEntry]. Some fields
 are specific for one of the media types and will be `None` for others - for example:
+
  - `total_episode_count` is only present for seasons
  - `season_number` is present for seasons and episodes
  - `episode_number` is present only for episodes
@@ -351,17 +351,17 @@ except JustWatchApiError as e:
     print(",".join(error_messages))
 ```
 
-And so on.
+These are just examples of internal API errors, which cause [`JustWatchApiError`]
+[simplejustwatchapi.exceptions.JustWatchApiError] exception.
 
 
-## Multi-function examples
-
-Small collection of examples of how you can combine multiple functions together.
+## More complicated examples
 
 ### Get popular titles for only specific providers
 
 You can combine [`providers`](#get-all-available-providers-for-a-country) and
 [`popular`](#popular-titles) functions:
+
 ```python
 from simplejustwatchapi import popular, providers
 
@@ -385,6 +385,7 @@ filtered_popular = popular("US", providers=netflix_apple_only)
 You can combine [`search`](#search-for-a-title),
 [`seasons`](#details-for-all-seasons-of-a-tv-show) and
 [`episodes`](#details-for-all-episodes-of-a-tv-show) functions:
+
 ```python
 from simplejustwatchapi import episodes, search, seasons
 
@@ -420,6 +421,7 @@ You can combine [`search`](#search-for-a-title),
 [`seasons`](#details-for-all-seasons-of-a-tv-show) and
 [`offers_for_countries`](#get-offers-for-multiple-countries-for-a-single-title)
 functions:
+
 ```python
 from simplejustwatchapi import offers_for_countries, search, seasons
 
@@ -454,3 +456,29 @@ season_offers_per_country = {
     for country in countries
 }
 ```
+
+
+### Pagination through `offset`
+
+When trying to get as much data as possible with [`search`](#search-for-a-title) or
+[`popular`](#popular-titles) functions and avoid issues with
+[operation complexity](caveats.md#operation-complexity) you can use `offset` parameter
+to set up a [basic pagination](caveats.md#getting-more-results-and-pagination):
+
+```python
+from simplejustwatchapi import popular
+
+i = 0
+page = 99
+all_results = []
+while results := popular(count=page, offset=i):
+    i += page
+    all_results.extend(results)
+# len(all_results) == 1980
+```
+
+!!! note "Maximum number of responses"
+    There is a limit of number of entries you can get from the JustWatch API using this
+    method of **1999**. Check
+    [Maximum number of entries](caveats.md#maximum-number-of-entries) page for more
+    details.

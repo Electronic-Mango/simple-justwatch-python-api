@@ -55,18 +55,11 @@ specific providers:
 | `offset`    | Basic "pagination". Offset for the first returned result, i.e. how many first entries should be skipped. Everything is handled on API side, this library isn't doing any filtering. |
 | `providers` | Providers (like Netflix, Amazon Prime Video) for which offers should returned. Requires 3-letter "short name". Check [Provider codes](caveats.md#provider-codes) page for an example of how you can get that value.
 
-Each function can raise two exceptions:
-
-| Exception | Cause |
-|-----------|-------|
-| [`JustWatchHttpError`][simplejustwatchapi.exceptions.JustWatchHttpError] | JustWatch API responded with non-`2xx` code. |
-| [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError] | JSON response from JustWatch API contains errors (e.g., due to invalid language or country code). If this exception is raised, then API responded with `2xx` code. |
-
 
 ### Search for a title
 
-[`search`][simplejustwatchapi.justwatch.search] function allows for searching entries
-based on a given title.
+[`search`][simplejustwatchapi.justwatch.search]{data-preview} function allows for
+searching entries based on a given title.
 
 ```python
 from simplejustwatchapi import search
@@ -98,8 +91,8 @@ Example function call and its output is in
 
 ### Popular titles
 
-[`popular`][simplejustwatchapi.justwatch.popular] function allows for getting a list of
-currently popular titles.
+[`popular`][simplejustwatchapi.justwatch.popular]{data-preview} function allows for
+getting a list of currently popular titles.
 
 ```python
 from simplejustwatchapi import popular
@@ -128,8 +121,8 @@ Example function call and its output is in
 
 ### Details for a title based on its ID
 
-[`details`][simplejustwatchapi.justwatch.details] function allows for looking up details
-for a single entry via its node ID.
+[`details`][simplejustwatchapi.justwatch.details]{data-preview} function allows for
+looking up details for a single entry via its node ID.
 
 ```python
 from simplejustwatchapi import details
@@ -168,8 +161,8 @@ Example function call and its output is in
 
 ### Details for all seasons of a TV show
 
-[`seasons`][simplejustwatchapi.justwatch.seasons] function allows for looking up details
-for all seasons of a TV show based on its node ID.
+[`seasons`][simplejustwatchapi.justwatch.seasons]{data-preview} function allows for
+looking up details for all seasons of a TV show based on its node ID.
 
 ```python
 from simplejustwatchapi import seasons
@@ -189,8 +182,8 @@ Example function call and its output is in
 
 ### Details for all episodes of a TV show
 
-[`episodes`][simplejustwatchapi.justwatch.episodes] function allows for looking up
-details for all episodes of a single TV show season based on its node ID.
+[`episodes`][simplejustwatchapi.justwatch.episodes]{data-preview} function allows for
+looking up details for all episodes of a single TV show season based on its node ID.
 
 ```python
 from simplejustwatchapi import episodes
@@ -215,9 +208,9 @@ Example function call and its output is in
 
 ### Get offers for multiple countries for a single title
 
-[`offers_for_countries`][simplejustwatchapi.justwatch.offers_for_countries] function
-allows for looking up offers for a single entry, but for multiple countries at once.
-Only offers are returned, not additional data.
+[`offers_for_countries`][simplejustwatchapi.justwatch.offers_for_countries]{data-preview}
+function allows for looking up offers for a single entry, but for multiple countries at
+once. Only offers are returned.
 
 ```python
 from simplejustwatchapi import offers_for_countries
@@ -238,9 +231,9 @@ Example function call and its output is in
 
 ### Get all available providers for a country
 
-[`providers`][simplejustwatchapi.justwatch.providers] function allows for looking up
-all available service providers (such as "Netflix", "Amazon Prime Video", etc.) for a
-given country.
+[`providers`][simplejustwatchapi.justwatch.providers]{data-preview} function allows for
+looking up all available service providers (such as "Netflix", "Amazon Prime Video",
+etc.) for a given country.
 
 ```python
 from simplejustwatchapi import providers
@@ -274,10 +267,10 @@ Example function call and its output is in
 
 Each function can raise two exceptions:
 
-| Exception                                                                | Cause |
-|--------------------------------------------------------------------------|-------|
-| [`JustWatchHttpError`][simplejustwatchapi.exceptions.JustWatchHttpError] | JustWatch API responded with non-`2xx` code. |
-| [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError]   | JSON response from JustWatch API contains errors,<br>even though the API responded with a `2xx` status code. |
+| Exception                                                                              | Cause |
+|----------------------------------------------------------------------------------------|-------|
+| [`JustWatchHttpError`][simplejustwatchapi.exceptions.JustWatchHttpError]{data-preview} | JustWatch API responded with non-`2xx` code. |
+| [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError]{data-preview}   | JSON response from JustWatch API contains errors,<br>even though the API responded with a `2xx` status code. |
 
 You can check [Exceptions](API Reference/exceptions.md) page for more details.
 

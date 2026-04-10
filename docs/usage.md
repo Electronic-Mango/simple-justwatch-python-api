@@ -40,7 +40,7 @@ ones, like `title` to search for):
 | Name        | Description |
 |-------------|-------------|
 | `country`   | 2-letter country code for which offers will be returned, e.g., `US`, `GB`, `DE`. |
-| `language`  | Language code for responses' language. It can be just basic 2-letter code (e.g., `en`, `de`) or with a IETF BCP 47 suffix (e.g., `en-US`, `de-CH1901`). I don't think this is exactly IETF BCP 47, as the suffix can contain only uppercase letters and numbers. |
+| `language`  | Code for language in responses. It consists of 2 lowercase letters with optional uppercase alphanumeric suffix (e.g., `en`, `en-US`, `de`, `de-CH1901`). |
 | `best_only` | Whether to return only "best" offers for each provider instead of, e.g., separate offer for SD, HD, and 4K. |
 
 Functions returning data for multiple titles
@@ -52,8 +52,15 @@ specific providers:
 | Name        | Description |
 |-------------|-------------|
 | `count`     | How many entries should be returned. |
-| `offset`    | Basic "pagination", how many first elements should be skipped. Everything is handled on API side, this library isn't doing any filtering. |
+| `offset`    | Basic "pagination". Offset for the first returned result, i.e. how many first entries should be skipped. Everything is handled on API side, this library isn't doing any filtering. |
 | `providers` | Providers (like Netflix, Amazon Prime Video) for which offers should returned. Requires 3-letter "short name". Check [Provider codes](caveats.md#provider-codes) page for an example of how you can get that value.
+
+Each function can raise two exceptions:
+
+| Exception | Cause |
+|-----------|-------|
+| [`JustWatchHttpError`][simplejustwatchapi.exceptions.JustWatchHttpError] | JustWatch API responded with non-`2xx` code. |
+| [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError] | JSON response from JustWatch API contains errors (e.g., due to invalid language or country code). If this exception is raised, then API responded with `2xx` code. |
 
 
 ### Search for a title

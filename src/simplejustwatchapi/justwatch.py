@@ -11,25 +11,26 @@ ones, like `title` to search for):
 
 | Name        | Description |
 |-------------|-------------|
-| `country`   | 2-letter country code for which offers will be returned, e.g., `US`, \
-                `GB`, `DE`. |
-| `language`  | Language code for responses' language. It can be just basic 2-letter \
-                code or with a IETF BCP 47 suffix (e.g., `en-US`, `de-CH1901`). |
+| `country`   | 2-letter country code for which offers are selected, (e.g., `US`, \
+                `GB`, `DE`). |
+| `language`  | Code for language in responses. It consists of 2 lowercase letters \
+                with optional uppercase alphanumeric suffix (e.g., `en`, `en-US`, \
+                `de`, `de-CH1901`). |
 | `best_only` | Whether to return only "best" offers for each provider instead of, \
                 e.g., separate offer for SD, HD, and 4K. |
 
 Functions returning data for multiple titles
 ([`search`][simplejustwatchapi.justwatch.search],
-[`details`][simplejustwatchapi.justwatch.details])
+[`popular`][simplejustwatchapi.justwatch.popular])
 also allow for specifying number of elements, basic pagination, and filtering for
 specific providers:
 
 | Name        | Description |
 |-------------|-------------|
 | `count`     | How many entries should be returned. |
-| `offset`    | Basic "pagination", how many first elements should be skipped. \
-                Everything is handled on API side, this library isn't doing any \
-                filtering. |
+| `offset`    | Basic "pagination". Offset for the first returned result, i.e. how \
+                many first entries should be skipped. Everything is handled on API \
+                side, this library isn't doing any filtering. |
 | `providers` | Providers (like Netflix, Amazon Prime Video) for which offers should \
                 returned. Requires 3-letter "short name". Check \
                 [`providers`][simplejustwatchapi.justwatch.providers] for an example \
@@ -42,8 +43,8 @@ Each function can raise two exceptions:
 | [`JustWatchHttpError`][simplejustwatchapi.exceptions.JustWatchHttpError] | \
     JustWatch API responded with non-`2xx` code. |
 | [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError] | \
-    JSON response from JustWatch API contains errors. If this exception is raised, \
-    then API responded with `2xx` code. |
+    JSON response from JustWatch API contains errors (e.g., due to invalid language or \
+    country code). If this exception is raised, then API responded with `2xx` code. |
 """
 
 from httpx import post
@@ -90,29 +91,26 @@ def search(
 
     JustWatch API won't allow for getting more than 1999 responses, either through
     `count`, or when `count + offset` is equal or greater than 2000 - it will return an
-    empty list instead (**always** an empty list, it won't include entries up to 1999).
+    empty list instead (**always** an empty list, it won't include entries up to
+    1999th).
 
     Args:
-        title (str): Title to search. Not stripped, passed to the API as-is.
+        title (str): Title to search.
+
+            Not stripped, passed to the API as-is.
 
         country (str): 2-letter country code for which offers are selected.
 
-            It should be uppercase, however it will be normalized to uppercase
-            automatically.
+            It seems to be **ISO 3166-1 alpha-2** standard (e.g., `EN`, `FR`, `DE`),
+            however the API doesn't specify it directly. It should be uppercase, however
+            it's normalized to uppercase automatically.
 
-            It **must** be 2-letters long and seems to be **ISO 3166-1 alpha-2** code,
-            however the API doesn't specify exact standard. If unexpected code is used,
-            then [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError]
-            exception is raised, as the API will respond with internal error.
+        language (str): Code for language in responses (e.g., description, title).
 
-        language (str): Code for language in response (e.g., description, title).
-
-            In most basic form it's 2 lowercase letters (e.g., `en`, `de`).
-            It can also contain alphanumeric (in uppercase) suffix after `-` symbol,
-            most likely used for regional variants (e.g., `en-US`, `de-CH1901`).
-
-            It looks like a variant of **IETF BCP 47**, however the suffix can contain
-            only uppercase letters and numbers.
+            It consists of 2 lowercase letters with optional uppercase alphanumeric
+            suffix after `-` symbol (e.g., `en`, `en-US`, `de`, `de-CH1901`). Similar to
+            **IETF BCP 47** standard, however the suffix can contain only uppercase
+            letters and numbers.
 
             Its value isn't normalized and **must** be provided in expected format,
             including letter case.
@@ -139,22 +137,23 @@ def search(
             repeats.
 
         providers (list[str] | str | None): Selection of 3-letter service identifiers
-            (e.g, `nfx` for "Netflix"), only entries which are available for given
-            providers will be returned.
+            (e.g, `nfx` for "Netflix") to filter for.
 
             For single provider you can either pass a single string, or a list of one
-            string. For `None` (the default value) entries for all providers will be
-            looked up.
+            string. For `None` (the default value) no filtering is done.
 
-            Invalid names will be ignored, however if all are invalid, then no filtering
-            will be done. You can look up values through [`providers`]
+            Invalid codes will be ignored, however if all are invalid, then no filtering
+            is done.
+
+            You can look up values through [`providers`]
             [simplejustwatchapi.justwatch.providers] function.
 
     Returns:
         (list[MediaEntry]): List of tuples with details of search results.
 
     Raises:
-        exceptions.JustWatchApiError: JSON response from API has internal errors.
+        exceptions.JustWatchApiError: JSON response from API has internal errors, e.g.,
+            due to invalid language or country code.
         exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
 
     """
@@ -186,22 +185,16 @@ def popular(
     Args:
         country (str): 2-letter country code for which offers are selected.
 
-            It should be uppercase, however it will be normalized to uppercase
-            automatically.
+            It seems to be **ISO 3166-1 alpha-2** standard (e.g., `EN`, `FR`, `DE`),
+            however the API doesn't specify it directly. It should be uppercase, however
+            it's normalized to uppercase automatically.
 
-            It **must** be 2-letters long and seems to be **ISO 3166-1 alpha-2** code,
-            however the API doesn't specify exact standard. If unexpected code is used,
-            then [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError]
-            exception is raised, as the API will respond with internal error.
+        language (str): Code for language in responses (e.g., description, title).
 
-        language (str): Code for language in response (e.g., description, title).
-
-            In most basic form it's 2 lowercase letters (e.g., `en`, `de`).
-            It can also contain alphanumeric (in uppercase) suffix after `-` symbol,
-            most likely used for regional variants (e.g., `en-US`, `de-CH1901`).
-
-            It looks like a variant of **IETF BCP 47**, however the suffix can contain
-            only uppercase letters and numbers.
+            It consists of 2 lowercase letters with optional uppercase alphanumeric
+            suffix after `-` symbol (e.g., `en`, `en-US`, `de`, `de-CH1901`). Similar to
+            **IETF BCP 47** standard, however the suffix can contain only uppercase
+            letters and numbers.
 
             Its value isn't normalized and **must** be provided in expected format,
             including letter case.
@@ -228,22 +221,23 @@ def popular(
             repeats.
 
         providers (list[str] | str | None): Selection of 3-letter service identifiers
-            (e.g, `nfx` for "Netflix"), only entries which are available for given
-            providers will be returned.
+            (e.g, `nfx` for "Netflix") to filter for.
 
             For single provider you can either pass a single string, or a list of one
-            string. For `None` (the default value) entries for all providers will be
-            looked up.
+            string. For `None` (the default value) no filtering is done.
 
-            Invalid names will be ignored, however if all are invalid, then no filtering
-            will be done. You can look up values through [`providers`]
+            Invalid codes will be ignored, however if all are invalid, then no filtering
+            is done.
+
+            You can look up values through [`providers`]
             [simplejustwatchapi.justwatch.providers] function.
 
     Returns:
         (list[MediaEntry]): List of tuples with details of popular titles.
 
     Raises:
-        exceptions.JustWatchApiError: JSON response from API has internal errors.
+        exceptions.JustWatchApiError: JSON response from API has internal errors, e.g.,
+            due to invalid language or country code.
         exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
 
     """
@@ -287,22 +281,16 @@ def details(
 
         country (str): 2-letter country code for which offers are selected.
 
-            It should be uppercase, however it will be normalized to uppercase
-            automatically.
+            It seems to be **ISO 3166-1 alpha-2** standard (e.g., `EN`, `FR`, `DE`),
+            however the API doesn't specify it directly. It should be uppercase, however
+            it's normalized to uppercase automatically.
 
-            It **must** be 2-letters long and seems to be **ISO 3166-1 alpha-2** code,
-            however the API doesn't specify exact standard. If unexpected code is used,
-            then [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError]
-            exception is raised, as the API will respond with internal error.
+        language (str): Code for language in responses (e.g., description, title).
 
-        language (str): Code for language in response (e.g., description, title).
-
-            In most basic form it's 2 lowercase letters (e.g., `en`, `de`).
-            It can also contain alphanumeric (in uppercase) suffix after `-` symbol,
-            most likely used for regional variants (e.g., `en-US`, `de-CH1901`).
-
-            It looks like a variant of **IETF BCP 47**, however the suffix can contain
-            only uppercase letters and numbers.
+            It consists of 2 lowercase letters with optional uppercase alphanumeric
+            suffix after `-` symbol (e.g., `en`, `en-US`, `de`, `de-CH1901`). Similar to
+            **IETF BCP 47** standard, however the suffix can contain only uppercase
+            letters and numbers.
 
             Its value isn't normalized and **must** be provided in expected format,
             including letter case.
@@ -317,7 +305,8 @@ def details(
         (MediaEntry): Tuple with data about requested entry.
 
     Raises:
-        exceptions.JustWatchApiError: JSON response from API has internal errors.
+        exceptions.JustWatchApiError: JSON response from API has internal errors, e.g.,
+            due to invalid language or country code.
         exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
 
     """
@@ -340,22 +329,16 @@ def seasons(
 
         country (str): 2-letter country code for which offers are selected.
 
-            It should be uppercase, however it will be normalized to uppercase
-            automatically.
+            It seems to be **ISO 3166-1 alpha-2** standard (e.g., `EN`, `FR`, `DE`),
+            however the API doesn't specify it directly. It should be uppercase, however
+            it's normalized to uppercase automatically.
 
-            It **must** be 2-letters long and seems to be **ISO 3166-1 alpha-2** code,
-            however the API doesn't specify exact standard. If unexpected code is used,
-            then [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError]
-            exception is raised, as the API will respond with internal error.
+        language (str): Code for language in responses (e.g., description, title).
 
-        language (str): Code for language in response (e.g., description, title).
-
-            In most basic form it's 2 lowercase letters (e.g., `en`, `de`).
-            It can also contain alphanumeric (in uppercase) suffix after `-` symbol,
-            most likely used for regional variants (e.g., `en-US`, `de-CH1901`).
-
-            It looks like a variant of **IETF BCP 47**, however the suffix can contain
-            only uppercase letters and numbers.
+            It consists of 2 lowercase letters with optional uppercase alphanumeric
+            suffix after `-` symbol (e.g., `en`, `en-US`, `de`, `de-CH1901`). Similar to
+            **IETF BCP 47** standard, however the suffix can contain only uppercase
+            letters and numbers.
 
             Its value isn't normalized and **must** be provided in expected format,
             including letter case.
@@ -370,7 +353,8 @@ def seasons(
         (list[MediaEntry]): List of tuples with seasons data about requested show.
 
     Raises:
-        exceptions.JustWatchApiError: JSON response from API has internal errors.
+        exceptions.JustWatchApiError: JSON response from API has internal errors, e.g.,
+            due to invalid language or country code.
         exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
 
     """
@@ -394,22 +378,16 @@ def episodes(
 
         country (str): 2-letter country code for which offers are selected.
 
-            It should be uppercase, however it will be normalized to uppercase
-            automatically.
+            It seems to be **ISO 3166-1 alpha-2** standard (e.g., `EN`, `FR`, `DE`),
+            however the API doesn't specify it directly. It should be uppercase, however
+            it's normalized to uppercase automatically.
 
-            It **must** be 2-letters long and seems to be **ISO 3166-1 alpha-2** code,
-            however the API doesn't specify exact standard. If unexpected code is used,
-            then [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError]
-            exception is raised, as the API will respond with internal error.
+        language (str): Code for language in responses (e.g., description, title).
 
-        language (str): Code for language in response (e.g., description, title).
-
-            In most basic form it's 2 lowercase letters (e.g., `en`, `de`).
-            It can also contain alphanumeric (in uppercase) suffix after `-` symbol,
-            most likely used for regional variants (e.g., `en-US`, `de-CH1901`).
-
-            It looks like a variant of **IETF BCP 47**, however the suffix can contain
-            only uppercase letters and numbers.
+            It consists of 2 lowercase letters with optional uppercase alphanumeric
+            suffix after `-` symbol (e.g., `en`, `en-US`, `de`, `de-CH1901`). Similar to
+            **IETF BCP 47** standard, however the suffix can contain only uppercase
+            letters and numbers.
 
             Its value isn't normalized and **must** be provided in expected format,
             including letter case.
@@ -424,7 +402,8 @@ def episodes(
         (list[Episode]): List of tuples with episode data about requested season.
 
     Raises:
-        exceptions.JustWatchApiError: JSON response from API has internal errors.
+        exceptions.JustWatchApiError: JSON response from API has internal errors, e.g.,
+            due to invalid language or country code.
         exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
 
     """
@@ -466,24 +445,16 @@ def offers_for_countries(
 
         countries (set[str]): 2-letter country codes for which offers are selected.
 
-            They should be uppercase, however tthey will be normalized to uppercase
-            automatically.
+            They seem to match **ISO 3166-1 alpha-2** standard (e.g., `EN`, `FR`, `DE`),
+            however the API doesn't specify it directly. They should be uppercase,
+            however they're normalized to uppercase automatically.
 
-            They **must** be 2-letters long and seem to be **ISO 3166-1 alpha-2** code,
-            however the API doesn't specify exact standard.
+        language (str): Code for language in responses (e.g., description, title).
 
-            If unexpected code is used, then [`JustWatchApiError`]
-            [simplejustwatchapi.exceptions.JustWatchApiError] exception is raised,
-            as the API will respond with internal error.
-
-        language (str): Code for language in response (e.g., description, title).
-
-            In most basic form it's 2 lowercase letters (e.g., `en`, `de`).
-            It can also contain alphanumeric (in uppercase) suffix after `-` symbol,
-            most likely used for regional variants (e.g., `en-US`, `de-CH1901`).
-
-            It looks like a variant of **IETF BCP 47**, however the suffix can contain
-            only uppercase letters and numbers.
+            It consists of 2 lowercase letters with optional uppercase alphanumeric
+            suffix after `-` symbol (e.g., `en`, `en-US`, `de`, `de-CH1901`). Similar to
+            **IETF BCP 47** standard, however the suffix can contain only uppercase
+            letters and numbers.
 
             Its value isn't normalized and **must** be provided in expected format,
             including letter case.
@@ -499,7 +470,8 @@ def offers_for_countries(
             found offers for their respective countries.
 
     Raises:
-        exceptions.JustWatchApiError: JSON response from API has internal errors.
+        exceptions.JustWatchApiError: JSON response from API has internal errors, e.g.,
+            due to invalid language or country code.
         exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
 
     """
@@ -519,13 +491,9 @@ def providers(country: str = "US") -> list[OfferPackage]:
     Args:
         country (str): 2-letter country code for which offers are selected.
 
-            It should be uppercase, however it will be normalized to uppercase
-            automatically.
-
-            It **must** be 2-letters long and seems to be **ISO 3166-1 alpha-2** code,
-            however the API doesn't specify exact standard. If unexpected code is used,
-            then [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError]
-            exception is raised, as the API will respond with internal error.
+            It seems to be **ISO 3166-1 alpha-2** standard (e.g., `EN`, `FR`, `DE`),
+            however the API doesn't specify it directly. It should be uppercase, however
+            it's normalized to uppercase automatically.
 
     Returns:
         (list[OfferPackage]): List of all found providers.
@@ -536,7 +504,8 @@ def providers(country: str = "US") -> list[OfferPackage]:
             structure is the same, so the same tuple is reused.
 
     Raises:
-        exceptions.JustWatchApiError: JSON response from API has internal errors.
+        exceptions.JustWatchApiError: JSON response from API has internal errors, e.g.,
+            due to invalid language or country code.
         exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
 
     """

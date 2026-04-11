@@ -44,7 +44,7 @@ This Python library has multiple functions:
     offers in multiple countries
  - `providers` - get data about available providers (e.g., Netflix)
 
-Example outputs from all functions are in [`examples/`](examples/) directory.
+Example outputs from all functions are in [`examples/`](examples) directory.
 
 
 
@@ -62,7 +62,7 @@ for entry in results:
 
 ## License
 
-This library is licensed under **MIT license** ([LICENSE](./LICENSE) or
+This library is licensed under **MIT license** ([LICENSE](LICENSE) or
 <https://opensource.org/license/MIT>)
 
 

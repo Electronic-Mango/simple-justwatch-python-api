@@ -59,7 +59,6 @@ ignore = [
     "FBT",
     "FIX002",
     "PLR0913", # I think it makes sense for functions here to have more arguments
-    "S101",    # Remove once asserts are converted to exceptions
     "TD002",
     "TD003",
 ]

@@ -6,10 +6,11 @@ src = ["../src"]
 
 [tool.ruff.lint]
 ignore = [
-  "D",  # Not adding docstrings to unit tests
-  "ANN",  # Not adding type hints to unit tests
-  "ARG",  # Mocks can be unused arguments
-  "INP001",  # __init__.py here seems unnecessary
+  "D",      # Not adding docstrings to unit tests
+  "ANN",    # Not adding type hints to unit tests
+  "ARG",    # Mocks can be unused arguments
+  "INP001", # __init__.py here seems unnecessary
   "PT013",  # Kinda don't care, maybe fix one day
   "PT019",  # Regular "patch" seems fine
+  "S101",   # Keep asserts in unit tests
 ]

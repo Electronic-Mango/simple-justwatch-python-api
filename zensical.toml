@@ -45,13 +45,16 @@ Copyright &copy; 2023 Electronic Mango
 #
 # Read more: https://zensical.org/docs/setup/navigation/
 nav = [
-  { "Introduction" = "index.md" },
-  "installation.md",
-  "usage.md",
-  "caveats.md",
-  "license.md",
-  { "API Reference" = ["API Reference/functions.md", "API Reference/data.md", "API Reference/exceptions.md"] },
-  { "Zensical" = ["Zensical/zensical.md", "Zensical/markdown.md"] },
+    { "Introduction" = "index.md" },
+    "installation.md",
+    "usage.md",
+    "caveats.md",
+    "license.md",
+    { "API Reference" = [
+        "API Reference/functions.md",
+        "API Reference/data.md",
+        "API Reference/exceptions.md",
+    ] },
 ]
 
 # With the "extra_css" option you can add your own CSS styling to customize

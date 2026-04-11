@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2
+
+Fix relative links in PyPi description.
+
 ## 1.0.1
 
 Add "Releases" URL to `pyproject.toml`.

@@ -91,12 +91,12 @@ error and [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError]
 raised.
 
 If the code **does** match the regex, but isn't a valid code, then the API defaults to
-english and no exception is raised.
+English and no exception is raised.
 
 !!! note "Discrepancy between invalid country and language codes"
     API handles codes matching expected pattern, but still not valid differently between
     country and language - for country API will return and error, thus exception will
-    be raised; while for language it will default to english.
+    be raised; while for language it will default to English.
 
 
 
@@ -128,8 +128,9 @@ The JustWatch API itself won't allow for getting more than 1999 entries, through
 and `offset`, regardless of operation complexity. If you try to get the 2000th entry,
 the API (and functions in this libary) will return an empty list.
 
-**If you try to access over the 1999th entry you won't get *up to* 1999 entries,
-you'll get an empty list.**
+!!! warning "Entries *up to* 1999th"
+    If you try to access over the 1999th entry you won't get *up to* 1999 entries,
+    you'll get an empty list.
 
 For example, this will get you entries 1990 - 1999 - a 9 element list of [`MediaEntry`]
 [simplejustwatchapi.tuples.MediaEntry],
@@ -209,10 +210,10 @@ Unfortunately, I don't know of any way around the issue with
 than 1999 elements.
 
 !!! note "Stability of results with pagination"
-    All "pagination" is done on the side of the API, by offsetting which is the first
-    element, nothing is done on the side of this library. Since this operation isn't
-    keeping any context between requests there's no guarantee of "stability" of results
-    between requests - whether titles will shift order while you're getting pages.
+    All "pagination" is done on the side of the API by offsetting which is the first
+    element. Since this operation isn't keeping any context between requests there's no
+    guarantee of "stability" of results between requests - whether titles will shift
+    order while you're getting pages.
 
 
 

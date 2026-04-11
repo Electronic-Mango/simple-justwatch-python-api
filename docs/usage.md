@@ -52,7 +52,7 @@ ones, like `title` to search for):
 |-------------|-------------|
 | `country`   | 2-letter country code for which offers will be returned, e.g., `US`, `GB`, `DE`. |
 | `language`  | Code for language in responses. It consists of 2 lowercase letters with optional uppercase alphanumeric suffix (e.g., `en`, `en-US`, `de`, `de-CH1901`). |
-| `best_only` | Whether to return only "best" offers for each provider instead of, e.g., separate offer for SD, HD, and 4K. |
+| `best_only` | Whether to return only "best" offers for each provider instead of, e.g., separate offers for SD, HD, and 4K. |
 
 Functions returning data for multiple titles
 ([`search`][simplejustwatchapi.justwatch.search],
@@ -331,7 +331,7 @@ from simplejustwatchapi import search, JustWatchApiError
 
 try:
     # Language code "xx" also isn't valid for any languages, but since it matches the
-    # pattern it would default to english.
+    # pattern it would default to English.
     results = search("The Matrix", language="xxx")
 except JustWatchApiError as e:
     # Print only error codes.
@@ -495,7 +495,7 @@ while results := popular(count=page, offset=i):
 ```
 
 !!! note "Maximum number of responses"
-    There is a limit of number of entries you can get from the JustWatch API using this
-    method of **1999**. Check
+    **1999** is the limit of number of entries you can get from the JustWatch API using
+    this method. Check
     [Maximum number of entries](caveats.md#maximum-number-of-entries) page for more
     details.

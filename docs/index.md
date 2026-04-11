@@ -1,5 +1,5 @@
 ---
-icon: lucide/circle-play
+icon: lucide/tv-minimal-play
 ---
 
 # Simple JustWatch Python API

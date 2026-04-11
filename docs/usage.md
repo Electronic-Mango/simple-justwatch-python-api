@@ -29,6 +29,17 @@ module - `simplejustwatchapi`.
 Examples of parsed responses are in the GitHub repository in
 [`examples/`](https://github.com/Electronic-Mango/simple-justwatch-python-api/tree/main/examples).
 
+---
+
+Each function can raise two exceptions:
+
+ - [`JustWatchHttpError`](#http-errors) - JustWatch API responded with non-`2xx` code.
+ - [`JustWatchApiError`](#api-errors) - JSON response from JustWatch API contains
+    errors.
+
+You can check [Exceptions](API Reference/exceptions.md) page for more details.
+
+---
 
 ## Functions
 
@@ -261,20 +272,14 @@ exact 3-letter code needed there.
 Example function call and its output is in
 [`examples/providers_output.py`](https://github.com/Electronic-Mango/simple-justwatch-python-api/blob/main/examples/providers_output.py).
 
-
+---
 
 ## Error handling
 
-Each function can raise two exceptions:
-
-| Exception                                                                              | Cause |
-|----------------------------------------------------------------------------------------|-------|
-| [`JustWatchHttpError`][simplejustwatchapi.exceptions.JustWatchHttpError]{data-preview} | JustWatch API responded with non-`2xx` code. |
-| [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError]{data-preview}   | JSON response from JustWatch API contains errors,<br>even though the API responded with a `2xx` status code. |
-
-You can check [Exceptions](API Reference/exceptions.md) page for more details.
-
 ### HTTP errors
+
+[`JustWatchHttpError`][simplejustwatchapi.exceptions.JustWatchHttpError]{data-preview}
+is raised when JustWatch API responds with non-`2xx` status code.
 
 Non-`2xx` response status codes can happen when trying to use incorrect type for
 parameters, e.g., trying to use a non-numeric string for `count`:
@@ -302,6 +307,10 @@ except JustWatchHttpError as e:
 
 
 ### API errors
+
+[`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError]{data-preview} is
+raised when JustWatch API **does** respond with `2xx` status code, but the internal JSON
+response contain errors.
 
 API errors can occur for invalid country code:
 ```python
@@ -361,6 +370,7 @@ except JustWatchApiError as e:
 These are just examples of internal API errors, which cause [`JustWatchApiError`]
 [simplejustwatchapi.exceptions.JustWatchApiError] exception.
 
+---
 
 ## More complicated examples
 

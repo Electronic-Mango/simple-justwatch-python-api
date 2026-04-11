@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1
+
+Add "Releases" URL to `pyproject.toml`.
+Capitalize "Changelog" URL name.
+
 ## 1.0.0
 
 I don't really know what would it mean for this project to reach 1.0.0/stable, so here it is anyways.

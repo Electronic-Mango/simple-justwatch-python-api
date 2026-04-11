@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.3
+
+Fix relative links in PyPi description, for real this time.
+
 ## 1.0.2
 
 Fix relative links in PyPi description.

@@ -37,6 +37,7 @@ dev = [
 Homepage = "https://github.com/Electronic-Mango/simple-justwatch-python-api"
 Documentation = "https://electronic-mango.github.io/simple-justwatch-python-api"
 Repository = "https://github.com/Electronic-Mango/simple-justwatch-python-api"
+changelog = "https://github.com/Electronic-Mango/simple-justwatch-python-api/blob/main/CHANGELOG.md"
 
 [build-system]
 requires = ["uv_build>=0.11.3,<0.12"]

@@ -4,10 +4,6 @@ icon: lucide/tv-minimal-play
 
 # Simple JustWatch Python API
 
-!!! warning "Documentation is under active development"
-    This documentation is currently under development and might not be fully up-to-date.
-    However, the main functionality should be (more or less) correct.
-
 A simple *unofficial* JustWatch Python API which uses [`GraphQL`](https://graphql.org/)
 to access [JustWatch](https://www.justwatch.com/) data, built with
 [`httpx`](https://www.python-httpx.org/) and available for Python `3.11+`.

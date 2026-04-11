@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.0.0
+
+I don't really know what would it mean for this project to reach 1.0.0/stable, so here it is anyways.
+
+Change error handling - add new exceptions instead of asserts:
+ - `JustWatchHttpError` - API responded with a non-`2xx` status code
+ - `JustWatchApiError` - response from API has errors in JSON
+ - `JustWatchError` - parent for all other exceptions for easier catching
+
+Add a lot more comprehensive documentation, created with Zensical.
+
 ## 0.19.0
 
 Change license to MIT.

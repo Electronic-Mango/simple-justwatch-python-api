@@ -1,5 +1,6 @@
 from unittest.mock import MagicMock, patch
 
+from httpx import Request, RequestError, Response
 from pytest import fixture, mark, raises
 
 from simplejustwatchapi.exceptions import JustWatchHttpError
@@ -31,15 +32,27 @@ ENTRIES = [MagicMock(), MagicMock(), None]
 def post_mock_success(mocker):
     post_mock = mocker.patch("simplejustwatchapi.justwatch.post")
     post_mock.return_value.json.return_value = DUMMY_RESPONSE
-    post_mock.return_value.is_success = True
     yield post_mock
     post_mock.assert_called_with(JUSTWATCH_GRAPHQL_URL, json=REQUEST)
 
 
 @fixture
-def post_mock_failure(mocker):
+def post_mock_request_error(mocker):
     post_mock = mocker.patch("simplejustwatchapi.justwatch.post")
-    post_mock.return_value.is_success = False
+    post_mock.side_effect = RequestError("HTTP request error")
+    mock_request = Request(method="POST", url=JUSTWATCH_GRAPHQL_URL)
+    post_mock.return_value = Response(status_code=200, request=mock_request)
+    # Technically setting the return value is not necessary, since the side effect will
+    # be raised before the return value is used, but it can be useful for debugging if
+    # the test fails due to the side effect not being raised for some reason.
+    return post_mock
+
+
+@fixture
+def post_mock_status_error(mocker):
+    post_mock = mocker.patch("simplejustwatchapi.justwatch.post")
+    mock_request = Request(method="POST", url=JUSTWATCH_GRAPHQL_URL)
+    post_mock.return_value = Response(status_code=420, request=mock_request)
     return post_mock
 
 
@@ -143,7 +156,25 @@ def test_providers(requests_mock, parser_mock, post_mock_success):
         ("prepare_providers_request", providers, (PROVIDERS_INPUT,)),
     ],
 )
-def test_search_raises_http_error(prepare_name, function, inputs, post_mock_failure):
+def test_http_request_error(prepare_name, function, inputs, post_mock_request_error):
+    full_mock_name = f"simplejustwatchapi.justwatch.{prepare_name}"
+    with patch(full_mock_name), raises(JustWatchHttpError):
+        function(*inputs)
+
+
+@mark.parametrize(
+    argnames=("prepare_name", "function", "inputs"),
+    argvalues=[
+        ("prepare_search_request", search, SEARCH_INPUT),
+        ("prepare_popular_request", popular, POPULAR_INPUT),
+        ("prepare_details_request", details, DETAILS_INPUT),
+        ("prepare_seasons_request", seasons, DETAILS_INPUT),
+        ("prepare_episodes_request", episodes, DETAILS_INPUT),
+        ("prepare_offers_for_countries_request", offers_for_countries, OFFERS_INPUT),
+        ("prepare_providers_request", providers, (PROVIDERS_INPUT,)),
+    ],
+)
+def test_http_status_error(prepare_name, function, inputs, post_mock_status_error):
     full_mock_name = f"simplejustwatchapi.justwatch.{prepare_name}"
     with patch(full_mock_name), raises(JustWatchHttpError):
         function(*inputs)

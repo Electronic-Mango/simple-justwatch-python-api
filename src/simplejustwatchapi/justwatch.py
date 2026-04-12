@@ -41,13 +41,13 @@ Each function can raise two exceptions:
 | Exception | Cause |
 |-----------|-------|
 | [`JustWatchHttpError`][simplejustwatchapi.exceptions.JustWatchHttpError] | \
-    JustWatch API responded with non-`2xx` code. |
+    HTTP error occurred, e.g., JustWatch API responded with non-`2xx` status code. |
 | [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError] | \
-    JSON response from JustWatch API contains errors (e.g., due to invalid language or \
-    country code). If this exception is raised, then API responded with `2xx` code. |
+    JSON response from JustWatch API contains errors, e.g., due to invalid language or \
+    country code. |
 """
 
-from httpx import post
+from httpx import HTTPError, post
 
 from simplejustwatchapi.exceptions import JustWatchHttpError
 from simplejustwatchapi.query import (
@@ -154,7 +154,8 @@ def search(
     Raises:
         exceptions.JustWatchApiError: JSON response from API has internal errors, e.g.,
             due to invalid language or country code.
-        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
+        exceptions.JustWatchHttpError: HTTP error occurred, e.g., JustWatch API
+            responded with non-`2xx` status code.
 
     """
     request = prepare_search_request(
@@ -238,7 +239,8 @@ def popular(
     Raises:
         exceptions.JustWatchApiError: JSON response from API has internal errors, e.g.,
             due to invalid language or country code.
-        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
+        exceptions.JustWatchHttpError: HTTP error occurred, e.g., JustWatch API
+            responded with non-`2xx` status code.
 
     """
     request = prepare_popular_request(
@@ -307,7 +309,8 @@ def details(
     Raises:
         exceptions.JustWatchApiError: JSON response from API has internal errors, e.g.,
             due to invalid language or country code.
-        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
+        exceptions.JustWatchHttpError: HTTP error occurred, e.g., JustWatch API
+            responded with non-`2xx` status code.
 
     """
     request = prepare_details_request(node_id, country, language, best_only)
@@ -355,7 +358,8 @@ def seasons(
     Raises:
         exceptions.JustWatchApiError: JSON response from API has internal errors, e.g.,
             due to invalid language or country code.
-        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
+        exceptions.JustWatchHttpError: HTTP error occurred, e.g., JustWatch API
+            responded with non-`2xx` status code.
 
     """
     request = prepare_seasons_request(show_id, country, language, best_only)
@@ -404,7 +408,8 @@ def episodes(
     Raises:
         exceptions.JustWatchApiError: JSON response from API has internal errors, e.g.,
             due to invalid language or country code.
-        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
+        exceptions.JustWatchHttpError: HTTP error occurred, e.g., JustWatch API
+            responded with non-`2xx` status code.
 
     """
     request = prepare_episodes_request(season_id, country, language, best_only)
@@ -472,7 +477,8 @@ def offers_for_countries(
     Raises:
         exceptions.JustWatchApiError: JSON response from API has internal errors, e.g.,
             due to invalid language or country code.
-        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
+        exceptions.JustWatchHttpError: HTTP error occurred, e.g., JustWatch API
+            responded with non-`2xx` status code.
 
     """
     if not countries:
@@ -506,7 +512,8 @@ def providers(country: str = "US") -> list[OfferPackage]:
     Raises:
         exceptions.JustWatchApiError: JSON response from API has internal errors, e.g.,
             due to invalid language or country code.
-        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
+        exceptions.JustWatchHttpError: HTTP error occurred, e.g., JustWatch API
+            responded with non-`2xx` status code.
 
     """
     request = prepare_providers_request(country)
@@ -525,10 +532,12 @@ def _post_to_jw_graphql_api(request_json: dict) -> dict:
         (dict): JSON response from the API.
 
     Raises:
-        exceptions.JustWatchHttpError: JustWatch API didn't respond with `2xx` code.
+        exceptions.JustWatchHttpError: HTTP-related error occurred.
 
     """
-    response = post(_GRAPHQL_API_URL, json=request_json)
-    if not response.is_success:
-        raise JustWatchHttpError(response.status_code, response.text)
+    try:
+        response = post(_GRAPHQL_API_URL, json=request_json)
+        response.raise_for_status()
+    except HTTPError as e:
+        raise JustWatchHttpError(str(e)) from e
     return response.json()

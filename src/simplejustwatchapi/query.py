@@ -4,7 +4,7 @@ Module responsible for creating requests to and parsing responses from JustWatch
 Functions are prepared in pairs - prepare request and parse response for specific
 operation. "Request" functions do no verification of input data; "parse" functions check
 if returned JSON/`dict` contain `error` key. In such case a [`JustWatchApiError`]
-[simplejustwatchapi.erxceptions.JustWatchApiError] is raised.
+[simplejustwatchapi.exceptions.JustWatchApiError] is raised.
 
 All "parse" functions convert JSON returned by API into request-specific Python
 [`NamedTuple`][typing.NamedTuple].

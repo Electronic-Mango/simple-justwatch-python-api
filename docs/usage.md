@@ -33,9 +33,8 @@ Examples of parsed responses are in the GitHub repository in
 
 Each function can raise two exceptions:
 
- - [`JustWatchHttpError`](#http-errors) - JustWatch API responded with non-`2xx` code.
- - [`JustWatchApiError`](#api-errors) - JSON response from JustWatch API contains
-    errors.
+ - [`JustWatchHttpError`](#http-errors) - HTTP-related error occurred.
+ - [`JustWatchApiError`](#api-errors) - JSON response contains errors.
 
 You can check [Exceptions](API Reference/exceptions.md) page for more details.
 
@@ -279,7 +278,8 @@ Example function call and its output is in
 ### HTTP errors
 
 [`JustWatchHttpError`][simplejustwatchapi.exceptions.JustWatchHttpError]{data-preview}
-is raised when JustWatch API responds with non-`2xx` status code.
+is raised when HTTP-related error occurs, e.g., JustWatch API responds with
+non-`2xx` status code.
 
 Non-`2xx` response status codes can happen when trying to use incorrect type for
 parameters, e.g., trying to use a non-numeric string for `count`:
@@ -290,8 +290,7 @@ from simplejustwatchapi import search, JustWatchHttpError
 try:
     results = search("The Matrix", count="five")
 except JustWatchHttpError as e:
-    print(e.code, e.message)
-    # In this case "e.message" is a JSON, but handled as a regular string.
+    print(str(e))
 ```
 
 !!! note "Numeric strings instead of `int`"
@@ -309,8 +308,7 @@ except JustWatchHttpError as e:
 ### API errors
 
 [`JustWatchApiError`][simplejustwatchapi.exceptions.JustWatchApiError]{data-preview} is
-raised when JustWatch API **does** respond with `2xx` status code, but the internal JSON
-response contain errors.
+raised when no HTTP-related errors occur, but the internal JSON response contain errors.
 
 API errors can occur for invalid country code:
 ```python

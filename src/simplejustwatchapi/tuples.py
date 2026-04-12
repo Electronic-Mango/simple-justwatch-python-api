@@ -24,7 +24,7 @@ class OfferPackage(NamedTuple):
     function to return data about all available providers.
 
     Attributes:
-        id (str): ID of the provider/plaform for this offer.
+        id (str): ID of the provider/platform for this offer.
         package_id (int): Package ID. I'm not sure how it's different from regular `id`.
         name (str): Name of the platform in format suited to display for users.
         technical_name (str): Technical name of the platform,

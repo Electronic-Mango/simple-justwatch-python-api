@@ -30,6 +30,8 @@ class OfferPackage(NamedTuple):
         technical_name (str): Technical name of the platform,
             usually all lowercase with no whitespaces.
         short_name (str): 3-letter provider name.
+        monetization_types (list[str]): List of monetization types available for this
+            provider (e.g., `ADS`, `FLATRATE` (streaming), `RENT`).
         icon (str): Platform icon URL.
 
     """
@@ -39,6 +41,7 @@ class OfferPackage(NamedTuple):
     name: str
     technical_name: str
     short_name: str
+    monetization_types: list[str]
     icon: str
 
 

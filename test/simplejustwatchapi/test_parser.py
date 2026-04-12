@@ -29,6 +29,7 @@ RESPONSE_PACKAGE_1 = {
     "clearName": "Service 1",
     "technicalName": "service1",
     "shortName": "sr1",
+    "monetizationTypes": ["MON_TYPE_1", "MON_TYPE_2"],
     "icon": "/icon/url/service1",
 }
 PARSED_PACKAGE_1 = OfferPackage(
@@ -37,6 +38,7 @@ PARSED_PACKAGE_1 = OfferPackage(
     "Service 1",
     "service1",
     "sr1",
+    ["MON_TYPE_1", "MON_TYPE_2"],
     IMAGES_URL + "/icon/url/service1",
 )
 
@@ -46,6 +48,7 @@ RESPONSE_PACKAGE_2 = {
     "clearName": "Service 2",
     "technicalName": "service2",
     "shortName": "sr2",
+    "monetizationTypes": ["MON_TYPE_3"],
     "icon": "/icon/url/service2",
 }
 PARSED_PACKAGE_2 = OfferPackage(
@@ -54,6 +57,7 @@ PARSED_PACKAGE_2 = OfferPackage(
     "Service 2",
     "service2",
     "sr2",
+    ["MON_TYPE_3"],
     IMAGES_URL + "/icon/url/service2",
 )
 
@@ -71,6 +75,7 @@ PARSED_PACKAGE_3 = OfferPackage(
     "Service 3",
     "service3",
     "sr3",
+    [],
     IMAGES_URL + "/icon/url/service3",
 )
 

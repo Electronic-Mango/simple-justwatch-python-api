@@ -307,6 +307,7 @@ fragment PackageDetails on Package {
   technicalName
   shortName
   slug
+  monetizationTypes
   icon(profile: S100, format: $formatOfferIcon)
   __typename
 }

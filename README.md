@@ -63,8 +63,8 @@ for entry in results:
 
 ## License
 
-This library is licensed under **MIT license** (
-[LICENSE](https://github.com/Electronic-Mango/simple-justwatch-python-api/blob/main/LICENSE)
+This library is licensed under **MIT license**
+([LICENSE](https://github.com/Electronic-Mango/simple-justwatch-python-api/blob/main/LICENSE)
 or <https://opensource.org/license/MIT>).
 
 

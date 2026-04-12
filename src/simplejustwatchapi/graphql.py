@@ -103,7 +103,7 @@ query GetTitleNode(
     $filter: OfferFilter!,
 ) {
     node(id: $nodeId) {
-        ...on Show {
+        ... on Show {
             seasons(sortDirection: ASC) {
                 ...TitleDetails
             }
@@ -126,7 +126,7 @@ query GetTitleNode(
     $filter: OfferFilter!,
 ) {
     node(id: $nodeId) {
-        ...on Season {
+        ... on Season {
             episodes(sortDirection: ASC) {
                 ...TitleDetails
             }
@@ -147,7 +147,7 @@ query GetProviders(
         platform: WEB
         includeAddons: true
     ) {
-        ... PackageDetails
+        ...PackageDetails
     }
     __typename
 }
@@ -181,10 +181,10 @@ fragment TitleDetails on MovieOrShowOrSeasonOrEpisode {
         __typename
     }
     ...StreamingChartInfoFragment
-    ...on Show {
+    ... on Show {
         totalSeasonCount
     }
-    ...on Season {
+    ... on Season {
         totalEpisodeCount
     }
     offers(country: $country, platform: WEB, filter: $filter) {
@@ -221,13 +221,13 @@ fragment ContentDetails on MovieOrShowOrSeasonOrEpisodeContent {
     runtime
     shortDescription
     ...FullContentDetails
-    ...on MovieOrShowContent {
+    ... on MovieOrShowContent {
         ageCertification
     }
-    ...on SeasonContent {
+    ... on SeasonContent {
         seasonNumber
     }
-    ...on EpisodeContent {
+    ... on EpisodeContent {
         seasonNumber
         episodeNumber
     }
@@ -278,7 +278,7 @@ fragment TitleOffer on Offer {
     lastChangeRetailPriceValue
     type
     package {
-        ... PackageDetails
+        ...PackageDetails
     }
     standardWebURL
     elementCount

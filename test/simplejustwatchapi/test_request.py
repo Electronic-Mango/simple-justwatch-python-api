@@ -39,7 +39,7 @@ def locale_variables(country, language):
     }
 
 
-@patch("simplejustwatchapi.query.graphql_search_query", return_value=DUMMY_SEARCH_QUERY)
+@patch("simplejustwatchapi.query.GRAPHQL_SEARCH_QUERY", DUMMY_SEARCH_QUERY)
 @mark.parametrize(
     argnames=(
         "title",
@@ -59,7 +59,6 @@ def locale_variables(country, language):
     ],
 )
 def test_prepare_search_request(
-    _,
     title,
     country,
     language,
@@ -85,9 +84,7 @@ def test_prepare_search_request(
     assert expected_request == request
 
 
-@patch(
-    "simplejustwatchapi.query.graphql_popular_query", return_value=DUMMY_POPULAR_QUERY
-)
+@patch("simplejustwatchapi.query.GRAPHQL_POPULAR_QUERY", DUMMY_POPULAR_QUERY)
 @mark.parametrize(
     argnames=("country", "language", "count", "best_only", "offset", "providers"),
     argvalues=[
@@ -99,7 +96,6 @@ def test_prepare_search_request(
     ],
 )
 def test_prepare_popular_request(
-    _,
     country,
     language,
     count,
@@ -124,9 +120,7 @@ def test_prepare_popular_request(
     assert expected_request == request
 
 
-@patch(
-    "simplejustwatchapi.query.graphql_details_query", return_value=DUMMY_DETAILS_QUERY
-)
+@patch("simplejustwatchapi.query.GRAPHQL_DETAILS_QUERY", DUMMY_DETAILS_QUERY)
 @mark.parametrize(
     argnames=("node_id", "country", "language", "best_only"),
     argvalues=[
@@ -134,7 +128,7 @@ def test_prepare_popular_request(
         ("NODE ID 1", "gb", "fr-213SD45", False),
     ],
 )
-def test_prepare_details_request(_, node_id, country, language, best_only):
+def test_prepare_details_request(node_id, country, language, best_only):
     expected_request = {
         "operationName": "GetTitleNode",
         "variables": {
@@ -148,9 +142,7 @@ def test_prepare_details_request(_, node_id, country, language, best_only):
     assert expected_request == request
 
 
-@patch(
-    "simplejustwatchapi.query.graphql_seasons_query", return_value=DUMMY_SEASONS_QUERY
-)
+@patch("simplejustwatchapi.query.GRAPHQL_SEASONS_QUERY", DUMMY_SEASONS_QUERY)
 @mark.parametrize(
     argnames=("node_id", "country", "language", "best_only"),
     argvalues=[
@@ -158,7 +150,7 @@ def test_prepare_details_request(_, node_id, country, language, best_only):
         ("NODE ID 1", "gb", "fr", False),
     ],
 )
-def test_prepare_seasons_request(_, node_id, country, language, best_only):
+def test_prepare_seasons_request(node_id, country, language, best_only):
     expected_request = {
         "operationName": "GetTitleNode",
         "variables": {
@@ -172,9 +164,7 @@ def test_prepare_seasons_request(_, node_id, country, language, best_only):
     assert expected_request == request
 
 
-@patch(
-    "simplejustwatchapi.query.graphql_episodes_query", return_value=DUMMY_EPISODES_QUERY
-)
+@patch("simplejustwatchapi.query.GRAPHQL_EPISODES_QUERY", DUMMY_EPISODES_QUERY)
 @mark.parametrize(
     argnames=("node_id", "country", "language", "best_only"),
     argvalues=[
@@ -182,7 +172,7 @@ def test_prepare_seasons_request(_, node_id, country, language, best_only):
         ("NODE ID 1", "gb", "fr", False),
     ],
 )
-def test_prepare_episodes_request(_, node_id, country, language, best_only):
+def test_prepare_episodes_request(node_id, country, language, best_only):
     expected_request = {
         "operationName": "GetTitleNode",
         "variables": {
@@ -227,14 +217,14 @@ def test_prepare_offers_for_countries_request(
 
 
 @patch(
-    "simplejustwatchapi.query.graphql_providers_query",
-    return_value=DUMMY_PROVIDERS_QUERY,
+    "simplejustwatchapi.query.GRAPHQL_PROVIDERS_QUERY",
+    DUMMY_PROVIDERS_QUERY,
 )
 @mark.parametrize(
     argnames="country",
     argvalues=["US", "gb", "fR", "It"],
 )
-def test_prepare_providers_request(_, country):
+def test_prepare_providers_request(country):
     expected_request = {
         "operationName": "GetProviders",
         "variables": {

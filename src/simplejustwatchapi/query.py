@@ -14,13 +14,13 @@ from typing import Any
 
 from simplejustwatchapi.exceptions import JustWatchApiError, JustWatchError
 from simplejustwatchapi.graphql import (
-    graphql_details_query,
-    graphql_episodes_query,
+    GRAPHQL_DETAILS_QUERY,
+    GRAPHQL_EPISODES_QUERY,
+    GRAPHQL_POPULAR_QUERY,
+    GRAPHQL_PROVIDERS_QUERY,
+    GRAPHQL_SEARCH_QUERY,
+    GRAPHQL_SEASONS_QUERY,
     graphql_offers_for_countries_query,
-    graphql_popular_query,
-    graphql_providers_query,
-    graphql_search_query,
-    graphql_seasons_query,
 )
 from simplejustwatchapi.tuples import (
     Episode,
@@ -84,7 +84,7 @@ def prepare_search_request(
             **_locale_variables(country, language),
             "offset": offset or None,
         },
-        "query": graphql_search_query(),
+        "query": GRAPHQL_SEARCH_QUERY,
     }
 
 
@@ -157,7 +157,7 @@ def prepare_popular_request(
             **_locale_variables(country, language),
             "offset": offset or None,
         },
-        "query": graphql_popular_query(),
+        "query": GRAPHQL_POPULAR_QUERY,
     }
 
 
@@ -220,7 +220,7 @@ def prepare_details_request(
             **_common_variables(best_only),
             **_locale_variables(country, language),
         },
-        "query": graphql_details_query(),
+        "query": GRAPHQL_DETAILS_QUERY,
     }
 
 
@@ -279,7 +279,7 @@ def prepare_seasons_request(
             **_common_variables(best_only),
             **_locale_variables(country, language),
         },
-        "query": graphql_seasons_query(),
+        "query": GRAPHQL_SEASONS_QUERY,
     }
 
 
@@ -338,7 +338,7 @@ def prepare_episodes_request(
             **_common_variables(best_only),
             **_locale_variables(country, language),
         },
-        "query": graphql_episodes_query(),
+        "query": GRAPHQL_EPISODES_QUERY,
     }
 
 
@@ -469,7 +469,7 @@ def prepare_providers_request(country: str) -> dict[str, Any]:
             "country": country.upper(),
             "formatOfferIcon": "PNG",
         },
-        "query": graphql_providers_query(),
+        "query": GRAPHQL_PROVIDERS_QUERY,
     }
 
 

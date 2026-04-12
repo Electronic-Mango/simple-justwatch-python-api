@@ -307,14 +307,10 @@ fragment PackageDetails on Package {
 """
 
 _GRAPHQL_COUNTRY_OFFERS_ENTRY = """
-            {country_code}: offers(
-                country: {country_code},
-                platform: WEB,
-                filter: $filter
-            ) {{
-                ...TitleOffer
-                __typename
-            }}
+{country_code}: offers(country: {country_code}, platform: WEB, filter: $filter) {{
+    ...TitleOffer
+    __typename
+}}
 """
 
 GRAPHQL_SEARCH_QUERY = (

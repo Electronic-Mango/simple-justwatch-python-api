@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.0
+
+Add `monetization_types` to `OfferPackage`
+
+Handle more (hopefully all) HTTP errors, not just status codes.
+The old exception is reused, with trimmed down fields to be more generic.
+
 ## 1.0.3
 
 Fix relative links in PyPi description, for real this time.

@@ -27,6 +27,10 @@ REQUEST = {"dummy": "request"}
 DUMMY_RESPONSE = {"dummy": "response"}
 ENTRIES = [MagicMock(), MagicMock(), None]
 
+REQUEST_ERROR_MESSAGE = "HTTP request error"
+RESPONSE_ERROR_STATUS_CODE = 420
+RESPONSE_ERROR_MESSAGE = "HTTP response error"
+
 
 @fixture
 def post_mock_success(mocker):
@@ -39,7 +43,7 @@ def post_mock_success(mocker):
 @fixture
 def post_mock_request_error(mocker):
     post_mock = mocker.patch("simplejustwatchapi.justwatch.post")
-    post_mock.side_effect = RequestError("HTTP request error")
+    post_mock.side_effect = RequestError(REQUEST_ERROR_MESSAGE)
     mock_request = Request(method="POST", url=JUSTWATCH_GRAPHQL_URL)
     post_mock.return_value = Response(status_code=200, request=mock_request)
     # Technically setting the return value is not necessary, since the side effect will
@@ -52,7 +56,11 @@ def post_mock_request_error(mocker):
 def post_mock_status_error(mocker):
     post_mock = mocker.patch("simplejustwatchapi.justwatch.post")
     mock_request = Request(method="POST", url=JUSTWATCH_GRAPHQL_URL)
-    post_mock.return_value = Response(status_code=420, request=mock_request)
+    post_mock.return_value = Response(
+        status_code=RESPONSE_ERROR_STATUS_CODE,
+        request=mock_request,
+        text=RESPONSE_ERROR_MESSAGE,
+    )
     return post_mock
 
 
@@ -158,8 +166,10 @@ def test_providers(requests_mock, parser_mock, post_mock_success):
 )
 def test_http_request_error(prepare_name, function, inputs, post_mock_request_error):
     full_mock_name = f"simplejustwatchapi.justwatch.{prepare_name}"
-    with patch(full_mock_name), raises(JustWatchHttpError):
+    with patch(full_mock_name), raises(JustWatchHttpError) as e:
         function(*inputs)
+    assert str(e.value) == REQUEST_ERROR_MESSAGE
+    assert e.value.response is None
 
 
 @mark.parametrize(
@@ -176,5 +186,7 @@ def test_http_request_error(prepare_name, function, inputs, post_mock_request_er
 )
 def test_http_status_error(prepare_name, function, inputs, post_mock_status_error):
     full_mock_name = f"simplejustwatchapi.justwatch.{prepare_name}"
-    with patch(full_mock_name), raises(JustWatchHttpError):
+    with patch(full_mock_name), raises(JustWatchHttpError) as e:
         function(*inputs)
+    assert str(RESPONSE_ERROR_STATUS_CODE) in str(e.value)
+    assert e.value.response == RESPONSE_ERROR_MESSAGE

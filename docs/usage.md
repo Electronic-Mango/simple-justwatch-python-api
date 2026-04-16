@@ -290,8 +290,13 @@ from simplejustwatchapi import search, JustWatchHttpError
 try:
     results = search("The Matrix", count="five")
 except JustWatchHttpError as e:
-    print(str(e))
+    print(str(e), e.response)
 ```
+
+Aside from exception message, the error can also contains optional field `response` with
+full response text as string. This will only contain data if error is related to the
+**response** message, otherwise it's `None`. Usually it is a JSON (in string form) with
+API errors, if these specific errors are also causing non-`2xx` status codes.
 
 !!! note "Numeric strings instead of `int`"
     Since requests are send as a JSON you can use strings for `int` arguments, as long

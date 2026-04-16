@@ -40,4 +40,15 @@ class JustWatchHttpError(JustWatchError):
 
     This is a general exception for any HTTP-related errors, such as non-`2xx` status
     codes, network errors, timeouts, etc.
+
+    Attributes:
+        msg (str): Error message describing the HTTP error.
+        response (str | None): Optional text of the HTTP response, if available.
+            Usucally contains JSON with error responses from the API.
+
     """
+
+    def __init__(self, msg: str, response: str | None = None) -> None:
+        """Init JustWatchHttpError with error message and optional response text."""
+        super().__init__(msg)
+        self.response = response

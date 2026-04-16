@@ -30,7 +30,7 @@ dev = [
     "pytest>=9.0.3",
     "pytest-mock>=3.15.1",
     "ruff>=0.15.10",
-    "zensical>=0.0.32",
+    "zensical>=0.0.33",
 ]
 
 [project.urls]

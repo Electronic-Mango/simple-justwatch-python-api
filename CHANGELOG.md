@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.0
+
+Improve HTTP error handling.
+Store HTTP response text in `JustWatchHttpError`, if error is related to the response message.
+Otherwise (e.g. general connection, or timeout error) it's `None`.
+
 ## 1.1.0
 
 Add `monetization_types` to `OfferPackage`

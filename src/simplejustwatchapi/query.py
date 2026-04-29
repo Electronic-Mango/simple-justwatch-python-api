@@ -35,10 +35,6 @@ from simplejustwatchapi.tuples import (
 _DETAILS_URL = "https://justwatch.com"
 _IMAGES_URL = "https://images.justwatch.com"
 
-# TODO: Left here for posterity, remove once formats are well documented.
-_COUNTRY_CODE_REGEX = r"^[A-Z]{2}$"
-_LANGUAGE_CODE_REGEX = r"^[a-z]{2}(-[0-9A-Z]+)?$"
-
 
 def prepare_search_request(
     title: str,

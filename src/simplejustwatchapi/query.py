@@ -44,6 +44,9 @@ def prepare_search_request(
     best_only: bool,
     offset: int,
     providers: list[str] | str | None,
+    min_year: int | None,
+    max_year: int | None,
+    object_types: list[str] | str | None,
 ) -> dict[str, Any]:
     """
     Prepare search request for JustWatch GraphQL API.
@@ -66,6 +69,10 @@ def prepare_search_request(
         offset (int): Search results offset.
         providers (list[str] | str | None): 3-letter service identifier(s),
             or `None` for all providers.
+        min_year (int | None): Minimum release year of returned titles.
+        max_year (int | None): Maximum release year of returned titles.
+        object_types (list[str] | str | None): Types of objects to filter for, it seems
+            that only "SHOW" and "MOVIE" make sense.
 
     Returns:
         (dict[str, Any]): JSON with GraphQL POST body.
@@ -75,7 +82,11 @@ def prepare_search_request(
         "operationName": "GetSearchTitles",
         "variables": {
             "first": count,
-            "searchTitlesFilter": {"searchQuery": title, "packages": providers},
+            "searchTitlesFilter": {
+                "searchQuery": title,
+                "packages": providers,
+                **_list_variables(min_year, max_year, object_types),
+            },
             **_common_variables(best_only),
             **_locale_variables(country, language),
             "offset": offset or None,
@@ -118,6 +129,9 @@ def prepare_popular_request(
     best_only: bool,
     offset: int,
     providers: list[str] | str | None,
+    min_year: int | None,
+    max_year: int | None,
+    object_types: list[str] | str | None,
 ) -> dict[str, Any]:
     """
     Prepare "get popular" request for JustWatch GraphQL API.
@@ -139,6 +153,10 @@ def prepare_popular_request(
         offset (int): Search results offset.
         providers (list[str] | str | None): 3-letter service identifier(s),
             or `None` for all providers.
+        min_year (int | None): Minimum release year of returned titles.
+        max_year (int | None): Maximum release year of returned titles.
+        object_types (list[str] | str | None): Types of objects to filter for, it seems
+            that only "SHOW" and "MOVIE" make sense.
 
     Returns:
         (dict[str, Any]): JSON with GraphQL POST body.
@@ -148,7 +166,10 @@ def prepare_popular_request(
         "operationName": "GetPopularTitles",
         "variables": {
             "first": count,
-            "popularTitlesFilter": {"packages": providers},
+            "popularTitlesFilter": {
+                "packages": providers,
+                **_list_variables(min_year, max_year, object_types),
+            },
             **_common_variables(best_only),
             **_locale_variables(country, language),
             "offset": offset or None,
@@ -505,6 +526,16 @@ def _common_variables(best_only: bool) -> dict[str, Any]:
 def _locale_variables(country: str, language: str) -> dict[str, str]:
     """Return dict with variables related to locale."""
     return {"country": country.upper(), "language": language}
+
+
+def _list_variables(
+    min_year: int | None, max_year: int | None, object_types: list[str] | str | None
+) -> dict[str, Any]:
+    """Return dict with variables related to looking up lists of titles."""
+    return {
+        "objectTypes": object_types,
+        "releaseYear": {"min": min_year, "max": max_year},
+    }
 
 
 def _raise_for_errors_in_response(json: dict[str, Any]) -> None:

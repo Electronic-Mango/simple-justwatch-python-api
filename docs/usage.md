@@ -513,8 +513,8 @@ additional filtering of returned entries.
 | Field | Description |
 | ------| ----------- |
 | `object_types` | Types like `SHOW` or `MOVIE`. Values are not enforced, but types like `SHOW_EPISODE` or `SHOW_SEASON` return shows anyway; like `SHOW`. While not enforced they **must** be valid types. It can be either a list of strings, or a single string. |
-| `min_year` | Minimum release year. |
-| `max_year` | Maximum release year. |
+| `min_release_year` | Minimum release year. |
+| `max_release_year` | Maximum release year. |
 
 All filters are optional; when not configured (or set to `None`) the filtering is disabled.
 
@@ -525,6 +525,11 @@ from simplejustwatchapi import popular, search
 popular_shows = popular(object_types=["SHOW"])
 
 # Search for movies between 1990 and 2010:
-movies = search("The Matrix", min_year=1990, max_year=2010, object_types="MOVIE")
+movies = search(
+    "The Matrix",
+    min_release_year=1990,
+    max_release_year=2010,
+    object_types="MOVIE"
+)
 # object_types with single element can be either a list, or just a string.
 ```

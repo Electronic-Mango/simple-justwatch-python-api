@@ -39,6 +39,13 @@ def locale_variables(country, language):
     }
 
 
+def list_variables(min_year, max_year, object_types):
+    return {
+        "objectTypes": object_types,
+        "releaseYear": {"min": min_year, "max": max_year},
+    }
+
+
 @patch("simplejustwatchapi.query.GRAPHQL_SEARCH_QUERY", DUMMY_SEARCH_QUERY)
 @mark.parametrize(
     argnames=(
@@ -49,13 +56,38 @@ def locale_variables(country, language):
         "best_only",
         "offset",
         "providers",
+        "min_year",
+        "max_year",
+        "object_types",
     ),
     argvalues=[
-        ("TITLE 1", "US", "en", 5, True, 0, ""),
-        ("TITLE 2", "gb", "fr", 10, False, 20, ["provider1", "provider2"]),
-        ("TITLE 3", "fr", "de-SWITZ123", 20, True, 20, "provider3"),
-        ("TITLE 4", "it", "ro-HELLO123", 30, True, 30, []),
-        ("TITLE 5", "dk", "us", 40, True, 40, None),
+        ("TITLE 1", "US", "en", 5, True, 0, "", 1990, 2000, ["SHOW", "MOVIE"]),
+        (
+            "TITLE 2",
+            "gb",
+            "fr",
+            10,
+            False,
+            20,
+            ["provider1", "provider2"],
+            2000,
+            None,
+            "MOVIE",
+        ),
+        (
+            "TITLE 3",
+            "fr",
+            "de-SWITZ123",
+            20,
+            True,
+            20,
+            "provider3",
+            None,
+            2020,
+            ["SHOW"],
+        ),
+        ("TITLE 4", "it", "ro-HELLO123", 30, True, 30, [], None, None, "SHOW"),
+        ("TITLE 5", "dk", "us", 40, True, 40, None, 2030, 2040, ["MOVIE"]),
     ],
 )
 def test_prepare_search_request(
@@ -66,12 +98,19 @@ def test_prepare_search_request(
     best_only,
     offset,
     providers,
+    min_year,
+    max_year,
+    object_types,
 ):
     expected_request = {
         "operationName": "GetSearchTitles",
         "variables": {
             "first": count,
-            "searchTitlesFilter": {"searchQuery": title, "packages": providers},
+            "searchTitlesFilter": {
+                "searchQuery": title,
+                "packages": providers,
+                **list_variables(min_year, max_year, object_types),
+            },
             **common_variables(best_only),
             **locale_variables(country, language),
             "offset": offset or None,
@@ -79,20 +118,39 @@ def test_prepare_search_request(
         "query": DUMMY_SEARCH_QUERY,
     }
     request = prepare_search_request(
-        title, country, language, count, best_only, offset, providers
+        title,
+        country,
+        language,
+        count,
+        best_only,
+        offset,
+        providers,
+        min_year,
+        max_year,
+        object_types,
     )
     assert expected_request == request
 
 
 @patch("simplejustwatchapi.query.GRAPHQL_POPULAR_QUERY", DUMMY_POPULAR_QUERY)
 @mark.parametrize(
-    argnames=("country", "language", "count", "best_only", "offset", "providers"),
+    argnames=(
+        "country",
+        "language",
+        "count",
+        "best_only",
+        "offset",
+        "providers",
+        "min_year",
+        "max_year",
+        "object_types",
+    ),
     argvalues=[
-        ("US", "en-123ASD", 5, True, 0, ""),
-        ("gb", "fr", 10, False, 20, ["provider1", "provider2"]),
-        ("fr", "de-FGH76", 20, True, 20, "provider3"),
-        ("it", "ro", 30, True, 30, []),
-        ("dk", "us", 40, True, 40, None),
+        ("US", "en-123ASD", 5, True, 0, "", 1990, 2000, ["SHOW", "MOVIE"]),
+        ("gb", "fr", 10, False, 20, ["provider1", "provider2"], 2000, 2010, "MOVIE"),
+        ("fr", "de-FGH76", 20, True, 20, "provider3", None, 2020, ["SHOW"]),
+        ("it", "ro", 30, True, 30, [], 2020, None, "SHOW"),
+        ("dk", "us", 40, True, 40, None, None, None, ["MOVIE"]),
     ],
 )
 def test_prepare_popular_request(
@@ -102,12 +160,18 @@ def test_prepare_popular_request(
     best_only,
     offset,
     providers,
+    min_year,
+    max_year,
+    object_types,
 ):
     expected_request = {
         "operationName": "GetPopularTitles",
         "variables": {
             "first": count,
-            "popularTitlesFilter": {"packages": providers},
+            "popularTitlesFilter": {
+                "packages": providers,
+                **list_variables(min_year, max_year, object_types),
+            },
             **common_variables(best_only),
             **locale_variables(country, language),
             "offset": offset or None,
@@ -115,7 +179,15 @@ def test_prepare_popular_request(
         "query": DUMMY_POPULAR_QUERY,
     }
     request = prepare_popular_request(
-        country, language, count, best_only, offset, providers
+        country,
+        language,
+        count,
+        best_only,
+        offset,
+        providers,
+        min_year,
+        max_year,
+        object_types,
     )
     assert expected_request == request
 

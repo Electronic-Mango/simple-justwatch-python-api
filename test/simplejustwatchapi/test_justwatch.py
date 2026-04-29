@@ -16,8 +16,29 @@ from simplejustwatchapi.justwatch import (
 
 JUSTWATCH_GRAPHQL_URL = "https://apis.justwatch.com/graphql"
 
-SEARCH_INPUT = ("TITLE", "COUNTRY", "LANGUAGE", 5, True, 10, ["prov1", "prov2"])
-POPULAR_INPUT = ("COUNTRY", "LANGUAGE", 5, True, 10, ["prov1", "prov2"])
+SEARCH_INPUT = (
+    "TITLE",
+    "COUNTRY",
+    "LANGUAGE",
+    5,
+    True,
+    10,
+    ["prov1", "prov2"],
+    1990,
+    2000,
+    ["SHOW", "MOVIE"],
+)
+POPULAR_INPUT = (
+    "COUNTRY",
+    "LANGUAGE",
+    5,
+    True,
+    10,
+    ["prov1", "prov2"],
+    2000,
+    None,
+    "SHOW",
+)
 DETAILS_INPUT = ("NODE ID", "COUNTRY", "LANGUAGE", False)
 OFFERS_COUNTRIES_INPUT = {"COUNTRY1", "COUNTRY2", "COUNTRY3"}
 OFFERS_INPUT = ("NODE ID", OFFERS_COUNTRIES_INPUT, "LANGUAGE", True)

@@ -79,6 +79,9 @@ def search(
     best_only: bool = True,
     offset: int = 0,
     providers: list[str] | str | None = None,
+    min_year: int | None = None,
+    max_year: int | None = None,
+    object_types: list[str] | str | None = None,
 ) -> list[MediaEntry]:
     """
     Search JustWatch for the given title.
@@ -148,6 +151,18 @@ def search(
             You can look up values through [`providers`]
             [simplejustwatchapi.justwatch.providers] function.
 
+        min_year (int | None): Minimum release year of returned titles.
+            If `None` (the default value), no filtering is done.
+
+        max_year (int | None): Maximum release year of returned titles.
+            If `None` (the default value), no filtering is done.
+
+        object_types (list[str] | str | None): Types of objects to filter for, it seems
+            that only `SHOW` and `MOVIE` are useful, but it's not strictly enforced.
+            Types like `SHOW_EPISODE`, or `SHOW_SEASON` can be used but they seem to
+            return shows, the same as `SHOW` type. If `None` (the default value), no
+            filtering is done.
+
     Returns:
         (list[MediaEntry]): List of tuples with details of search results.
 
@@ -159,7 +174,16 @@ def search(
 
     """
     request = prepare_search_request(
-        title, country, language, count, best_only, offset, providers
+        title,
+        country,
+        language,
+        count,
+        best_only,
+        offset,
+        providers,
+        min_year,
+        max_year,
+        object_types,
     )
     response = _post_to_jw_graphql_api(request)
     return parse_search_response(response)
@@ -172,6 +196,9 @@ def popular(
     best_only: bool = True,
     offset: int = 0,
     providers: list[str] | str | None = None,
+    min_year: int | None = None,
+    max_year: int | None = None,
+    object_types: list[str] | str | None = None,
 ) -> list[MediaEntry]:
     """
     Look up all currently popular titles on JustWatch.
@@ -233,6 +260,18 @@ def popular(
             You can look up values through [`providers`]
             [simplejustwatchapi.justwatch.providers] function.
 
+        min_year (int | None): Minimum release year of returned titles.
+            If `None` (the default value), no filtering is done.
+
+        max_year (int | None): Maximum release year of returned titles.
+            If `None` (the default value), no filtering is done.
+
+        object_types (list[str] | str | None): Types of objects to filter for, it seems
+            that only `SHOW` and `MOVIE` are useful, but it's not strictly enforced.
+            Types like `SHOW_EPISODE`, or `SHOW_SEASON` can be used but they seem to
+            return shows, the same as `SHOW` type. If `None` (the default value), no
+            filtering is done.
+
     Returns:
         (list[MediaEntry]): List of tuples with details of popular titles.
 
@@ -244,7 +283,15 @@ def popular(
 
     """
     request = prepare_popular_request(
-        country, language, count, best_only, offset, providers
+        country,
+        language,
+        count,
+        best_only,
+        offset,
+        providers,
+        min_year,
+        max_year,
+        object_types,
     )
     response = _post_to_jw_graphql_api(request)
     return parse_popular_response(response)

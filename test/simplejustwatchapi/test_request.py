@@ -39,10 +39,10 @@ def locale_variables(country, language):
     }
 
 
-def list_variables(min_year, max_year, object_types):
+def list_variables(min_release_year, max_release_year, object_types):
     return {
         "objectTypes": object_types,
-        "releaseYear": {"min": min_year, "max": max_year},
+        "releaseYear": {"min": min_release_year, "max": max_release_year},
     }
 
 
@@ -56,8 +56,8 @@ def list_variables(min_year, max_year, object_types):
         "best_only",
         "offset",
         "providers",
-        "min_year",
-        "max_year",
+        "min_release_year",
+        "max_release_year",
         "object_types",
     ),
     argvalues=[
@@ -98,8 +98,8 @@ def test_prepare_search_request(
     best_only,
     offset,
     providers,
-    min_year,
-    max_year,
+    min_release_year,
+    max_release_year,
     object_types,
 ):
     expected_request = {
@@ -109,7 +109,7 @@ def test_prepare_search_request(
             "searchTitlesFilter": {
                 "searchQuery": title,
                 "packages": providers,
-                **list_variables(min_year, max_year, object_types),
+                **list_variables(min_release_year, max_release_year, object_types),
             },
             **common_variables(best_only),
             **locale_variables(country, language),
@@ -125,8 +125,8 @@ def test_prepare_search_request(
         best_only,
         offset,
         providers,
-        min_year,
-        max_year,
+        min_release_year,
+        max_release_year,
         object_types,
     )
     assert expected_request == request
@@ -141,8 +141,8 @@ def test_prepare_search_request(
         "best_only",
         "offset",
         "providers",
-        "min_year",
-        "max_year",
+        "min_release_year",
+        "max_release_year",
         "object_types",
     ),
     argvalues=[
@@ -160,8 +160,8 @@ def test_prepare_popular_request(
     best_only,
     offset,
     providers,
-    min_year,
-    max_year,
+    min_release_year,
+    max_release_year,
     object_types,
 ):
     expected_request = {
@@ -170,7 +170,7 @@ def test_prepare_popular_request(
             "first": count,
             "popularTitlesFilter": {
                 "packages": providers,
-                **list_variables(min_year, max_year, object_types),
+                **list_variables(min_release_year, max_release_year, object_types),
             },
             **common_variables(best_only),
             **locale_variables(country, language),
@@ -185,8 +185,8 @@ def test_prepare_popular_request(
         best_only,
         offset,
         providers,
-        min_year,
-        max_year,
+        min_release_year,
+        max_release_year,
         object_types,
     )
     assert expected_request == request

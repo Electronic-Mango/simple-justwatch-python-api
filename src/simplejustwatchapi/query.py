@@ -44,8 +44,8 @@ def prepare_search_request(
     best_only: bool,
     offset: int,
     providers: list[str] | str | None,
-    min_year: int | None,
-    max_year: int | None,
+    min_release_year: int | None,
+    max_release_year: int | None,
     object_types: list[str] | str | None,
 ) -> dict[str, Any]:
     """
@@ -69,8 +69,8 @@ def prepare_search_request(
         offset (int): Search results offset.
         providers (list[str] | str | None): 3-letter service identifier(s),
             or `None` for all providers.
-        min_year (int | None): Minimum release year of returned titles.
-        max_year (int | None): Maximum release year of returned titles.
+        min_release_year (int | None): Minimum release year of returned titles.
+        max_release_year (int | None): Maximum release year of returned titles.
         object_types (list[str] | str | None): Types of objects to filter for, it seems
             that only "SHOW" and "MOVIE" make sense.
 
@@ -85,7 +85,7 @@ def prepare_search_request(
             "searchTitlesFilter": {
                 "searchQuery": title,
                 "packages": providers,
-                **_list_variables(min_year, max_year, object_types),
+                **_list_variables(min_release_year, max_release_year, object_types),
             },
             **_common_variables(best_only),
             **_locale_variables(country, language),
@@ -129,8 +129,8 @@ def prepare_popular_request(
     best_only: bool,
     offset: int,
     providers: list[str] | str | None,
-    min_year: int | None,
-    max_year: int | None,
+    min_release_year: int | None,
+    max_release_year: int | None,
     object_types: list[str] | str | None,
 ) -> dict[str, Any]:
     """
@@ -153,8 +153,8 @@ def prepare_popular_request(
         offset (int): Search results offset.
         providers (list[str] | str | None): 3-letter service identifier(s),
             or `None` for all providers.
-        min_year (int | None): Minimum release year of returned titles.
-        max_year (int | None): Maximum release year of returned titles.
+        min_release_year (int | None): Minimum release year of returned titles.
+        max_release_year (int | None): Maximum release year of returned titles.
         object_types (list[str] | str | None): Types of objects to filter for, it seems
             that only "SHOW" and "MOVIE" make sense.
 
@@ -168,7 +168,7 @@ def prepare_popular_request(
             "first": count,
             "popularTitlesFilter": {
                 "packages": providers,
-                **_list_variables(min_year, max_year, object_types),
+                **_list_variables(min_release_year, max_release_year, object_types),
             },
             **_common_variables(best_only),
             **_locale_variables(country, language),
@@ -529,12 +529,14 @@ def _locale_variables(country: str, language: str) -> dict[str, str]:
 
 
 def _list_variables(
-    min_year: int | None, max_year: int | None, object_types: list[str] | str | None
+    min_release_year: int | None,
+    max_release_year: int | None,
+    object_types: list[str] | str | None,
 ) -> dict[str, Any]:
     """Return dict with variables related to looking up lists of titles."""
     return {
         "objectTypes": object_types,
-        "releaseYear": {"min": min_year, "max": max_year},
+        "releaseYear": {"min": min_release_year, "max": max_release_year},
     }
 
 

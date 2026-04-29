@@ -34,7 +34,13 @@ specific providers:
 | `providers` | Providers (like Netflix, Amazon Prime Video) for which offers should \
                 returned. Requires 3-letter "short name". Check \
                 [`providers`][simplejustwatchapi.justwatch.providers] for an example \
-                of how you can get that value.
+                of how you can get that value. |
+| `min_year` | Minimum release year of returned titles. |
+| `max_year` | Maximum release year of returned titles. |
+| `object_types` | Types of objects to filter for, it seems that only `SHOW` and \
+                   `MOVIE` are useful, but it's not strictly enforced. Types like \
+                   `SHOW_EPISODE`, or `SHOW_SEASON` can be used but they seem to \
+                    return shows, the same as `SHOW` type. |
 
 Each function can raise two exceptions:
 

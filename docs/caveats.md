@@ -296,3 +296,20 @@ popular_results = popular("US", providers=list(name_to_code_dict.values()))
 !!! tip "When this actually might be useful"
     This only makes sense if you are already using other functions. To get **just** the
     codes use the [`providers`](#providers-function) function instead.
+
+
+
+## Filtering by type
+
+Functions [`search`](#search-for-a-title) and [`popular`](#popular-titles) allow for
+filtering of returned entries by "types". The types are list of strings (or just a single
+string), like `SHOW`, `MOVIE`. You can check
+[`examples/`](https://github.com/Electronic-Mango/simple-justwatch-python-api/tree/main/examples)
+for field `object_type`, however the only "useful" ones seem `SHOW` and `MOVIE`. You can
+use types like `SHOW_EPISODE`, or `SHOW_SEASON`, however they seem to default to "TV
+shows" - the same as for type `SHOW`.
+
+!!! warning "Types are not enforced, but must be valid"
+    While possible types are not enforced by functions in this API, they still **must**
+    be valid types in JustWatch API. Using unexpected type will result in HTTP error with
+    code 422.

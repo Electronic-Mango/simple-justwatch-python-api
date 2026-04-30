@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.3.0
+
+Add new filtering options to `search` and `popular`:
+
+ - `min_release_year` and `max_release_year` - return titles only with matching release year.
+ - `object_types` - filter only specific types, such as `SHOW`, or `MOVIE`.
+
+Both are optional and disabled by default.
+
 ## 1.2.0
 
 Improve HTTP error handling.

@@ -9,11 +9,11 @@ prepared GraphQL query.
 Most functions have a number of common arguments (in addition to function-specific
 ones, like `title` to search for):
 
-| Name        | Description |
-|-------------|-------------|
-| `country`   | 2-letter country code for which offers are selected, (e.g., `US`, \
+| Name | Description |
+|------|-------------|
+| `country` | 2-letter country code for which offers are selected, (e.g., `US`, \
                 `GB`, `DE`). |
-| `language`  | Code for language in responses. It consists of 2 lowercase letters \
+| `language` | Code for language in responses. It consists of 2 lowercase letters \
                 with optional uppercase alphanumeric suffix (e.g., `en`, `en-US`, \
                 `de`, `de-CH1901`). |
 | `best_only` | Whether to return only "best" offers for each provider instead of, \
@@ -22,13 +22,13 @@ ones, like `title` to search for):
 Functions returning data for multiple titles
 ([`search`][simplejustwatchapi.justwatch.search],
 [`popular`][simplejustwatchapi.justwatch.popular])
-also allow for specifying number of elements, basic pagination, and filtering for
-specific providers:
+also allow for specifying number of elements, basic pagination, and additional
+filtering:
 
-| Name        | Description |
-|-------------|-------------|
-| `count`     | How many entries should be returned. |
-| `offset`    | Basic "pagination". Offset for the first returned result, i.e. how \
+| Name | Description |
+|------|-------------|
+| `count` | How many entries should be returned. |
+| `offset` | Basic "pagination". Offset for the first returned result, i.e. how \
                 many first entries should be skipped. Everything is handled on API \
                 side, this library isn't doing any filtering. |
 | `providers` | Providers (like Netflix, Amazon Prime Video) for which offers should \
@@ -37,10 +37,8 @@ specific providers:
                 of how you can get that value. |
 | `min_release_year` | Minimum release year of returned titles. |
 | `max_release_year` | Maximum release year of returned titles. |
-| `object_types` | Types of objects to filter for, it seems that only `SHOW` and \
-                   `MOVIE` are useful, but it's not strictly enforced. Types like \
-                   `SHOW_EPISODE`, or `SHOW_SEASON` can be used but they seem to \
-                    return shows, the same as `SHOW` type. |
+| `object_types` | Types of objects to filter for. It seems that only `SHOW` and \
+                   `MOVIE` are useful, but it's not strictly enforced. |
 
 Each function can raise two exceptions:
 
@@ -158,16 +156,26 @@ def search(
             [simplejustwatchapi.justwatch.providers] function.
 
         min_release_year (int | None): Minimum release year of returned titles.
+
             If `None` (the default value), no filtering is done.
 
         max_release_year (int | None): Maximum release year of returned titles.
+
             If `None` (the default value), no filtering is done.
 
-        object_types (list[str] | str | None): Types of objects to filter for, it seems
-            that only `SHOW` and `MOVIE` are useful, but it's not strictly enforced.
-            Types like `SHOW_EPISODE`, or `SHOW_SEASON` can be used but they seem to
-            return shows, the same as `SHOW` type. If `None` (the default value), no
-            filtering is done.
+        object_types (list[str] | str | None): Types of objects to filter for, like
+            `SHOW` or `MOVIE`.
+
+            It seems that only `SHOW` and `MOVIE` are useful, but it's not strictly
+            enforced. Types like `SHOW_EPISODE`, or `SHOW_SEASON` can be used, but they
+            seem to return TV shows, same as `SHOW`.
+
+            While the type value is not enforced, it **must** be a valid type, otherwise
+            API will respond with HTTP status code 422.
+
+            For single type it can be a single string, or a list with one string.
+
+            If `None` (the default value), no filtering is done.
 
     Returns:
         (list[MediaEntry]): List of tuples with details of search results.
@@ -175,6 +183,7 @@ def search(
     Raises:
         exceptions.JustWatchApiError: JSON response from API has internal errors, e.g.,
             due to invalid language or country code.
+
         exceptions.JustWatchHttpError: HTTP error occurred, e.g., JustWatch API
             responded with non-`2xx` status code.
 
@@ -272,11 +281,19 @@ def popular(
         max_release_year (int | None): Maximum release year of returned titles.
             If `None` (the default value), no filtering is done.
 
-        object_types (list[str] | str | None): Types of objects to filter for, it seems
-            that only `SHOW` and `MOVIE` are useful, but it's not strictly enforced.
-            Types like `SHOW_EPISODE`, or `SHOW_SEASON` can be used but they seem to
-            return shows, the same as `SHOW` type. If `None` (the default value), no
-            filtering is done.
+        object_types (list[str] | str | None): Types of objects to filter for, like
+            `SHOW` or `MOVIE`.
+
+            It seems that only `SHOW` and `MOVIE` are useful, but it's not strictly
+            enforced. Types like `SHOW_EPISODE`, or `SHOW_SEASON` can be used, but they
+            seem to return TV shows, same as `SHOW`.
+
+            While the type value is not enforced, it **must** be a valid type, otherwise
+            API will respond with HTTP status code 422.
+
+            For single type it can be a single string, or a list with one string.
+
+            If `None` (the default value), no filtering is done.
 
     Returns:
         (list[MediaEntry]): List of tuples with details of popular titles.
@@ -284,6 +301,7 @@ def popular(
     Raises:
         exceptions.JustWatchApiError: JSON response from API has internal errors, e.g.,
             due to invalid language or country code.
+
         exceptions.JustWatchHttpError: HTTP error occurred, e.g., JustWatch API
             responded with non-`2xx` status code.
 
@@ -362,6 +380,7 @@ def details(
     Raises:
         exceptions.JustWatchApiError: JSON response from API has internal errors, e.g.,
             due to invalid language or country code.
+
         exceptions.JustWatchHttpError: HTTP error occurred, e.g., JustWatch API
             responded with non-`2xx` status code.
 
@@ -411,6 +430,7 @@ def seasons(
     Raises:
         exceptions.JustWatchApiError: JSON response from API has internal errors, e.g.,
             due to invalid language or country code.
+
         exceptions.JustWatchHttpError: HTTP error occurred, e.g., JustWatch API
             responded with non-`2xx` status code.
 
@@ -461,6 +481,7 @@ def episodes(
     Raises:
         exceptions.JustWatchApiError: JSON response from API has internal errors, e.g.,
             due to invalid language or country code.
+
         exceptions.JustWatchHttpError: HTTP error occurred, e.g., JustWatch API
             responded with non-`2xx` status code.
 
@@ -530,6 +551,7 @@ def offers_for_countries(
     Raises:
         exceptions.JustWatchApiError: JSON response from API has internal errors, e.g.,
             due to invalid language or country code.
+
         exceptions.JustWatchHttpError: HTTP error occurred, e.g., JustWatch API
             responded with non-`2xx` status code.
 

@@ -47,23 +47,25 @@ You can check [Exceptions](API Reference/exceptions.md) page for more details.
 Most functions have a number of common arguments (in addition to function-specific
 ones, like `title` to search for):
 
-| Name        | Description |
-|-------------|-------------|
-| `country`   | 2-letter country code for which offers will be returned, e.g., `US`, `GB`, `DE`. |
-| `language`  | Code for language in responses. It consists of 2 lowercase letters with optional uppercase alphanumeric suffix (e.g., `en`, `en-US`, `de`, `de-CH1901`). |
+| Name | Description |
+|------|-------------|
+| `country` | 2-letter country code for which offers will be returned, e.g., `US`, `GB`, `DE`. |
+| `language` | Code for language in responses. It consists of 2 lowercase letters with optional uppercase alphanumeric suffix (e.g., `en`, `en-US`, `de`, `de-CH1901`). |
 | `best_only` | Whether to return only "best" offers for each provider instead of, e.g., separate offers for SD, HD, and 4K. |
 
 Functions returning data for multiple titles
 ([`search`][simplejustwatchapi.justwatch.search],
 [`popular`][simplejustwatchapi.justwatch.popular])
-also allow for specifying number of elements, basic pagination, and filtering for
-specific providers:
+also allow for specifying number of elements, basic pagination, and optional filtering:
 
-| Name        | Description |
-|-------------|-------------|
-| `count`     | How many entries should be returned. |
-| `offset`    | Basic "pagination". Offset for the first returned result, i.e. how many first entries should be skipped. Everything is handled on API side, this library isn't doing any filtering. |
-| `providers` | Providers (like Netflix, Amazon Prime Video) for which offers should returned. Requires 3-letter "short name". Check [Provider codes](caveats.md#provider-codes) page for an example of how you can get that value.
+| Name | Description |
+|------|-------------|
+| `count` | How many entries should be returned. |
+| `offset` | Basic "pagination". Offset for the first returned result, i.e. how many first entries should be skipped. Everything is handled on API side, this library isn't doing any filtering. |
+| `providers` | Providers (like Netflix, Amazon Prime Video) for which offers should returned. Requires 3-letter "short name". Check [Provider codes](caveats.md#provider-codes) page for an example of how you can get that value. |
+| `min_release_year` | Minimum release year for a title. |
+| `max_release_year` | Maximum release year for a title. |
+| `object_types` | Types of objects to filter for, such as `SHOW` or `MOVIE`. Check [Additional filtering](#additional-filtering-in-search-and-popular) section for more details. |
 
 
 ### Search for a title
@@ -505,18 +507,31 @@ while results := popular(count=page, offset=i):
 
 
 
-### Additional filtering in [`search`](#search-for-a-title) and [`popular`](#popular-titles)
+## Additional filtering in [`search`](#search-for-a-title) and [`popular`](#popular-titles)
 
 [`search`](#search-for-a-title) and [`popular`](#popular-titles) functions allow for
 additional filtering of returned entries.
 
-| Field | Description |
-| ------| ----------- |
-| `object_types` | Types like `SHOW` or `MOVIE`. Values are not enforced, but types like `SHOW_EPISODE` or `SHOW_SEASON` return shows anyway; like `SHOW`. While not enforced they **must** be valid types. It can be either a list of strings, or a single string. |
+| Argument name | Description |
+|---------------|-------------|
 | `min_release_year` | Minimum release year. |
 | `max_release_year` | Maximum release year. |
+| `object_types` | Media types, like `SHOW` or `MOVIE`. |
 
-All filters are optional; when not configured (or set to `None`) the filtering is disabled.
+All filters are optional; when not configured (or set to `None`) the filtering is
+disabled.
+
+`object_types` is a list of strings (or for one type just a single string),
+like `SHOW`, or `MOVIE`. You can check
+[`examples/`](https://github.com/Electronic-Mango/simple-justwatch-python-api/tree/main/examples)
+for field `object_type`, however the only "useful" ones seem to be `SHOW` and `MOVIE`.
+You can use types like `SHOW_EPISODE`, or `SHOW_SEASON`, however they seem to default
+to "TV shows" - same as for `SHOW`.
+
+!!! warning "Type values are not enforced, but must be valid"
+    Possible values for types are not enforced by functions in this API, but they still
+    **must** be valid types in JustWatch API. Using unexpected type will result in HTTP
+    error with code 422.
 
 ```python
 from simplejustwatchapi import popular, search
@@ -531,5 +546,5 @@ movies = search(
     max_release_year=2010,
     object_types="MOVIE"
 )
-# object_types with single element can be either a list, or just a string.
+# "object_types" with single type can be either a list, or just a string.
 ```

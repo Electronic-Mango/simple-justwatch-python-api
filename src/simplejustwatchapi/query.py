@@ -85,7 +85,7 @@ def prepare_search_request(
             "searchTitlesFilter": {
                 "searchQuery": title,
                 "packages": providers,
-                **_list_variables(min_release_year, max_release_year, object_types),
+                **_filter_variables(min_release_year, max_release_year, object_types),
             },
             **_common_variables(best_only),
             **_locale_variables(country, language),
@@ -168,7 +168,7 @@ def prepare_popular_request(
             "first": count,
             "popularTitlesFilter": {
                 "packages": providers,
-                **_list_variables(min_release_year, max_release_year, object_types),
+                **_filter_variables(min_release_year, max_release_year, object_types),
             },
             **_common_variables(best_only),
             **_locale_variables(country, language),
@@ -528,13 +528,14 @@ def _locale_variables(country: str, language: str) -> dict[str, str]:
     return {"country": country.upper(), "language": language}
 
 
-def _list_variables(
+def _filter_variables(
     min_release_year: int | None,
     max_release_year: int | None,
     object_types: list[str] | str | None,
 ) -> dict[str, Any]:
     """Return dict with variables related to looking up lists of titles."""
     return {
+        "includeTitlesWithoutUrl": True,
         "objectTypes": object_types,
         "releaseYear": {"min": min_release_year, "max": max_release_year},
     }

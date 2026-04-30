@@ -222,7 +222,8 @@ class MediaEntry(NamedTuple):
         object_id (int): Object ID, the numeric part of full entry ID.
         object_type (str): Type of entry, e.g. `MOVIE`, `SHOW`.
         title (str): Full title.
-        url (str): URL to JustWatch with details for this entry.
+        url (str | None): URL to JustWatch with details for this entry. Some entries
+            are missing dedicated JustWatch pages, for them this field is `None`.
         release_year (int): Release year as a number.
         release_date (str): Full release date as a string, e.g. `2013-12-16`.
         runtime_minutes (int): Runtime in minutes.
@@ -255,7 +256,7 @@ class MediaEntry(NamedTuple):
     object_id: int
     object_type: str
     title: str
-    url: str
+    url: str | None
     release_year: int
     release_date: str
     runtime_minutes: int

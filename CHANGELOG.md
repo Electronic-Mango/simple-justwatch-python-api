@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.1
+
+Update all dependencies to resolve vulnerabilities in "idna" and "pymdown-extensions".
+
 ## 1.3.0
 
 Add new filtering options to `search` and `popular`:

@@ -22,15 +22,17 @@ classifiers = [
     "Topic :: Internet :: WWW/HTTP",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dependencies = ["httpx>=0.28.1"]
+dependencies = [
+    "httpx>=0.28.1",
+]
 
 [dependency-groups]
 dev = [
     "mkdocstrings-python>=2.0.3",
     "pytest>=9.0.3",
     "pytest-mock>=3.15.1",
-    "ruff>=0.15.10",
-    "zensical>=0.0.37",
+    "ruff>=0.15.13",
+    "zensical>=0.0.43",
 ]
 
 [project.urls]

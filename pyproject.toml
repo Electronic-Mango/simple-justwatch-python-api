@@ -57,11 +57,13 @@ select = ["ALL"]
 ignore = [
     "ANN401",  # Type hinting JSONs is problematic
     "COM812",  # Avoid issues with formatter
+    "CPY001",  # I don't think, that copyright notices are necessary here
     "D203",    # Conflicts with D211
     "D212",    # Conflicts with D213
     "FBT",
     "FIX002",
     "PLR0913", # I think it makes sense for functions here to have more arguments
+    "PLR0917", # Same as PLR0913
     "TD002",
     "TD003",
 ]

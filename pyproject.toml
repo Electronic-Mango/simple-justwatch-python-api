@@ -52,6 +52,9 @@ module-name = "simplejustwatchapi"
 [tool.pytest.ini_options]
 pythonpath = ["src", "test"]
 
+[tool.ruff]
+extend-exclude = ["docs"]
+
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [

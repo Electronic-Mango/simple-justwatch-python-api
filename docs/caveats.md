@@ -42,7 +42,7 @@ you might need to treat **all** fields as effectively optional (as in - they can
 
 ## Locale, language, country
 
-Languages and countries are configured via their respecive codes. While the JustWatch
+Languages and countries are configured via their respective codes. While the JustWatch
 API does not give specific standards, it will respond with an error with expected code
 regex for invalid ones. You can infer the standard from the regex, however it might not
 be strict.
@@ -75,7 +75,7 @@ with an internal error and [`JustWatchApiError`]
 
 Required pattern is 2 lowercase letters with optional
 alphanumeric suffix after `-` (e.g., `en`, `en-US`, `fr`, `de`, `de-CH`, `de-CH1901`).
-The sufix must be uppercase:
+The suffix must be uppercase:
 ```
 ^[a-z]{2}(-[0-9A-Z]+)?$
 ```
@@ -126,7 +126,7 @@ If you need even more entries you can retrieve data in
 
 The JustWatch API itself won't allow for getting more than 1999 entries, through `count`
 and `offset`, regardless of operation complexity. If you try to get the 2000th entry,
-the API (and functions in this libary) will return an empty list.
+the API (and functions in this library) will return an empty list.
 
 !!! warning "Entries *up to* 1999th"
     If you try to access over the 1999th entry you won't get *up to* 1999 entries,

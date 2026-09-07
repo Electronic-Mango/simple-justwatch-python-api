@@ -28,11 +28,11 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "mkdocstrings-python>=2.0.5",
+    "mkdocstrings-python>=2.0.8",
     "pytest>=9.1.1",
     "pytest-mock>=3.15.1",
-    "ruff>=0.16.0",
-    "zensical>=0.0.51",
+    "ruff>=0.16.6",
+    "zensical>=0.0.59",
 ]
 
 [project.urls]

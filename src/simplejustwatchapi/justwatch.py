@@ -51,7 +51,7 @@ Each function can raise two exceptions:
     country code. |
 """
 
-from httpx import HTTPError, HTTPStatusError, post
+from httpx2 import HTTPError, HTTPStatusError, post
 
 from simplejustwatchapi.exceptions import JustWatchHttpError
 from simplejustwatchapi.query import (

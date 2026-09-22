@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock, patch
 
-from httpx import Request, RequestError, Response
+from httpx2 import Request, RequestError, Response
 from pytest import fixture, mark, raises
 
 from simplejustwatchapi.exceptions import JustWatchHttpError

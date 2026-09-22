@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock, patch
 
-from httpx import Request, RequestError, Response
+from niquests import Request, RequestException, Response
 from pytest import fixture, mark, raises
 
 from simplejustwatchapi.exceptions import JustWatchHttpError
@@ -64,9 +64,12 @@ def post_mock_success(mocker):
 @fixture
 def post_mock_request_error(mocker):
     post_mock = mocker.patch("simplejustwatchapi.justwatch.post")
-    post_mock.side_effect = RequestError(REQUEST_ERROR_MESSAGE)
+    post_mock.side_effect = RequestException(REQUEST_ERROR_MESSAGE)
     mock_request = Request(method="POST", url=JUSTWATCH_GRAPHQL_URL)
-    post_mock.return_value = Response(status_code=200, request=mock_request)
+    mock_response = Response()
+    mock_response.status_code = 200
+    mock_response.request = mock_request
+    post_mock.return_value = mock_response
     # Technically setting the return value is not necessary, since the side effect will
     # be raised before the return value is used, but it can be useful for debugging if
     # the test fails due to the side effect not being raised for some reason.
@@ -77,11 +80,11 @@ def post_mock_request_error(mocker):
 def post_mock_status_error(mocker):
     post_mock = mocker.patch("simplejustwatchapi.justwatch.post")
     mock_request = Request(method="POST", url=JUSTWATCH_GRAPHQL_URL)
-    post_mock.return_value = Response(
-        status_code=RESPONSE_ERROR_STATUS_CODE,
-        request=mock_request,
-        text=RESPONSE_ERROR_MESSAGE,
-    )
+    mock_response = Response()
+    mock_response.status_code = RESPONSE_ERROR_STATUS_CODE
+    mock_response.request = mock_request
+    mock_response._content = RESPONSE_ERROR_MESSAGE
+    post_mock.return_value = mock_response
     return post_mock
 
 

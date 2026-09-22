@@ -51,7 +51,7 @@ Each function can raise two exceptions:
     country code. |
 """
 
-from niquests import HTTPError, post
+from niquests import RequestException, post
 
 from simplejustwatchapi.exceptions import JustWatchHttpError
 from simplejustwatchapi.query import (
@@ -614,5 +614,6 @@ def _post_to_jw_graphql_api(request_json: dict) -> dict:
         response = post(_GRAPHQL_API_URL, json=request_json)
         response.raise_for_status()
         return response.json()
-    except HTTPError as e:
-        raise JustWatchHttpError(str(e), e.response.text) from e
+    except RequestException as e:
+        response_text = e.response.text if e.response is not None else None
+        raise JustWatchHttpError(str(e), response_text) from e

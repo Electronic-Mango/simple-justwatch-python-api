@@ -23,7 +23,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "httpx>=0.28.1",
+    "httpx2>=2.13.0",
 ]
 
 [dependency-groups]

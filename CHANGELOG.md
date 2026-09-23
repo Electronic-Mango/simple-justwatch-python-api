@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.0
+
+Replace "httpx" with "httpx2".
+
 ## 1.3.1
 
 Update all dependencies to resolve vulnerabilities in "idna" and "pymdown-extensions".
